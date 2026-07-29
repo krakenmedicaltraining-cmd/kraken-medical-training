@@ -1,16 +1,66 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Visual Course Builder | Kraken Medical Training</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body>
-<div class="drawer-backdrop" id="drawerBackdrop"></div><aside class="drawer" id="drawer"><div class="drawer-head"><a class="brand" href="index.html"><span class="brand-mark">K</span><span>Kraken Medical</span></a><button class="icon-button" id="closeMenu">×</button></div><nav class="drawer-nav"><a href="index.html">⌂ <span>Home</span></a><a href="resources.html">▣ <span>Resources</span></a><a href="games.html">◆ <span>Simulations</span></a><div class="drawer-section">Manage</div><a class="active" href="admin.html">⚙ <span>Course builder</span></a><a href="dashboard.html">● <span>Dashboard</span></a></nav></aside>
-<header class="topbar"><button class="icon-button" id="menuButton">☰</button><a class="brand" href="index.html"><span class="brand-mark">K</span><span>Kraken Medical Training</span></a><nav class="desktop-nav"><a href="index.html">Website</a><a href="resources.html">Resources</a></nav><a class="icon-button" href="admin.html">⚙</a></header>
-<main><section class="page-hero"><span class="eyebrow">Visual course builder</span><h1>Build lessons without code</h1><p>Add content blocks, move them into order and publish directly to the live site.</p></section>
-<section class="section"><div class="notice" id="adminStatus"><strong>Connecting:</strong> Checking administrator access…</div>
-<div class="builder-shell">
-<form class="panel admin-form" id="courseForm"><input type="hidden" id="editingId"><span class="eyebrow" id="formEyebrow">New course</span><h2 id="formTitle">Course details</h2>
-<div class="form-row"><div class="field"><label for="courseIcon">Icon or initials</label><input id="courseIcon" maxlength="5" placeholder="ECG"></div><div class="field"><label for="courseStatus">Status</label><select id="courseStatus"><option>Draft</option><option>Published</option><option>Coming soon</option></select></div></div>
-<div class="field"><label for="courseTitle">Course title</label><input id="courseTitle" required placeholder="ECG Foundations"></div><div class="field"><label for="courseCategory">Category</label><select id="courseCategory"><option>Trauma care</option><option>Resuscitation</option><option>Communication</option><option>Primary healthcare</option><option>Clinical skills</option><option>Professional development</option></select></div><div class="field"><label for="courseDescription">Short description</label><textarea id="courseDescription" rows="3" required></textarea></div>
-<div class="builder-heading"><div><span class="eyebrow">Lesson canvas</span><h2>Content blocks</h2></div><span class="tag" id="blockCount">0 blocks</span></div>
-<div class="block-palette" id="blockPalette"><button type="button" data-add="heading">H Heading</button><button type="button" data-add="text">¶ Text</button><button type="button" data-add="image">▧ Image</button><button type="button" data-add="video">▶ Video</button><button type="button" data-add="download">⇩ Download</button><button type="button" data-add="quiz">? Quiz</button><button type="button" data-add="scenario">✚ Scenario</button><button type="button" data-add="unity">◆ Unity game</button><button type="button" data-add="divider">— Divider</button></div>
-<div id="blockList" class="course-block-list"></div><div class="empty-panel" id="emptyBlocks">Tap a block above to start building your lesson.</div>
-<div class="actions sticky-save"><button class="button" type="submit" id="saveButton">Save course</button><button class="button secondary" type="button" id="cancelEdit" hidden>Cancel edit</button></div></form>
-<section><div class="section-head"><div><span class="eyebrow">Live library</span><h2>Managed courses</h2></div></div><div class="admin-toolbar"><button class="small-button" id="exportCourses">Export backup</button><button class="small-button danger" id="signOutButton">Sign out</button></div><div class="admin-list" id="adminCourseList"></div></section>
-</div></section></main><footer class="footer"><div class="brand"><span class="brand-mark">K</span><span>Kraken Medical Training</span></div><p>Do not enter patient-identifiable information.</p><p>© <span id="year"></span></p></footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="data.js"></script><script src="common.js"></script><script src="admin.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Course Admin | Kraken Medical Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="drawer" id="drawer" aria-label="Main menu">
+  <div class="drawer-head"><a class="brand" href="index.html"><span class="brand-mark">K</span><span>Kraken Medical</span></a><button class="icon-button" id="closeMenu" aria-label="Close menu">×</button></div>
+  <nav class="drawer-nav">
+    <a href="index.html">⌂ <span>Home</span></a><a href="index.html#courses">▤ <span>Courses</span></a>
+    <a href="resources.html">▣ <span>PDF resources</span></a><a href="games.html">◆ <span>Simulations</span></a>
+    <div class="drawer-section">Manage</div><a class="active" href="admin.html">⚙ <span>Course admin</span></a>
+    <a href="dashboard.html">● <span>Dashboard</span></a>
+  </nav>
+</aside>
+<header class="topbar">
+<button class="icon-button" id="menuButton" aria-label="Open menu">☰</button>
+<a class="brand" href="index.html"><span class="brand-mark">K</span><span>Kraken Medical Training</span></a>
+<nav class="desktop-nav"><a href="index.html">Website</a><a href="resources.html">Resources</a><a href="dashboard.html">Dashboard</a></nav>
+<a class="icon-button" href="admin.html" aria-label="Admin">⚙</a>
+</header>
+<main>
+<section class="page-hero"><span class="eyebrow">Content manager prototype</span><h1>Course admin</h1>
+<p>Add, edit, publish and remove courses from your phone. Changes are saved to your live Supabase database.</p></section>
+
+<section class="section">
+<div class="notice" id="adminStatus"><strong>Connecting:</strong> Checking your secure administrator session…</div>
+<div class="admin-layout" style="margin-top:24px">
+<form class="panel admin-form" id="courseForm">
+<input type="hidden" id="editingId">
+<span class="eyebrow" id="formEyebrow">New course</span><h2 id="formTitle">Add a course</h2>
+
+<div class="form-row">
+<div class="field"><label for="courseIcon">Icon or initials</label><input id="courseIcon" maxlength="5" placeholder="ECG"></div>
+<div class="field"><label for="courseStatus">Status</label><select id="courseStatus"><option>Draft</option><option>Published</option><option>Coming soon</option></select></div>
+</div>
+
+<div class="field"><label for="courseTitle">Course title</label><input id="courseTitle" required placeholder="ECG Foundations"></div>
+<div class="field"><label for="courseCategory">Category</label><select id="courseCategory"><option>Trauma care</option><option>Resuscitation</option><option>Communication</option><option>Primary healthcare</option><option>Clinical skills</option><option>Professional development</option></select></div>
+<div class="field"><label for="courseDescription">Short description</label><textarea id="courseDescription" rows="3" required placeholder="What learners will gain from this course."></textarea></div>
+<div class="field"><label for="courseLessons">Lessons</label><textarea id="courseLessons" rows="7" placeholder="One lesson per line&#10;Introduction&#10;Recognition&#10;Management&#10;Knowledge check"></textarea><span class="help-text">Each line becomes a lesson on the generated course page.</span></div>
+<div class="field"><label for="courseFile">Upload PDF or resource</label><input id="courseFile" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,image/*"><span class="help-text">Files are uploaded to Supabase Storage when you save.</span></div>
+<div class="field"><label for="coursePdf">Existing file URL</label><input id="coursePdf" placeholder="Filled automatically after an upload"><span class="help-text">You can also paste an existing public link.</span></div>
+<div class="field"><label for="courseVideo">Video embed link</label><input id="courseVideo" placeholder="https://www.youtube.com/embed/..."></div>
+<div class="actions"><button class="button" type="submit" id="saveButton">Save course</button><button class="button secondary" type="button" id="cancelEdit" hidden>Cancel edit</button></div>
+</form>
+
+<section>
+<div class="section-head"><div><span class="eyebrow">Your content</span><h2>Managed courses</h2></div></div>
+<div class="admin-toolbar">
+<button class="small-button" id="migrateLocal">Import V4 local courses</button>
+<button class="small-button" id="exportCourses">Export online backup</button>
+<button class="small-button danger" id="signOutButton">Sign out</button>
+</div>
+<div class="admin-list" id="adminCourseList"></div>
+</section>
+</div>
+</section>
+</main>
+<footer class="footer"><div class="brand"><span class="brand-mark">K</span><span>Kraken Medical Training</span></div><p>Secure course admin. Do not enter patient-identifiable information.</p><p>© <span id="year"></span></p></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="data.js"></script><script src="common.js"></script><script src="admin.js"></script>
+</body></html>
