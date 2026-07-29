@@ -1,20 +1,48 @@
-# Kraken Medical Training V4
+# Kraken Medical Training V5: Supabase Edition
 
-New:
-- Course admin page
-- Add, edit, delete and preview courses
-- Add lesson titles, PDF paths and YouTube embed links
-- Published custom courses appear on the homepage
-- Export/import JSON backups
-- Mobile-friendly admin interface
+Project URL configured:
+https://nipfbcnesknegakrzcfo.supabase.co
 
-Important limitation:
-All admin-created content is stored in localStorage on the device/browser used to create it.
-It is not yet visible to other visitors or devices. The next phase is Supabase:
-- secure admin login
-- shared database
-- uploaded PDFs/images
-- public publishing
-- student progress across devices
+Publishable browser key configured:
+sb_publishable_VAqvmzhk2q3MjfMR31_VvQ_2Gc7ACLk
 
-Upload every file and folder in this package to the root of the GitHub repository.
+## Before uploading the website
+
+1. Open Supabase > SQL Editor.
+2. Create a new query.
+3. Paste and run `supabase-setup.sql`.
+4. Open Authentication > Users.
+5. Create your administrator user with an email and password.
+6. Return to SQL Editor and run the final admin statement shown at the bottom
+   of `supabase-setup.sql`, replacing the placeholder with your admin email.
+
+## Uploading to GitHub
+
+Upload every file and folder in this V5 package to the repository root,
+replacing the previous versions.
+
+## Admin login
+
+Open:
+`https://YOUR-WEBSITE/admin.html`
+
+You will be redirected to:
+`login.html`
+
+Use the administrator email and password created in Supabase.
+
+## Features
+
+- Shared online courses
+- Secure administrator login
+- Row Level Security
+- Draft and published courses
+- PDF/resource uploads to Supabase Storage
+- Public course pages
+- Import V4 courses stored in the same browser
+- Export online JSON backups
+
+## Security
+
+The included `sb_publishable_...` key is intended for browser use.
+Never add a Supabase secret key or service-role key to these files.

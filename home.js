@@ -71,23 +71,33 @@ $$(".filter-button").forEach(button => {
 });
 
 
-const customCourses = getCustomCourses();
-const customSection = $("#customCoursesSection");
-const customGrid = $("#customCourseGrid");
+async function renderOnlineCourses() {
+  const customSection = $("#customCoursesSection");
+  const customGrid = $("#customCourseGrid");
+  if (!customSection || !customGrid) return;
 
-if (customCourses.length && customSection && customGrid) {
-  customSection.hidden = false;
-  customGrid.innerHTML = customCourses
-    .filter(course => course.status !== "Draft")
-    .map(course => `
+  try {
+    const courses = await getPublicCoursesOnline();
+
+    if (!courses.length) {
+      customSection.hidden = true;
+      return;
+    }
+
+    customSection.hidden = false;
+    customGrid.innerHTML = courses.map(course => `
       <a class="card" href="course.html?id=${encodeURIComponent(course.id)}">
         <span class="card-icon">${escapeHtml(course.icon || "K")}</span>
-        <span class="tag">${escapeHtml(course.status)} · ${escapeHtml(course.category)}</span>
+        <span class="tag">${escapeHtml(course.category)}</span>
         <h3>${escapeHtml(course.title)}</h3>
         <p>${escapeHtml(course.description)}</p>
         <span class="card-link">Open course →</span>
       </a>
     `).join("");
-
-  if (!customGrid.innerHTML.trim()) customSection.hidden = true;
+  } catch (error) {
+    console.error("Could not load online courses:", error);
+    customSection.hidden = true;
+  }
 }
+
+renderOnlineCourses();

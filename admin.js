@@ -1,10 +1,16 @@
-
 const form = $("#courseForm");
 const list = $("#adminCourseList");
 const editingId = $("#editingId");
 const cancelEdit = $("#cancelEdit");
+const adminStatus = $("#adminStatus");
+let onlineCourses = [];
 
-function readForm() {
+function setBusy(busy, message = "") {
+  $("#saveButton").disabled = busy;
+  $("#saveButton").textContent = busy ? (message || "Saving…") : (editingId.value ? "Update course" : "Save course");
+}
+
+function courseFromForm() {
   const title = $("#courseTitle").value.trim();
   return {
     id: editingId.value || createCourseId(title),
@@ -13,13 +19,9 @@ function readForm() {
     status: $("#courseStatus").value,
     category: $("#courseCategory").value,
     description: $("#courseDescription").value.trim(),
-    lessons: $("#courseLessons").value
-      .split("\n")
-      .map(item => item.trim())
-      .filter(Boolean),
-    pdf: $("#coursePdf").value.trim(),
-    video: $("#courseVideo").value.trim(),
-    updatedAt: new Date().toISOString()
+    lessons: $("#courseLessons").value.split("\n").map(v => v.trim()).filter(Boolean),
+    pdf_url: $("#coursePdf").value.trim(),
+    video_url: $("#courseVideo").value.trim()
   };
 }
 
@@ -33,7 +35,7 @@ function resetForm() {
 }
 
 function editCourse(id) {
-  const course = getCustomCourses().find(item => item.id === id);
+  const course = onlineCourses.find(item => item.id === id);
   if (!course) return;
 
   editingId.value = course.id;
@@ -43,8 +45,8 @@ function editCourse(id) {
   $("#courseCategory").value = course.category || "Clinical skills";
   $("#courseDescription").value = course.description || "";
   $("#courseLessons").value = (course.lessons || []).join("\n");
-  $("#coursePdf").value = course.pdf || "";
-  $("#courseVideo").value = course.video || "";
+  $("#coursePdf").value = course.pdf_url || "";
+  $("#courseVideo").value = course.video_url || "";
   $("#formEyebrow").textContent = "Editing course";
   $("#formTitle").textContent = course.title;
   $("#saveButton").textContent = "Update course";
@@ -52,106 +54,134 @@ function editCourse(id) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function deleteCourse(id) {
-  const courses = getCustomCourses();
-  const course = courses.find(item => item.id === id);
-  if (!course || !confirm(`Delete "${course.title}"?`)) return;
-  saveCustomCourses(courses.filter(item => item.id !== id));
-  showToast("Course deleted");
-  renderCourses();
+async function removeCourse(id) {
+  const course = onlineCourses.find(item => item.id === id);
+  if (!course || !confirm(`Delete "${course.title}" from the live website?`)) return;
+
+  try {
+    await deleteCourseOnline(id);
+    showToast("Course deleted");
+    await loadCourses();
+  } catch (error) {
+    alert(`Could not delete course: ${error.message}`);
+  }
 }
 
 function renderCourses() {
-  const courses = getCustomCourses();
   list.innerHTML = "";
 
-  if (!courses.length) {
-    list.innerHTML = `<div class="empty-panel">No custom courses yet. Add your first course using the form.</div>`;
+  if (!onlineCourses.length) {
+    list.innerHTML = `<div class="empty-panel">No online courses yet. Add your first course using the form.</div>`;
     return;
   }
 
-  courses
-    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-    .forEach(course => {
-      const item = document.createElement("article");
-      item.className = "admin-course";
-      item.innerHTML = `
-        <div class="admin-course-icon">${escapeHtml(course.icon)}</div>
-        <div>
-          <span class="tag">${escapeHtml(course.status)} · ${escapeHtml(course.category)}</span>
-          <h3>${escapeHtml(course.title)}</h3>
-          <p>${escapeHtml(course.description)}</p>
-        </div>
-        <div class="admin-actions">
-          <a class="small-button" href="course.html?id=${encodeURIComponent(course.id)}">Preview</a>
-          <button class="small-button" data-edit="${escapeHtml(course.id)}">Edit</button>
-          <button class="small-button danger" data-delete="${escapeHtml(course.id)}">Delete</button>
-        </div>
-      `;
-      list.appendChild(item);
-    });
+  onlineCourses.forEach(course => {
+    const item = document.createElement("article");
+    item.className = "admin-course";
+    item.innerHTML = `
+      <div class="admin-course-icon">${escapeHtml(course.icon || "K")}</div>
+      <div>
+        <span class="tag">${escapeHtml(course.status)} · ${escapeHtml(course.category)}</span>
+        <h3>${escapeHtml(course.title)}</h3>
+        <p>${escapeHtml(course.description)}</p>
+      </div>
+      <div class="admin-actions">
+        <a class="small-button" href="course.html?id=${encodeURIComponent(course.id)}">Preview</a>
+        <button class="small-button" data-edit="${escapeHtml(course.id)}">Edit</button>
+        <button class="small-button danger" data-delete="${escapeHtml(course.id)}">Delete</button>
+      </div>`;
+    list.appendChild(item);
+  });
 
   $$("[data-edit]", list).forEach(button =>
     button.addEventListener("click", () => editCourse(button.dataset.edit))
   );
-
   $$("[data-delete]", list).forEach(button =>
-    button.addEventListener("click", () => deleteCourse(button.dataset.delete))
+    button.addEventListener("click", () => removeCourse(button.dataset.delete))
   );
 }
 
-form.addEventListener("submit", event => {
-  event.preventDefault();
-  const course = readForm();
-  const courses = getCustomCourses();
-  const index = courses.findIndex(item => item.id === course.id);
-
-  if (index >= 0) courses[index] = course;
-  else courses.push(course);
-
-  saveCustomCourses(courses);
-  showToast(index >= 0 ? "Course updated" : "Course created");
-  resetForm();
+async function loadCourses() {
+  list.innerHTML = `<div class="empty-panel">Loading live courses…</div>`;
+  onlineCourses = await getAllCoursesOnline();
   renderCourses();
+}
+
+form.addEventListener("submit", async event => {
+  event.preventDefault();
+  const course = courseFromForm();
+
+  try {
+    setBusy(true, "Uploading…");
+    const file = $("#courseFile").files?.[0];
+
+    if (file) {
+      course.pdf_url = await uploadCourseFile(file, course.id);
+      $("#coursePdf").value = course.pdf_url;
+    }
+
+    setBusy(true, "Saving…");
+    await saveCourseOnline(course);
+    showToast(editingId.value ? "Course updated online" : "Course published online");
+    resetForm();
+    await loadCourses();
+  } catch (error) {
+    alert(`Could not save the course: ${error.message}`);
+  } finally {
+    setBusy(false);
+  }
 });
 
 cancelEdit.addEventListener("click", resetForm);
 
 $("#exportCourses").addEventListener("click", () => {
-  const data = JSON.stringify(getCustomCourses(), null, 2);
-  const blob = new Blob([data], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(onlineCourses, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "kraken-course-backup.json";
+  link.download = "kraken-online-course-backup.json";
   link.click();
   URL.revokeObjectURL(url);
 });
 
-$("#importCourses").addEventListener("change", async event => {
-  const file = event.target.files?.[0];
-  if (!file) return;
+$("#migrateLocal").addEventListener("click", async () => {
+  const localCourses = getCustomCourses();
+  if (!localCourses.length) {
+    alert("No V4 local courses were found in this browser.");
+    return;
+  }
+
+  if (!confirm(`Import ${localCourses.length} local course(s) into the live database?`)) return;
 
   try {
-    const data = JSON.parse(await file.text());
-    if (!Array.isArray(data)) throw new Error("Backup must contain a course list.");
-    saveCustomCourses(data);
-    showToast("Course backup imported");
-    renderCourses();
+    for (const local of localCourses) {
+      await saveCourseOnline({
+        ...local,
+        pdf_url: local.pdf || local.pdf_url || "",
+        video_url: local.video || local.video_url || ""
+      });
+    }
+    showToast("Local courses imported online");
+    await loadCourses();
   } catch (error) {
-    alert(`Could not import this backup: ${error.message}`);
-  } finally {
-    event.target.value = "";
+    alert(`Import stopped: ${error.message}`);
   }
 });
 
-$("#clearCourses").addEventListener("click", () => {
-  if (!getCustomCourses().length) return;
-  if (!confirm("Delete every custom course from this browser?")) return;
-  saveCustomCourses([]);
-  resetForm();
-  renderCourses();
-  showToast("All custom courses deleted");
+$("#signOutButton").addEventListener("click", async () => {
+  await supabaseClient.auth.signOut();
+  location.href = "login.html";
 });
 
-renderCourses();
+(async function initialiseAdmin() {
+  try {
+    const session = await requireAdmin();
+    if (!session) return;
+    adminStatus.innerHTML = `<strong>Connected:</strong> Signed in as ${escapeHtml(session.user.email || "administrator")}. Changes publish to the live website.`;
+    await loadCourses();
+  } catch (error) {
+    adminStatus.innerHTML = `<strong>Access denied:</strong> ${escapeHtml(error.message)}`;
+    form.hidden = true;
+    list.innerHTML = `<div class="empty-panel"><a class="button" href="login.html">Return to login</a></div>`;
+  }
+})();

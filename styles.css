@@ -21,3 +21,7 @@ html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,sans-serif
 .dynamic-course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:19px}.course-page-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:25px;align-items:start}.course-sidebar{position:sticky;top:92px}.lesson-block{padding:22px;border:1px solid var(--line);border-radius:18px;background:#fff;margin-bottom:15px}.course-meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.notice{padding:16px 18px;border-left:4px solid var(--accent);border-radius:0 14px 14px 0;background:var(--soft)}
 @media(max-width:900px){.admin-layout,.course-page-layout{grid-template-columns:1fr}.admin-form,.course-sidebar{position:static}.dynamic-course-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:650px){.form-row,.dynamic-course-grid{grid-template-columns:1fr}.admin-course{grid-template-columns:52px 1fr}.admin-actions{grid-column:1/-1}.admin-course-icon{width:52px;height:52px}}
+
+.narrow{max-width:620px}.button-full{width:100%}
+button:disabled{opacity:.6;cursor:not-allowed}
+#adminStatus{margin-bottom:0}
