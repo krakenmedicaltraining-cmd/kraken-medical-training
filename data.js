@@ -41,6 +41,7 @@ async function saveCourseOnline(course) {
     lessons: course.lessons,
     pdf_url: course.pdf_url || null,
     video_url: course.video_url || null,
+    resource_ids: course.resource_ids || [],
     content_blocks: course.content_blocks || [],
     updated_at: new Date().toISOString()
   };
@@ -127,3 +128,109 @@ async function getCourseProgress(id){const session=await getCurrentSession();if(
 async function saveCourseProgress(courseId,ids,total){const session=await getCurrentSession();if(!session)return null;const unique=[...new Set(ids)],percent=total?Math.min(100,Math.round(unique.length/total*100)):0,completed=percent===100;const old=await getCourseProgress(courseId);const{data,error}=await supabaseClient.from("course_progress").upsert({user_id:session.user.id,course_id:courseId,completed_blocks:unique,percent,completed,last_opened_at:new Date().toISOString(),completed_at:completed?new Date().toISOString():null}).select().single();if(error)throw error;if(completed&&!old?.completed){const profile=await ensureLearnerProfile();await supabaseClient.from("profiles").update({xp:(profile.xp||0)+200,updated_at:new Date().toISOString()}).eq("user_id",session.user.id)}return data}
 function isPlayableItchEmbed(url){return /itch\.io\/(embed-upload|embed)\//i.test(url||"")}
 function collectPublishedGames(courses){const out=[];(courses||[]).forEach(c=>(c.content_blocks||[]).forEach(b=>{if(b.type==="unity"&&b.url)out.push({...b,course_id:c.id,course_title:c.title,category:c.category,icon:c.icon})}));return out}
+
+
+function extractGoogleDriveFileId(url) {
+  if (!url) return "";
+  const value = String(url).trim();
+  const patterns = [
+    /\/file\/d\/([a-zA-Z0-9_-]+)/,
+    /[?&]id=([a-zA-Z0-9_-]+)/,
+    /\/presentation\/d\/([a-zA-Z0-9_-]+)/,
+    /\/document\/d\/([a-zA-Z0-9_-]+)/,
+    /\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/
+  ];
+  for (const pattern of patterns) {
+    const match = value.match(pattern);
+    if (match) return match[1];
+  }
+  return "";
+}
+
+function normaliseResourceUrl(url, provider = "") {
+  const value = String(url || "").trim();
+  if (!value) return "";
+  if (/google drive/i.test(provider) || /drive\.google\.com|docs\.google\.com/i.test(value)) {
+    const id = extractGoogleDriveFileId(value);
+    return id ? `https://drive.google.com/file/d/${id}/view` : value;
+  }
+  return value;
+}
+
+function resourcePreviewUrl(resource) {
+  const url = resource?.source_url || "";
+  const id = extractGoogleDriveFileId(url);
+  if (id) return `https://drive.google.com/file/d/${id}/preview`;
+  if (/youtube\.com\/watch|youtu\.be\//i.test(url)) {
+    if (url.includes("youtu.be/")) return `https://www.youtube.com/embed/${url.split("youtu.be/")[1].split(/[?&]/)[0]}`;
+    try { return `https://www.youtube.com/embed/${new URL(url).searchParams.get("v")}`; } catch {}
+  }
+  return url;
+}
+
+function resourceDownloadUrl(resource) {
+  const url = resource?.source_url || "";
+  const id = extractGoogleDriveFileId(url);
+  return id ? `https://drive.google.com/uc?export=download&id=${id}` : url;
+}
+
+async function getPublicResources() {
+  const { data, error } = await supabaseClient
+    .from("resources")
+    .select("*")
+    .eq("is_public", true)
+    .order("updated_at", { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+async function getAllResources() {
+  const { data, error } = await supabaseClient
+    .from("resources")
+    .select("*")
+    .order("updated_at", { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+async function getResourcesByIds(ids) {
+  if (!ids?.length) return [];
+  const { data, error } = await supabaseClient
+    .from("resources")
+    .select("*")
+    .in("id", ids);
+  if (error) throw error;
+  const order = new Map(ids.map((id, index) => [id, index]));
+  return (data || []).sort((a, b) => (order.get(a.id) ?? 999) - (order.get(b.id) ?? 999));
+}
+
+async function saveResourceOnline(resource) {
+  const payload = {
+    id: resource.id || undefined,
+    title: resource.title,
+    description: resource.description || "",
+    resource_type: resource.resource_type || "PDF",
+    category: resource.category || "Clinical skills",
+    provider: resource.provider || "Google Drive",
+    source_url: normaliseResourceUrl(resource.source_url, resource.provider),
+    thumbnail_url: resource.thumbnail_url || null,
+    file_name: resource.file_name || null,
+    tags: resource.tags || [],
+    is_public: resource.is_public !== false,
+    updated_at: new Date().toISOString()
+  };
+  if (!payload.id) delete payload.id;
+
+  const query = payload.id
+    ? supabaseClient.from("resources").upsert(payload)
+    : supabaseClient.from("resources").insert(payload);
+
+  const { data, error } = await query.select().single();
+  if (error) throw error;
+  return data;
+}
+
+async function deleteResourceOnline(id) {
+  const { error } = await supabaseClient.from("resources").delete().eq("id", id);
+  if (error) throw error;
+}
