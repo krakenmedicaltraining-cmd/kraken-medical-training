@@ -1,36 +1,21 @@
-# Kraken Medical Training starter website
+# Kraken Medical Training V2
 
-This is a phone-friendly static starter website.
+This version is a working static website prototype.
 
-## Files
+Working features:
+- Responsive navigation
+- Search and category filters
+- A six-part MARCH PAWS course
+- Local progress saving
+- Knowledge-check interaction
+- Demo login and dashboard
+- Downloadable resource files
+- CPD reflection builder
+- Working preview pages for future courses
 
-- `index.html` contains the page content.
-- `styles.css` controls the design.
-- `app.js` controls the mobile menu and course search.
+Important:
+- The login is a local prototype, not secure authentication.
+- Do not enter real patient information.
+- Replace clinical prototype text with content checked against current authorised guidance.
 
-## Fastest way to preview
-
-Open `index.html` in a browser or upload all files to a GitHub repository.
-
-## Publish with Cloudflare Pages
-
-1. Create a free GitHub account.
-2. Create a new public repository named `kraken-medical-training`.
-3. Upload `index.html`, `styles.css` and `app.js`.
-4. Create a free Cloudflare account.
-5. In Cloudflare, open **Workers & Pages**.
-6. Choose **Create application**, then **Pages**, then connect GitHub.
-7. Select the repository.
-8. Use no framework preset. Leave the build command empty.
-9. Set the output directory to `/`.
-10. Deploy.
-
-## Next development stages
-
-1. Replace placeholder links with actual lesson pages.
-2. Add a course details page.
-3. Add Supabase accounts and progress tracking.
-4. Add an admin dashboard.
-5. Connect the existing Kraken Medical Training domain.
-
-Do not store identifiable patient information in this project.
+Upload every file and the `downloads` folder to the root of your GitHub repository.

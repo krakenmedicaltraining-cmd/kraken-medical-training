@@ -1,0 +1,10 @@
+ATMIST HANDOVER PRACTICE TEMPLATE
+
+A - Age
+T - Time of incident / injury
+M - Mechanism / medical complaint
+I - Injuries / information found
+S - Signs, including observations and trends
+T - Treatment given and response
+
+Use fictional or anonymised scenario information only.
