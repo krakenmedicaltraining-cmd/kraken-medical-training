@@ -1,21 +1,20 @@
-# Kraken Medical Training V2
+# Kraken Medical Training V3
 
-This version is a working static website prototype.
+Upload every file and folder to the root of your GitHub repository.
 
-Working features:
-- Responsive navigation
-- Search and category filters
-- A six-part MARCH PAWS course
-- Local progress saving
-- Knowledge-check interaction
-- Demo login and dashboard
-- Downloadable resource files
-- CPD reflection builder
-- Working preview pages for future courses
+Main improvements:
+- Fully working slide-out mobile menu
+- Dashboard-style homepage
+- Course category cards
+- Simulations launchpad
+- Real downloadable PDF resources
+- Existing MARCH PAWS module, CPD builder, login demo and dashboard retained
 
-Important:
-- The login is a local prototype, not secure authentication.
-- Do not enter real patient information.
-- Replace clinical prototype text with content checked against current authorised guidance.
+Adding a new PDF:
+1. Put the PDF inside the downloads folder.
+2. Copy one resource card in resources.html.
+3. Change the title, description and href filename.
+4. Upload both the changed resources.html and the new PDF to GitHub.
 
-Upload every file and the `downloads` folder to the root of your GitHub repository.
+Example:
+<a class="button" href="downloads/my-new-file.pdf" download>Download PDF</a>
