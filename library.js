@@ -2,10 +2,11 @@ let publicResources = [];
 
 function renderLibrary() {
   const search = $("#librarySearch").value.trim().toLowerCase();
+  const category = $("#libraryCategory").value;
   const type = $("#libraryType").value;
   const items = publicResources.filter(r => {
     const haystack = [r.title, r.description, r.category, ...(r.tags || [])].join(" ").toLowerCase();
-    return (!search || haystack.includes(search)) && (!type || r.resource_type === type);
+    return (!search || haystack.includes(search)) && (!category || r.category === category) && (!type || r.resource_type === type);
   });
 
   const grid = $("#libraryGrid");
@@ -30,7 +31,9 @@ function renderLibrary() {
 (async function () {
   try {
     publicResources = await getPublicResources();
+    const categories = [...new Set(publicResources.map(r => r.category).filter(Boolean))].sort();
     const types = [...new Set(publicResources.map(r => r.resource_type).filter(Boolean))].sort();
+    $("#libraryCategory").innerHTML += categories.map(c => `<option>${escapeHtml(c)}</option>`).join("");
     $("#libraryType").innerHTML += types.map(t => `<option>${escapeHtml(t)}</option>`).join("");
     renderLibrary();
   } catch (error) {
@@ -38,4 +41,5 @@ function renderLibrary() {
   }
 })();
 $("#librarySearch").addEventListener("input", renderLibrary);
+$("#libraryCategory").addEventListener("change", renderLibrary);
 $("#libraryType").addEventListener("change", renderLibrary);
