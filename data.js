@@ -41,6 +41,7 @@ async function saveCourseOnline(course) {
     lessons: course.lessons,
     pdf_url: course.pdf_url || null,
     video_url: course.video_url || null,
+    content_blocks: course.content_blocks || [],
     updated_at: new Date().toISOString()
   };
 

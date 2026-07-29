@@ -1,187 +1,20 @@
-const form = $("#courseForm");
-const list = $("#adminCourseList");
-const editingId = $("#editingId");
-const cancelEdit = $("#cancelEdit");
-const adminStatus = $("#adminStatus");
-let onlineCourses = [];
-
-function setBusy(busy, message = "") {
-  $("#saveButton").disabled = busy;
-  $("#saveButton").textContent = busy ? (message || "Saving…") : (editingId.value ? "Update course" : "Save course");
-}
-
-function courseFromForm() {
-  const title = $("#courseTitle").value.trim();
-  return {
-    id: editingId.value || createCourseId(title),
-    icon: $("#courseIcon").value.trim() || title.slice(0, 3).toUpperCase(),
-    title,
-    status: $("#courseStatus").value,
-    category: $("#courseCategory").value,
-    description: $("#courseDescription").value.trim(),
-    lessons: $("#courseLessons").value.split("\n").map(v => v.trim()).filter(Boolean),
-    pdf_url: $("#coursePdf").value.trim(),
-    video_url: $("#courseVideo").value.trim()
-  };
-}
-
-function resetForm() {
-  form.reset();
-  editingId.value = "";
-  $("#formEyebrow").textContent = "New course";
-  $("#formTitle").textContent = "Add a course";
-  $("#saveButton").textContent = "Save course";
-  cancelEdit.hidden = true;
-}
-
-function editCourse(id) {
-  const course = onlineCourses.find(item => item.id === id);
-  if (!course) return;
-
-  editingId.value = course.id;
-  $("#courseIcon").value = course.icon || "";
-  $("#courseStatus").value = course.status || "Draft";
-  $("#courseTitle").value = course.title || "";
-  $("#courseCategory").value = course.category || "Clinical skills";
-  $("#courseDescription").value = course.description || "";
-  $("#courseLessons").value = (course.lessons || []).join("\n");
-  $("#coursePdf").value = course.pdf_url || "";
-  $("#courseVideo").value = course.video_url || "";
-  $("#formEyebrow").textContent = "Editing course";
-  $("#formTitle").textContent = course.title;
-  $("#saveButton").textContent = "Update course";
-  cancelEdit.hidden = false;
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-async function removeCourse(id) {
-  const course = onlineCourses.find(item => item.id === id);
-  if (!course || !confirm(`Delete "${course.title}" from the live website?`)) return;
-
-  try {
-    await deleteCourseOnline(id);
-    showToast("Course deleted");
-    await loadCourses();
-  } catch (error) {
-    alert(`Could not delete course: ${error.message}`);
-  }
-}
-
-function renderCourses() {
-  list.innerHTML = "";
-
-  if (!onlineCourses.length) {
-    list.innerHTML = `<div class="empty-panel">No online courses yet. Add your first course using the form.</div>`;
-    return;
-  }
-
-  onlineCourses.forEach(course => {
-    const item = document.createElement("article");
-    item.className = "admin-course";
-    item.innerHTML = `
-      <div class="admin-course-icon">${escapeHtml(course.icon || "K")}</div>
-      <div>
-        <span class="tag">${escapeHtml(course.status)} · ${escapeHtml(course.category)}</span>
-        <h3>${escapeHtml(course.title)}</h3>
-        <p>${escapeHtml(course.description)}</p>
-      </div>
-      <div class="admin-actions">
-        <a class="small-button" href="course.html?id=${encodeURIComponent(course.id)}">Preview</a>
-        <button class="small-button" data-edit="${escapeHtml(course.id)}">Edit</button>
-        <button class="small-button danger" data-delete="${escapeHtml(course.id)}">Delete</button>
-      </div>`;
-    list.appendChild(item);
-  });
-
-  $$("[data-edit]", list).forEach(button =>
-    button.addEventListener("click", () => editCourse(button.dataset.edit))
-  );
-  $$("[data-delete]", list).forEach(button =>
-    button.addEventListener("click", () => removeCourse(button.dataset.delete))
-  );
-}
-
-async function loadCourses() {
-  list.innerHTML = `<div class="empty-panel">Loading live courses…</div>`;
-  onlineCourses = await getAllCoursesOnline();
-  renderCourses();
-}
-
-form.addEventListener("submit", async event => {
-  event.preventDefault();
-  const course = courseFromForm();
-
-  try {
-    setBusy(true, "Uploading…");
-    const file = $("#courseFile").files?.[0];
-
-    if (file) {
-      course.pdf_url = await uploadCourseFile(file, course.id);
-      $("#coursePdf").value = course.pdf_url;
-    }
-
-    setBusy(true, "Saving…");
-    await saveCourseOnline(course);
-    showToast(editingId.value ? "Course updated online" : "Course published online");
-    resetForm();
-    await loadCourses();
-  } catch (error) {
-    alert(`Could not save the course: ${error.message}`);
-  } finally {
-    setBusy(false);
-  }
-});
-
-cancelEdit.addEventListener("click", resetForm);
-
-$("#exportCourses").addEventListener("click", () => {
-  const blob = new Blob([JSON.stringify(onlineCourses, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "kraken-online-course-backup.json";
-  link.click();
-  URL.revokeObjectURL(url);
-});
-
-$("#migrateLocal").addEventListener("click", async () => {
-  const localCourses = getCustomCourses();
-  if (!localCourses.length) {
-    alert("No V4 local courses were found in this browser.");
-    return;
-  }
-
-  if (!confirm(`Import ${localCourses.length} local course(s) into the live database?`)) return;
-
-  try {
-    for (const local of localCourses) {
-      await saveCourseOnline({
-        ...local,
-        pdf_url: local.pdf || local.pdf_url || "",
-        video_url: local.video || local.video_url || ""
-      });
-    }
-    showToast("Local courses imported online");
-    await loadCourses();
-  } catch (error) {
-    alert(`Import stopped: ${error.message}`);
-  }
-});
-
-$("#signOutButton").addEventListener("click", async () => {
-  await supabaseClient.auth.signOut();
-  location.href = "login.html";
-});
-
-(async function initialiseAdmin() {
-  try {
-    const session = await requireAdmin();
-    if (!session) return;
-    adminStatus.innerHTML = `<strong>Connected:</strong> Signed in as ${escapeHtml(session.user.email || "administrator")}. Changes publish to the live website.`;
-    await loadCourses();
-  } catch (error) {
-    adminStatus.innerHTML = `<strong>Access denied:</strong> ${escapeHtml(error.message)}`;
-    form.hidden = true;
-    list.innerHTML = `<div class="empty-panel"><a class="button" href="login.html">Return to login</a></div>`;
-  }
-})();
+const form=$("#courseForm"),list=$("#adminCourseList"),editingId=$("#editingId"),cancelEdit=$("#cancelEdit"),adminStatus=$("#adminStatus");let onlineCourses=[],blocks=[];
+const defaults={heading:{title:"New heading",level:"h2"},text:{text:"Add your lesson text here."},image:{url:"",alt:"Clinical teaching image",caption:""},video:{url:"",caption:""},download:{url:"",label:"Download resource"},quiz:{question:"Question",options:["Option 1","Option 2","Option 3"],correct:0,explanation:""},scenario:{title:"Clinical scenario",prompt:"Describe the patient and situation.",answer:"Explain the recommended action."},unity:{url:"",title:"Interactive simulation"},divider:{}};
+function uid(){return crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2)}
+function addBlock(type){blocks.push({id:uid(),type,...structuredClone(defaults[type])});renderBlocks()}
+function moveBlock(i,d){const j=i+d;if(j<0||j>=blocks.length)return;[blocks[i],blocks[j]]=[blocks[j],blocks[i]];renderBlocks()}
+function removeBlock(i){if(confirm("Remove this block?")){blocks.splice(i,1);renderBlocks()}}
+function esc(v){return escapeHtml(String(v??""))}
+function field(label,key,value,type="text",extra=""){return `<div class="field"><label>${label}</label>${type==="textarea"?`<textarea data-key="${key}" rows="4" ${extra}>${esc(value)}</textarea>`:`<input data-key="${key}" type="${type}" value="${esc(value)}" ${extra}>`}</div>`}
+function blockEditor(b,i){let body="";if(b.type==="heading")body=field("Heading text","title",b.title)+`<div class="field"><label>Size</label><select data-key="level"><option value="h2" ${b.level==="h2"?"selected":""}>Main section</option><option value="h3" ${b.level==="h3"?"selected":""}>Subheading</option></select></div>`;if(b.type==="text")body=field("Paragraph text","text",b.text,"textarea");if(b.type==="image")body=field("Image URL","url",b.url,"url")+field("Alternative text","alt",b.alt)+field("Caption","caption",b.caption);if(b.type==="video")body=field("YouTube embed or video URL","url",b.url,"url")+field("Caption","caption",b.caption);if(b.type==="download")body=field("File URL","url",b.url,"url")+field("Button label","label",b.label);if(b.type==="quiz")body=field("Question","question",b.question,"textarea")+field("Options, one per line","options",(b.options||[]).join("\n"),"textarea")+field("Correct option number","correct",Number(b.correct)+1,"number",'min="1"')+field("Explanation","explanation",b.explanation,"textarea");if(b.type==="scenario")body=field("Scenario title","title",b.title)+field("Patient and situation","prompt",b.prompt,"textarea")+field("Recommended answer","answer",b.answer,"textarea");if(b.type==="unity")body=field("Unity WebGL URL","url",b.url,"url")+field("Simulation title","title",b.title);if(b.type==="divider")body='<p class="help-text">A visual divider will separate the sections.</p>';
+return `<article class="builder-block" data-index="${i}"><div class="builder-block-head"><strong>${b.type.toUpperCase()}</strong><div><button type="button" data-up="${i}">↑</button><button type="button" data-down="${i}">↓</button><button type="button" class="danger" data-remove="${i}">×</button></div></div><div class="builder-block-body">${body}</div></article>`}
+function renderBlocks(){$("#blockList").innerHTML=blocks.map(blockEditor).join("");$("#emptyBlocks").hidden=blocks.length>0;$("#blockCount").textContent=`${blocks.length} block${blocks.length===1?"":"s"}`;$$('[data-up]').forEach(x=>x.onclick=()=>moveBlock(+x.dataset.up,-1));$$('[data-down]').forEach(x=>x.onclick=()=>moveBlock(+x.dataset.down,1));$$('[data-remove]').forEach(x=>x.onclick=()=>removeBlock(+x.dataset.remove));$$('.builder-block').forEach(el=>{const i=+el.dataset.index;$$('[data-key]',el).forEach(input=>input.oninput=()=>{let v=input.value;if(input.dataset.key==='options')v=v.split('\n').map(x=>x.trim()).filter(Boolean);if(input.dataset.key==='correct')v=Math.max(0,Number(v)-1);blocks[i][input.dataset.key]=v})})}
+$$('[data-add]').forEach(b=>b.onclick=()=>addBlock(b.dataset.add));
+function courseFromForm(){const title=$("#courseTitle").value.trim();return{id:editingId.value||createCourseId(title),icon:$("#courseIcon").value.trim()||title.slice(0,3).toUpperCase(),title,status:$("#courseStatus").value,category:$("#courseCategory").value,description:$("#courseDescription").value.trim(),lessons:blocks.filter(b=>b.type==='heading').map(b=>b.title),content_blocks:blocks,pdf_url:null,video_url:null}}
+function resetForm(){form.reset();editingId.value="";blocks=[];renderBlocks();$("#formEyebrow").textContent="New course";$("#formTitle").textContent="Course details";$("#saveButton").textContent="Save course";cancelEdit.hidden=true}
+function editCourse(id){const c=onlineCourses.find(x=>x.id===id);if(!c)return;editingId.value=c.id;$("#courseIcon").value=c.icon||"";$("#courseStatus").value=c.status||"Draft";$("#courseTitle").value=c.title||"";$("#courseCategory").value=c.category||"Clinical skills";$("#courseDescription").value=c.description||"";blocks=Array.isArray(c.content_blocks)&&c.content_blocks.length?structuredClone(c.content_blocks):(c.lessons||[]).map(x=>({id:uid(),type:'heading',title:x,level:'h2'}));renderBlocks();$("#formEyebrow").textContent="Editing course";$("#formTitle").textContent=c.title;cancelEdit.hidden=false;scrollTo({top:0,behavior:'smooth'})}
+async function removeCourse(id){const c=onlineCourses.find(x=>x.id===id);if(c&&confirm(`Delete "${c.title}"?`)){await deleteCourseOnline(id);await loadCourses()}}
+function renderCourses(){list.innerHTML=onlineCourses.length?onlineCourses.map(c=>`<article class="admin-course"><div class="admin-course-icon">${esc(c.icon||'K')}</div><div><span class="tag">${esc(c.status)} · ${esc(c.category)}</span><h3>${esc(c.title)}</h3><p>${esc(c.description)}</p><small>${(c.content_blocks||[]).length} content blocks</small></div><div class="admin-actions"><a class="small-button" href="course.html?id=${encodeURIComponent(c.id)}">Preview</a><button class="small-button" data-edit="${esc(c.id)}">Edit</button><button class="small-button danger" data-delete="${esc(c.id)}">Delete</button></div></article>`).join(''):'<div class="empty-panel">No courses yet.</div>';$$('[data-edit]',list).forEach(x=>x.onclick=()=>editCourse(x.dataset.edit));$$('[data-delete]',list).forEach(x=>x.onclick=()=>removeCourse(x.dataset.delete))}
+async function loadCourses(){onlineCourses=await getAllCoursesOnline();renderCourses()}
+form.onsubmit=async e=>{e.preventDefault();const btn=$("#saveButton");btn.disabled=true;btn.textContent="Saving…";try{await saveCourseOnline(courseFromForm());showToast("Course saved online");resetForm();await loadCourses()}catch(err){alert("Could not save: "+err.message)}finally{btn.disabled=false;btn.textContent=editingId.value?"Update course":"Save course"}};cancelEdit.onclick=resetForm;$("#exportCourses").onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(onlineCourses,null,2)],{type:'application/json'}));a.download='kraken-course-backup.json';a.click()};$("#signOutButton").onclick=async()=>{await supabaseClient.auth.signOut();location.href='login.html'};
+(async()=>{try{const s=await requireAdmin();if(!s)return;adminStatus.innerHTML=`<strong>Connected:</strong> ${esc(s.user.email)}. Your visual course builder is live.`;renderBlocks();await loadCourses()}catch(e){adminStatus.innerHTML=`<strong>Access denied:</strong> ${esc(e.message)}`;form.hidden=true}})();

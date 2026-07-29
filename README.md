@@ -46,3 +46,9 @@ Use the administrator email and password created in Supabase.
 
 The included `sb_publishable_...` key is intended for browser use.
 Never add a Supabase secret key or service-role key to these files.
+
+
+## Version 6 update
+1. Run `v6-database-update.sql` once in Supabase SQL Editor.
+2. Upload all V6 files to GitHub, replacing V5.
+3. Open `/admin.html`, edit a course and use the visual block palette.
