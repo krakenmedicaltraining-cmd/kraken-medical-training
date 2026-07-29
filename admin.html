@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Course Admin | Kraken Medical Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="drawer" id="drawer" aria-label="Main menu">
+  <div class="drawer-head"><a class="brand" href="index.html"><span class="brand-mark">K</span><span>Kraken Medical</span></a><button class="icon-button" id="closeMenu" aria-label="Close menu">×</button></div>
+  <nav class="drawer-nav">
+    <a href="index.html">⌂ <span>Home</span></a><a href="index.html#courses">▤ <span>Courses</span></a>
+    <a href="resources.html">▣ <span>PDF resources</span></a><a href="games.html">◆ <span>Simulations</span></a>
+    <div class="drawer-section">Manage</div><a class="active" href="admin.html">⚙ <span>Course admin</span></a>
+    <a href="dashboard.html">● <span>Dashboard</span></a>
+  </nav>
+</aside>
+<header class="topbar">
+<button class="icon-button" id="menuButton" aria-label="Open menu">☰</button>
+<a class="brand" href="index.html"><span class="brand-mark">K</span><span>Kraken Medical Training</span></a>
+<nav class="desktop-nav"><a href="index.html">Website</a><a href="resources.html">Resources</a><a href="dashboard.html">Dashboard</a></nav>
+<a class="icon-button" href="admin.html" aria-label="Admin">⚙</a>
+</header>
+<main>
+<section class="page-hero"><span class="eyebrow">Content manager prototype</span><h1>Course admin</h1>
+<p>Add, edit, preview and remove courses from your phone. Changes in this version are stored only in this browser.</p></section>
+
+<section class="section">
+<div class="notice"><strong>Important:</strong> This is the working front-end admin prototype. It proves the workflow, but it does not publish changes to other users yet. Supabase will provide the shared database and secure admin login.</div>
+<div class="admin-layout" style="margin-top:24px">
+<form class="panel admin-form" id="courseForm">
+<input type="hidden" id="editingId">
+<span class="eyebrow" id="formEyebrow">New course</span><h2 id="formTitle">Add a course</h2>
+
+<div class="form-row">
+<div class="field"><label for="courseIcon">Icon or initials</label><input id="courseIcon" maxlength="5" placeholder="ECG"></div>
+<div class="field"><label for="courseStatus">Status</label><select id="courseStatus"><option>Draft</option><option>Published</option><option>Coming soon</option></select></div>
+</div>
+
+<div class="field"><label for="courseTitle">Course title</label><input id="courseTitle" required placeholder="ECG Foundations"></div>
+<div class="field"><label for="courseCategory">Category</label><select id="courseCategory"><option>Trauma care</option><option>Resuscitation</option><option>Communication</option><option>Primary healthcare</option><option>Clinical skills</option><option>Professional development</option></select></div>
+<div class="field"><label for="courseDescription">Short description</label><textarea id="courseDescription" rows="3" required placeholder="What learners will gain from this course."></textarea></div>
+<div class="field"><label for="courseLessons">Lessons</label><textarea id="courseLessons" rows="7" placeholder="One lesson per line&#10;Introduction&#10;Recognition&#10;Management&#10;Knowledge check"></textarea><span class="help-text">Each line becomes a lesson on the generated course page.</span></div>
+<div class="field"><label for="coursePdf">PDF path or link</label><input id="coursePdf" placeholder="downloads/ecg-crib-card.pdf"><span class="help-text">Upload the PDF separately, then enter its exact path here.</span></div>
+<div class="field"><label for="courseVideo">Video embed link</label><input id="courseVideo" placeholder="https://www.youtube.com/embed/..."></div>
+<div class="actions"><button class="button" type="submit" id="saveButton">Save course</button><button class="button secondary" type="button" id="cancelEdit" hidden>Cancel edit</button></div>
+</form>
+
+<section>
+<div class="section-head"><div><span class="eyebrow">Your content</span><h2>Managed courses</h2></div></div>
+<div class="admin-toolbar"><button class="small-button" id="exportCourses">Export backup</button><label class="small-button" for="importCourses" style="display:inline-flex;align-items:center;cursor:pointer">Import backup</label><input id="importCourses" type="file" accept=".json,application/json" hidden><button class="small-button danger" id="clearCourses">Delete all</button></div>
+<div class="admin-list" id="adminCourseList"></div>
+</section>
+</div>
+</section>
+</main>
+<footer class="footer"><div class="brand"><span class="brand-mark">K</span><span>Kraken Medical Training</span></div><p>Prototype admin. Do not enter patient-identifiable information.</p><p>© <span id="year"></span></p></footer>
+<script src="common.js"></script><script src="admin.js"></script>
+</body></html>

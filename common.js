@@ -88,3 +88,46 @@ $$("[data-requires-login]").forEach(link => {
     }
   });
 });
+
+
+const KMT_COURSES_KEY = "kmtCustomCourses";
+
+function getCustomCourses() {
+  try {
+    return JSON.parse(localStorage.getItem(KMT_COURSES_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveCustomCourses(courses) {
+  localStorage.setItem(KMT_COURSES_KEY, JSON.stringify(courses));
+}
+
+function createCourseId(title) {
+  const base = title
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "") || "course";
+
+  const existing = new Set(getCustomCourses().map(course => course.id));
+  let candidate = base;
+  let number = 2;
+
+  while (existing.has(candidate)) {
+    candidate = `${base}-${number++}`;
+  }
+
+  return candidate;
+}
+
+function escapeHtml(value = "") {
+  return String(value).replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[character]);
+}

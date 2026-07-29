@@ -1,20 +1,20 @@
-# Kraken Medical Training V3
+# Kraken Medical Training V4
 
-Upload every file and folder to the root of your GitHub repository.
+New:
+- Course admin page
+- Add, edit, delete and preview courses
+- Add lesson titles, PDF paths and YouTube embed links
+- Published custom courses appear on the homepage
+- Export/import JSON backups
+- Mobile-friendly admin interface
 
-Main improvements:
-- Fully working slide-out mobile menu
-- Dashboard-style homepage
-- Course category cards
-- Simulations launchpad
-- Real downloadable PDF resources
-- Existing MARCH PAWS module, CPD builder, login demo and dashboard retained
+Important limitation:
+All admin-created content is stored in localStorage on the device/browser used to create it.
+It is not yet visible to other visitors or devices. The next phase is Supabase:
+- secure admin login
+- shared database
+- uploaded PDFs/images
+- public publishing
+- student progress across devices
 
-Adding a new PDF:
-1. Put the PDF inside the downloads folder.
-2. Copy one resource card in resources.html.
-3. Change the title, description and href filename.
-4. Upload both the changed resources.html and the new PDF to GitHub.
-
-Example:
-<a class="button" href="downloads/my-new-file.pdf" download>Download PDF</a>
+Upload every file and folder in this package to the root of the GitHub repository.

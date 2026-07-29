@@ -12,7 +12,7 @@
     <a href="games.html">◆ <span>Simulations & games</span></a>
     <a href="course-preview.html?course=Daily%20Quiz">? <span>Daily quiz</span></a>
     <div class="drawer-section">Account</div>
-    <a href="dashboard.html">● <span>Dashboard</span></a>
+    <a href="dashboard.html">● <span>Dashboard</span></a><a href="admin.html">⚙ <span>Course admin</span></a>
     <a href="login.html">→ <span>Log in</span></a>
     <a href="index.html#about">i <span>About</span></a>
   </nav>
@@ -21,7 +21,7 @@
 <header class="topbar">
 <button class="icon-button" id="menuButton" aria-label="Open menu" aria-expanded="false">☰</button>
 <a class="brand" href="index.html"><span class="brand-mark">K</span><span>Kraken Medical Training</span></a>
-<nav class="desktop-nav"><a href="index.html#courses">Courses</a><a href="resources.html">Resources</a><a href="games.html">Simulations</a><a href="dashboard.html">Dashboard</a></nav>
+<nav class="desktop-nav"><a href="index.html#courses">Courses</a><a href="resources.html">Resources</a><a href="games.html">Simulations</a><a href="dashboard.html">Dashboard</a><a href="admin.html">Admin</a></nav>
 <a class="icon-button" href="login.html" aria-label="Account">●</a>
 </header>
 <main>
@@ -35,6 +35,11 @@
 <a class="card" href="course-preview.html?course=Clinical%20Skills"><span class="card-icon">S</span><h3>Clinical skills</h3><p>ECG, observations, wound care and practical revision.</p><span class="card-link">View category →</span></a>
 <a class="card" href="cpd-builder.html"><span class="card-icon">D</span><h3>Professional development</h3><p>CPD reflection, teaching and evidence-based learning.</p><span class="card-link">Open CPD tool →</span></a>
 </div></section>
+
+<section class="section" id="customCoursesSection" hidden>
+<div class="section-head"><div><span class="eyebrow">Created in admin</span><h2>Your custom courses</h2></div><a class="button secondary" href="admin.html">Manage courses</a></div>
+<div class="dynamic-course-grid" id="customCourseGrid"></div>
+</section>
 <section class="section" id="about"><div class="section-head"><div><span class="eyebrow">The Kraken approach</span><h2>Short lessons. Useful tools. No ballast.</h2></div></div><div class="panel"><p>Kraken Medical Training is designed to help learners revisit practical medical knowledge quickly. It supports, but never replaces, formal training, current authorised guidance or clinical judgement.</p></div></section>
 </main>
 <footer class="footer"><div class="brand"><span class="brand-mark">K</span><span>Kraken Medical Training</span></div><p>Educational content only. Follow current clinical guidance, authorised training and local policy.</p><p>© <span id="year"></span></p></footer>
