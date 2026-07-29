@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Free, practical medical training resources for military medics, first aiders and healthcare learners." />
+  <title>Kraken Medical Training</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="Kraken Medical Training home">
+      <span class="brand-mark">K</span>
+      <span>Kraken Medical Training</span>
+    </a>
+
+    <button class="menu-button" id="menuButton" aria-label="Open navigation" aria-expanded="false">☰</button>
+
+    <nav class="nav" id="mainNav">
+      <a href="#training">Training</a>
+      <a href="#resources">Resources</a>
+      <a href="#about">About</a>
+      <button class="button button-small button-ghost" type="button">Log in</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-copy">
+        <span class="eyebrow">Practical medical learning</span>
+        <h1>Train with confidence.<br><span>Remember what matters.</span></h1>
+        <p>
+          Straightforward lessons, crib cards, quizzes and interactive scenarios
+          built for military medics, first aiders and healthcare learners.
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="#training">Explore training</a>
+          <a class="button button-ghost" href="#resources">Free resources</a>
+        </div>
+        <div class="trust-row">
+          <span>✓ Clear lessons</span>
+          <span>✓ Mobile friendly</span>
+          <span>✓ Built for practice</span>
+        </div>
+      </div>
+
+      <div class="hero-panel">
+        <div class="panel-top">
+          <span class="status-dot"></span>
+          <span>Featured module</span>
+        </div>
+        <div class="module-icon">M</div>
+        <p class="module-label">TRAUMA CARE</p>
+        <h2>MARCH PAWS</h2>
+        <p>Work through the sequence, test your decisions and download a pocket reference.</p>
+        <div class="progress-track"><span></span></div>
+        <div class="panel-meta">
+          <span>8 lessons</span>
+          <span>35 min</span>
+        </div>
+        <button class="button button-full" type="button">Start module</button>
+      </div>
+    </section>
+
+    <section class="section" id="training">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">Training library</span>
+          <h2>Learn by topic</h2>
+        </div>
+        <label class="search">
+          <span>⌕</span>
+          <input id="courseSearch" type="search" placeholder="Search training..." />
+        </label>
+      </div>
+
+      <div class="card-grid" id="courseGrid">
+        <article class="course-card" data-search="march paws trauma catastrophic haemorrhage airway breathing">
+          <div class="course-art">M</div>
+          <span class="tag">Trauma</span>
+          <h3>MARCH PAWS</h3>
+          <p>A clear walkthrough of the combat casualty care sequence.</p>
+          <a href="#">View module →</a>
+        </article>
+
+        <article class="course-card" data-search="ils immediate life support cardiac arrest resuscitation cpr">
+          <div class="course-art">ILS</div>
+          <span class="tag">Resuscitation</span>
+          <h3>Immediate Life Support</h3>
+          <p>Algorithms, drug prompts and practical cardiac-arrest revision.</p>
+          <a href="#">View module →</a>
+        </article>
+
+        <article class="course-card" data-search="atmist handover communication patient transfer">
+          <div class="course-art">A</div>
+          <span class="tag">Communication</span>
+          <h3>ATMIST Handover</h3>
+          <p>Structure concise clinical handovers without losing key details.</p>
+          <a href="#">View module →</a>
+        </article>
+
+        <article class="course-card" data-search="ecg electrocardiogram rhythm interpretation heart">
+          <div class="course-art">ECG</div>
+          <span class="tag">Clinical skills</span>
+          <h3>ECG Foundations</h3>
+          <p>Build a repeatable approach to recognising common rhythms.</p>
+          <a href="#">View module →</a>
+        </article>
+
+        <article class="course-card" data-search="audiometry hearing test occupational health">
+          <div class="course-art">dB</div>
+          <span class="tag">Occupational health</span>
+          <h3>Audiometry Essentials</h3>
+          <p>Preparation, testing technique and common referral triggers.</p>
+          <a href="#">View module →</a>
+        </article>
+
+        <article class="course-card" data-search="cpd reflection gibbs professional development">
+          <div class="course-art">CPD</div>
+          <span class="tag">Professional development</span>
+          <h3>CPD Reflection Builder</h3>
+          <p>Turn an experience into a useful, structured reflection.</p>
+          <a href="#">Open tool →</a>
+        </article>
+      </div>
+      <p class="empty-state" id="emptyState" hidden>No modules match that search.</p>
+    </section>
+
+    <section class="section resources" id="resources">
+      <div class="resource-copy">
+        <span class="eyebrow">Free downloads</span>
+        <h2>Useful tools, not drawer-fillers.</h2>
+        <p>Printable crib cards, lesson handouts, checklists and revision aids designed for real-world use.</p>
+        <a class="button" href="#">Browse resources</a>
+      </div>
+      <div class="resource-stack">
+        <div class="paper paper-one">MARCH PAWS<br><small>Pocket Card</small></div>
+        <div class="paper paper-two">ATMIST<br><small>Handover Prompt</small></div>
+        <div class="paper paper-three">ILS<br><small>Drug Timeline</small></div>
+      </div>
+    </section>
+
+    <section class="section about" id="about">
+      <div>
+        <span class="eyebrow">About the project</span>
+        <h2>Medical education built from the sharp end.</h2>
+      </div>
+      <p>
+        Kraken Medical Training is being developed to make practical medical learning
+        easier to understand, revisit and apply. Content should support recognised
+        guidance and local policy, not replace clinical judgement or formal instruction.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="brand">
+      <span class="brand-mark">K</span>
+      <span>Kraken Medical Training</span>
+    </div>
+    <p>Educational content only. Always follow current clinical guidance and local policy.</p>
+    <p>© <span id="year"></span> Kraken Medical Training</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
