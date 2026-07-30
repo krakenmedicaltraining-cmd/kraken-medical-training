@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Certificate Builder | Kraken</title>
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="kraken-v12-pages.css"><link rel="stylesheet" href="certificate-admin.css"></head>
+<body><header class="ca-top"><a href="admin.html" class="brand"><b>K</b><span>Certificate Builder</span></a><nav><a href="admin.html">Courses</a><a href="quiz-admin.html">Quizzes</a><a href="instructor.html">Instructor</a></nav><button id="signOut">Sign out</button></header>
+<main class="ca-shell"><section class="hero"><small>Kraken V12.6</small><h1>Certificates and CPD records</h1><p>Configure course certificates, CPD hours, verification codes and expiry periods.</p></section>
+<div class="layout"><aside class="panel side"><label>Course<select id="courseSelect"></select></label><div id="summary" class="summary">Choose a course.</div><a id="previewLink" class="button secondary" href="certificate.html">Preview certificate</a></aside>
+<form id="certificateForm" class="panel editor"><div class="head"><div><small>Certificate settings</small><h2 id="heading">Course certificate</h2></div><span id="state">Not saved</span></div>
+<div class="grid"><label>Certificate title<input id="title" value="Certificate of Completion" required></label><label>CPD hours<input id="hours" type="number" step=".25" min="0" value="1"></label></div>
+<label>Completion statement<textarea id="statement">has successfully completed the course</textarea></label>
+<div class="grid"><label>Issuer<input id="issuer" value="Kraken Medical Training"></label><label>Logo URL<input id="logo" type="url"></label></div>
+<div class="grid"><label>Signatory<input id="signatory" value="Course Director"></label><label>Role<input id="role" value="Clinical Education Lead"></label></div>
+<div class="grid"><label>Accent<select id="accent"><option value="green">Kraken green</option><option value="navy">Navy</option><option value="charcoal">Charcoal</option></select></label>
+<label>Validity<select id="validity"><option value="">No expiry</option><option value="12">12 months</option><option value="24">24 months</option><option value="36">36 months</option><option value="60">5 years</option></select></label></div>
+<div class="toggles"><label><input id="enabled" type="checkbox" checked><span><b>Enabled</b><small>Learners can generate it</small></span></label><label><input id="requireQuiz" type="checkbox" checked><span><b>Require passed quiz</b><small>For quiz-enabled courses</small></span></label><label><input id="showScore" type="checkbox" checked><span><b>Show score</b><small>Best assessment score</small></span></label><label><input id="showCode" type="checkbox" checked><span><b>Verification code</b><small>Unique certificate reference</small></span></label></div>
+<section><small>Live preview</small><div id="preview" class="certificate"></div></section>
+<div class="actions"><button class="button" type="submit">Save certificate</button><button class="danger" id="deleteButton" type="button">Delete settings</button></div></form></div></main>
+<div class="mobilebar"><span id="mobileState">Not saved</span><button id="mobileSave" class="button">Save</button></div><div id="toast" class="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="data.js"></script><script src="common.js"></script><script src="certificate-admin.js"></script></body></html>
