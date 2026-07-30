@@ -1,1 +1,60 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Certificate | Kraken</title><link rel="stylesheet" href="certificate.css"></head><body><header><a href="dashboard.html">← Dashboard</a><b>Kraken Certificate</b><button id="print">Print / Save PDF</button></header><main><div id="status">Checking eligibility…</div><article id="card" hidden><div class="inner"><img id="logo" hidden><small id="issuer"></small><h1 id="title"></h1><p>This certifies that</p><div id="name" class="name"></div><p id="statement"></p><h2 id="course"></h2><div class="meta"><span id="date"></span><span id="hours"></span><span id="score" hidden></span></div><div class="signature"><b id="signatory"></b><span id="role"></span></div><code id="code"></code></div></article></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="data.js"></script><script src="common.js"></script><script src="certificate.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#071510">
+  <title>Course Certificate | Kraken Medical Training</title>
+  <link rel="stylesheet" href="certificate.css">
+</head>
+<body>
+  <header class="certificate-topbar">
+    <a href="dashboard.html">← Dashboard</a>
+    <strong>Kraken Medical Training</strong>
+    <button id="printCertificate" type="button">Print / Save PDF</button>
+  </header>
+
+  <main class="certificate-shell">
+    <section id="certificateStatus" class="certificate-status">
+      Loading your certificate…
+    </section>
+
+    <article id="certificateCard" class="certificate-card" hidden>
+      <div class="certificate-inner">
+        <div class="certificate-mark">K</div>
+        <span class="certificate-eyebrow">
+          Kraken Medical Training
+        </span>
+
+        <h1>Certificate of Completion</h1>
+        <p>This certifies that</p>
+
+        <div id="learnerName" class="certificate-name">
+          Learner Name
+        </div>
+
+        <p>has successfully completed</p>
+
+        <h2 id="courseTitle">Course title</h2>
+
+        <div class="certificate-meta">
+          <span id="issuedDate"></span>
+          <span id="finalScore"></span>
+        </div>
+
+        <div class="certificate-signature">
+          <strong>Kraken Medical Training</strong>
+          <span>Medical Education Platform</span>
+        </div>
+
+        <code id="certificateCode"></code>
+      </div>
+    </article>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="common.js"></script>
+  <script src="certificate.js"></script>
+</body>
+</html>

@@ -1,2 +1,2 @@
-Kraken V12 Course Builder Hotfix
+Kraken Quiz and Certificate Fix
 See docs/INSTALL.md

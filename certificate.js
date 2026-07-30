@@ -1,1 +1,84 @@
-(()=>{const $=s=>document.querySelector(s),courseId=new URLSearchParams(location.search).get("course")||new URLSearchParams(location.search).get("id");const ref=(u,c)=>`KMT-${btoa(`${u}:${c}`).replace(/[^A-Z0-9]/gi,"").toUpperCase().slice(0,10)}`;async function init(){const session=(await supabaseClient.auth.getSession()).data.session;if(!session){localStorage.setItem("kmtReturnTo",location.pathname+location.search);location.href="student-login.html";return}if(!courseId)return $("#status").textContent="No course selected.";const cr=await supabaseClient.from("courses").select("*").eq("id",courseId).single();if(cr.error)return $("#status").textContent=cr.error.message;const sr=await supabaseClient.from("course_certificate_settings").select("*").eq("course_id",courseId).maybeSingle(),s=sr.data;if(!s?.enabled)return $("#status").textContent="This course does not issue a certificate.";const lr=await supabaseClient.from("course_lessons").select("id").eq("course_id",courseId),pr=await supabaseClient.from("course_lesson_progress").select("lesson_id,completed").eq("course_id",courseId).eq("user_id",session.user.id),done=new Set((pr.data||[]).filter(x=>x.completed).map(x=>x.lesson_id)),all=(lr.data||[]).length===0||(lr.data||[]).every(x=>done.has(x.id));const qr=await supabaseClient.from("course_quizzes").select("*").eq("course_id",courseId).eq("is_published",true).maybeSingle();let best=null,passed=!qr.data||s.require_quiz===false;if(qr.data){const ar=await supabaseClient.from("quiz_attempts").select("score,passed").eq("quiz_id",qr.data.id).eq("user_id",session.user.id).order("score",{ascending:false});best=ar.data?.[0]?.score??null;passed=s.require_quiz===false||Boolean(ar.data?.some(x=>x.passed))}if(!all||!passed)return $("#status").textContent=`Certificate locked. ${!all?"Complete every lesson. ":""}${!passed?"Pass the quiz.":""}`;const profile=(await supabaseClient.from("profiles").select("*").eq("id",session.user.id).maybeSingle()).data,name=profile?.full_name||profile?.display_name||session.user.user_metadata?.full_name||session.user.email;let issued=(await supabaseClient.from("issued_certificates").select("*").eq("user_id",session.user.id).eq("course_id",courseId).maybeSingle()).data;if(!issued){const exp=s.validity_months?new Date(new Date().setMonth(new Date().getMonth()+s.validity_months)).toISOString():null,r=await supabaseClient.from("issued_certificates").insert({user_id:session.user.id,course_id:courseId,certificate_settings_id:s.id,verification_code:ref(session.user.id,courseId),learner_name:name,course_title:cr.data.title,cpd_hours:Number(s.cpd_hours||0),score:best,expires_at:exp}).select().single();if(r.error)return $("#status").textContent=r.error.message;issued=r.data}const colours={green:"#0e927f",navy:"#18304a",charcoal:"#2e3438"};document.documentElement.style.setProperty("--accent",colours[s.accent_style]||colours.green);$("#title").textContent=s.certificate_title;$("#issuer").textContent=s.issuer_name;$("#name").textContent=issued.learner_name;$("#statement").textContent=s.completion_statement;$("#course").textContent=cr.data.title;$("#date").textContent=`Issued ${new Date(issued.issued_at).toLocaleDateString()}`;$("#hours").textContent=`${issued.cpd_hours} CPD hours`;$("#signatory").textContent=s.signatory_name;$("#role").textContent=s.signatory_role;if(s.logo_url){$("#logo").src=s.logo_url;$("#logo").hidden=false}if(s.show_score&&issued.score!==null){$("#score").textContent=`Assessment ${issued.score}%`;$("#score").hidden=false}$("#code").textContent=s.show_verification?`Verification: ${issued.verification_code}`:"";$("#status").hidden=true;$("#card").hidden=false}$("#print").onclick=()=>print();init().catch(e=>$("#status").textContent=e.message)})();
+"use strict";
+
+(() => {
+  const $ = selector => document.querySelector(selector);
+
+  const courseId =
+    new URLSearchParams(window.location.search).get("course") ||
+    new URLSearchParams(window.location.search).get("id");
+
+  async function initialiseCertificate() {
+    const sessionResult = await supabaseClient.auth.getSession();
+    const session = sessionResult.data.session;
+
+    if (!session) {
+      localStorage.setItem(
+        "kmtReturnTo",
+        window.location.pathname + window.location.search
+      );
+      window.location.href = "student-login.html";
+      return;
+    }
+
+    if (!courseId) {
+      showStatus("No course was selected.");
+      return;
+    }
+
+    const certificateResult = await supabaseClient
+      .from("certificates")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .eq("course_id", courseId)
+      .maybeSingle();
+
+    if (certificateResult.error) {
+      showStatus(certificateResult.error.message);
+      return;
+    }
+
+    const certificate = certificateResult.data;
+
+    if (!certificate) {
+      showStatus(
+        "Certificate locked. Complete every lesson and pass the final quiz."
+      );
+      return;
+    }
+
+    $("#learnerName").textContent =
+      certificate.learner_name || session.user.email;
+
+    $("#courseTitle").textContent =
+      certificate.course_title || "Completed course";
+
+    $("#issuedDate").textContent =
+      `Issued ${new Date(certificate.issued_at).toLocaleDateString()}`;
+
+    $("#finalScore").textContent =
+      certificate.final_score !== null &&
+      certificate.final_score !== undefined
+        ? `Final score ${certificate.final_score}%`
+        : "Course passed";
+
+    $("#certificateCode").textContent =
+      `Certificate code: ${certificate.certificate_code}`;
+
+    $("#certificateStatus").hidden = true;
+    $("#certificateCard").hidden = false;
+  }
+
+  function showStatus(message) {
+    $("#certificateStatus").textContent = message;
+    $("#certificateStatus").hidden = false;
+    $("#certificateCard").hidden = true;
+  }
+
+  $("#printCertificate")
+    ?.addEventListener("click", () => window.print());
+
+  initialiseCertificate().catch(error => {
+    console.error(error);
+    showStatus(`Certificate error: ${error.message}`);
+  });
+})();

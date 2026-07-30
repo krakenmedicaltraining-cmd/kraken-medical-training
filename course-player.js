@@ -4,6 +4,10 @@ const playerState = { bundle: null, activeIndex: 0, completed: new Set(), progre
 const playerRoot = document.querySelector("#coursePlayer");
 const courseId = new URLSearchParams(location.search).get("id");
 
+// Expose the player to the quiz engine.
+window.playerState = playerState;
+window.courseId = courseId;
+
 function safe(value) { return escapePlayerHtml(value); }
 function minutesLabel(value) { const n = Number(value || 0); return n ? `${n} min` : "Self-paced"; }
 function initials(value) { return String(value || "KM").trim().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join("") || "KM"; }
@@ -95,21 +99,45 @@ async function toggleCurrentLesson() {
 
 function updateProgressDisplay() {
   const lessons = playerState.bundle.lessons || [];
-  const validIds = new Set(lessons.map(x => String(x.id)));
-  const completedCount = [...playerState.completed].filter(id => validIds.has(String(id))).length;
+  const validLessonIds = new Set(lessons.map(lesson => String(lesson.id)));
+  const completedCount = [...playerState.completed]
+    .filter(id => validLessonIds.has(String(id))).length;
+
   const total = lessons.length;
-  const percent = Math.max(0, Math.min(100, total ? Math.round(completedCount / total * 100) : 0));
-  const bar=document.querySelector("#progressBar"),label=document.querySelector("#progressLabel");
-  if(bar) bar.style.width=`${percent}%`;
-  if(label) label.textContent=`${percent}%`;
-  const cert=document.querySelector("#certificatePanel");
-  if(cert) cert.classList.toggle("locked-panel",percent<100);
-  const certButton=document.querySelector("#certificateAction");
-  if(certButton){
-    certButton.textContent=percent===100?"View certificate":"Complete all lessons";
-    certButton.href=percent===100?`certificate.html?course=${encodeURIComponent(courseId)}`:"#";
+  const percent = Math.max(
+    0,
+    Math.min(100, total ? Math.round((completedCount / total) * 100) : 0)
+  );
+
+  const bar = document.querySelector("#progressBar");
+  const label = document.querySelector("#progressLabel");
+
+  if (bar) bar.style.width = `${percent}%`;
+  if (label) label.textContent = `${percent}%`;
+
+  // The quiz engine performs the final certificate gate when a quiz exists.
+  window.krakenLessonPercent = percent;
+  document.dispatchEvent(new CustomEvent("kraken:progress-updated", {
+    detail: { percent }
+  }));
+
+  const cert = document.querySelector("#certificatePanel");
+  const certButton = document.querySelector("#certificateAction");
+
+  if (!window.krakenQuizLoaded) {
+    const unlocked = percent === 100;
+    if (cert) cert.classList.toggle("locked-panel", !unlocked);
+
+    if (certButton) {
+      certButton.textContent = unlocked ? "View certificate" : "Complete all lessons";
+      certButton.href = unlocked
+        ? `certificate.html?course=${encodeURIComponent(courseId)}`
+        : "#";
+    }
   }
 }
+
+window.updateProgressDisplay = updateProgressDisplay;
 
 function firstIncompleteIndex(){const lessons=playerState.bundle.lessons;const index=lessons.findIndex(x=>!playerState.completed.has(String(x.id)));return index<0?Math.max(0,lessons.length-1):index;}
 function renderResources(resources){return `<section class="player-panel"><div class="panel-heading"><div><span class="lesson-kicker">Field kit</span><h3>Downloads</h3></div><small>${resources.length} resources</small></div><div class="resource-grid">${resources.length?resources.map(r=>`<a class="resource-card" href="${safe(r.url)}" target="_blank" rel="noopener"><span class="resource-icon">⇩</span><span><strong>${safe(r.name||"Course resource")}</strong><small>${safe(r.resource_type||"Download")}</small></span></a>`).join(""):'<div class="empty-inline">No downloadable resources have been added yet.</div>'}</div></section>`;}
