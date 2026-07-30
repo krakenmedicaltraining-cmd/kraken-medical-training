@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>My profile | Kraken Medical Training</title>
+  <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+  <header class="profile-topbar">
+    <a href="dashboard.html">← Dashboard</a>
+    <strong>My profile</strong>
+    <button id="signOut" class="ghost">Sign out</button>
+  </header>
+
+  <main class="profile-shell">
+    <section class="profile-hero">
+      <div class="avatar" id="avatarInitials">K</div>
+      <div>
+        <span class="eyebrow">Member account</span>
+        <h1 id="profileHeading">Your profile</h1>
+        <p>Your name is used on certificates and professional records.</p>
+      </div>
+    </section>
+
+    <div class="profile-layout">
+      <form id="profileForm" class="profile-card">
+        <div class="section-head"><div><span class="eyebrow">Personal details</span><h2>Edit profile</h2></div><span id="saveState">Saved</span></div>
+        <div class="grid">
+          <label>First name<input id="firstName" required autocomplete="given-name"></label>
+          <label>Last name<input id="lastName" required autocomplete="family-name"></label>
+        </div>
+        <label>Display name<input id="displayName" required></label>
+        <label>Email<input id="email" type="email" disabled></label>
+        <div class="grid">
+          <label>Organisation<input id="organisation"></label>
+          <label>Rank or role<input id="rankRole"></label>
+        </div>
+        <label>Short bio<textarea id="bio" rows="4" placeholder="Optional professional bio"></textarea></label>
+        <button class="primary" type="submit">Save profile</button>
+      </form>
+
+      <aside class="profile-side">
+        <section class="profile-card">
+          <span class="eyebrow">Security</span>
+          <h2>Change password</h2>
+          <form id="passwordForm">
+            <label>New password<input id="newPassword" type="password" minlength="8" required autocomplete="new-password"></label>
+            <label>Confirm password<input id="confirmPassword" type="password" minlength="8" required autocomplete="new-password"></label>
+            <button class="primary full" type="submit">Update password</button>
+          </form>
+        </section>
+
+        <section class="profile-card danger-zone">
+          <span class="eyebrow danger-text">Danger zone</span>
+          <h2>Delete account</h2>
+          <p>This requests deletion, disables the profile and signs you out. An administrator must complete the final permanent deletion from Supabase.</p>
+          <button id="deleteAccount" class="danger full" type="button">Request account deletion</button>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>

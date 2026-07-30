@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Set up profile | Kraken Medical Training</title>
+  <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+  <main class="profile-shell narrow">
+    <section class="profile-card">
+      <div class="profile-brand"><span>K</span><strong>Kraken Medical Training</strong></div>
+      <span class="eyebrow">Welcome aboard</span>
+      <h1>Build your learner profile</h1>
+      <p class="lead">Your display name will appear on certificates and CPD records.</p>
+
+      <form id="setupForm">
+        <div class="grid">
+          <label>First name<input id="firstName" required autocomplete="given-name"></label>
+          <label>Last name<input id="lastName" required autocomplete="family-name"></label>
+        </div>
+        <label>Display name<input id="displayName" required placeholder="Connall Brown"></label>
+        <label>Organisation<input id="organisation" placeholder="Royal Navy, NHS, private learner"></label>
+        <label>Rank or role<input id="rankRole" placeholder="Leading Hand Medical Assistant"></label>
+        <button class="primary full" type="submit">Save profile and continue</button>
+      </form>
+      <p id="status" class="status"></p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="profile-setup.js"></script>
+</body>
+</html>
