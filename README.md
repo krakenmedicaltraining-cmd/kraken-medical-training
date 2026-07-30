@@ -1,7 +1,21 @@
-# Kraken Medical Training V9
+# Kraken Medical Training V10.1
 
-Adds course pass marks, quiz attempts, completion rules, certificates, public verification, and starter badges.
+V10.1 adds the Instructor Hub to the existing V9 platform.
 
-1. Run v9-database-update.sql in Supabase.
-2. Upload all V9 files to GitHub, replacing V8.
-3. Edit courses to set pass marks and certificate settings.
+## Main additions
+- Live learner, completion, score and certificate statistics
+- Searchable learner table
+- Course completion analytics
+- Announcement publishing and deletion
+- Certificate revocation and restoration
+- Invite-only course enrolment controls
+- Course prerequisites, quiz attempt limits and timed quiz settings
+- Responsive instructor interface
+
+## Upgrade from V9
+1. Upload all files to replace the existing site files.
+2. In Supabase, open SQL Editor.
+3. Run `v10-1-database-update.sql` once.
+4. Open `instructor.html` while signed in as an administrator.
+
+Do not run the database update repeatedly unless you understand the policy changes. The script is designed to be mostly idempotent.

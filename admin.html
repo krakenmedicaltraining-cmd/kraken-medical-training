@@ -15,7 +15,7 @@
 <span class="brand-mark">K</span>
 <span>Kraken Medical Training</span>
 </a>
-<a class="small-button" href="resource-admin.html">Library</a>
+<div class="admin-toolbar"><a class="small-button" href="instructor.html">Instructor hub</a><a class="small-button" href="resource-admin.html">Library</a></div>
 </header>
 
 <main>
@@ -70,6 +70,7 @@
 </select>
 </div>
 
+<div class="form-row"><div class="field"><label for="courseAccess">Access</label><select id="courseAccess"><option value="public">Public</option><option value="login">Login required</option><option value="invite">Invite only</option></select></div><div class="field"><label for="coursePrerequisite">Prerequisite</label><select id="coursePrerequisite"><option value="">None</option></select></div></div><div class="form-row"><div class="field"><label for="maxQuizAttempts">Maximum quiz attempts</label><input id="maxQuizAttempts" type="number" min="1" placeholder="Unlimited"></div><div class="field"><label for="quizTimeLimit">Quiz time limit (minutes)</label><input id="quizTimeLimit" type="number" min="1" placeholder="Untimed"></div></div>
 <div class="field">
 <label for="courseDescription">Short description</label>
 <textarea id="courseDescription" rows="3" required placeholder="What learners will gain from this course."></textarea>

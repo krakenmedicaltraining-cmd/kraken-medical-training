@@ -45,6 +45,10 @@ async function saveCourseOnline(course) {
     pass_mark: Number(course.pass_mark ?? 80),
     require_all_blocks: course.require_all_blocks !== false,
     certificate_enabled: course.certificate_enabled !== false,
+    access_type: course.access_type || "public",
+    prerequisite_course_id: course.prerequisite_course_id || null,
+    max_quiz_attempts: course.max_quiz_attempts || null,
+    quiz_time_limit: course.quiz_time_limit || null,
     content_blocks: course.content_blocks || [],
     updated_at: new Date().toISOString()
   };
@@ -245,3 +249,16 @@ async function getMyCertificates(){const s=await getCurrentSession();if(!s)retur
 async function verifyCertificate(code){const{data,error}=await supabaseClient.from("certificates").select("*").eq("certificate_code",code).maybeSingle();if(error)throw error;return data}
 async function awardStarterBadges(uid){const{data,error}=await supabaseClient.from("course_progress").select("course_id").eq("user_id",uid).eq("completed",true);if(error)throw error;const n=data?.length||0,b=[];if(n>=1)b.push({badge_key:"first-course",badge_name:"First Course Completed"});if(n>=5)b.push({badge_key:"five-courses",badge_name:"Five Course Finisher"});if(n>=10)b.push({badge_key:"ten-courses",badge_name:"Kraken Scholar"});for(const x of b)await supabaseClient.from("user_badges").upsert({user_id:uid,...x})}
 async function getMyBadges(){const s=await getCurrentSession();if(!s)return[];const{data,error}=await supabaseClient.from("user_badges").select("*").eq("user_id",s.user.id).order("awarded_at",{ascending:false});if(error)throw error;return data||[]}
+
+
+// V10 instructor, analytics and engagement helpers
+async function getActiveAnnouncements(){const{data,error}=await supabaseClient.from("announcements").select("*").eq("is_active",true).order("created_at",{ascending:false});if(error)throw error;return data||[]}
+async function getAllAnnouncements(){const{data,error}=await supabaseClient.from("announcements").select("*").order("created_at",{ascending:false});if(error)throw error;return data||[]}
+async function saveAnnouncementOnline(item){const s=await getCurrentSession();const payload={title:item.title,message:item.message,is_active:item.is_active!==false,expires_at:item.expires_at||null,created_by:s?.user?.id};if(item.id)payload.id=item.id;const q=item.id?supabaseClient.from("announcements").upsert(payload):supabaseClient.from("announcements").insert(payload);const{data,error}=await q.select().single();if(error)throw error;return data}
+async function deleteAnnouncementOnline(id){const{error}=await supabaseClient.from("announcements").delete().eq("id",id);if(error)throw error}
+async function getInstructorSnapshot(){const [profiles,progress,certificates,courses]=await Promise.all([supabaseClient.from("profiles").select("*"),supabaseClient.from("course_progress").select("*,courses(title,category)"),supabaseClient.from("certificates").select("*"),supabaseClient.from("courses").select("id,title,status")]);for(const r of [profiles,progress,certificates,courses])if(r.error)throw r.error;return{profiles:profiles.data||[],progress:progress.data||[],certificates:certificates.data||[],courses:courses.data||[]}}
+async function setCertificateRevoked(id,revoked,reason=""){const{data,error}=await supabaseClient.from("certificates").update({revoked,revoked_at:revoked?new Date().toISOString():null,revoked_reason:revoked?reason:null}).eq("id",id).select().single();if(error)throw error;return data}
+async function resetLearnerCourse(userId,courseId){const{error}=await supabaseClient.from("course_progress").delete().eq("user_id",userId).eq("course_id",courseId);if(error)throw error}
+async function canAccessCourse(course){if(course.access_type==='public'||!course.access_type)return{ok:true};const s=await getCurrentSession();if(!s)return{ok:false,reason:'Sign in is required for this course.'};if(course.access_type==='invite'){const{data,error}=await supabaseClient.from('course_enrollments').select('course_id').eq('course_id',course.id).eq('user_id',s.user.id).maybeSingle();if(error)throw error;if(!data)return{ok:false,reason:'This course is invite only. Ask an instructor for access.'}}if(course.prerequisite_course_id){const{data,error}=await supabaseClient.from('course_progress').select('completed').eq('user_id',s.user.id).eq('course_id',course.prerequisite_course_id).maybeSingle();if(error)throw error;if(!data?.completed)return{ok:false,reason:'Complete the prerequisite course before starting this one.'}}return{ok:true}}
+
+async function grantCourseAccess(userId,courseId){const s=await getCurrentSession();const{data,error}=await supabaseClient.from('course_enrollments').upsert({user_id:userId,course_id:courseId,enrolled_by:s?.user?.id}).select().single();if(error)throw error;return data}
