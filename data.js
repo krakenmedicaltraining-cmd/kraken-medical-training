@@ -42,6 +42,9 @@ async function saveCourseOnline(course) {
     pdf_url: course.pdf_url || null,
     video_url: course.video_url || null,
     resource_ids: course.resource_ids || [],
+    pass_mark: Number(course.pass_mark ?? 80),
+    require_all_blocks: course.require_all_blocks !== false,
+    certificate_enabled: course.certificate_enabled !== false,
     content_blocks: course.content_blocks || [],
     updated_at: new Date().toISOString()
   };
@@ -234,3 +237,11 @@ async function deleteResourceOnline(id) {
   const { error } = await supabaseClient.from("resources").delete().eq("id", id);
   if (error) throw error;
 }
+
+async function saveDetailedCourseProgress(course,completedBlocks,quizAttempts,quizScores){const session=await getCurrentSession();if(!session)return null;const blocks=(course.content_blocks||[]).filter(b=>b.type!=="divider"),ids=blocks.map((b,i)=>b.id||`block-${i}`),done=[...new Set(completedBlocks)],quizzes=blocks.map((b,i)=>({...b,resolved_id:b.id||`block-${i}`})).filter(b=>b.type==="quiz"),scores=quizzes.map(b=>Math.max(0,Math.min(100,Number(quizScores?.[b.resolved_id]??0)))),finalScore=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):100,blocksOk=course.require_all_blocks===false||ids.every(id=>done.includes(id)),quizOk=!quizzes.length||scores.every(v=>v>=Number(course.pass_mark||80)),completed=blocksOk&&quizOk,percent=ids.length?Math.round(done.filter(id=>ids.includes(id)).length/ids.length*100):0,existing=await getCourseProgress(course.id);const payload={user_id:session.user.id,course_id:course.id,completed_blocks:done,percent:completed?100:Math.min(99,percent),completed,quiz_attempts:quizAttempts||{},quiz_scores:quizScores||{},final_score:finalScore,score:finalScore,last_opened_at:new Date().toISOString(),completed_at:completed?(existing?.completed_at||new Date().toISOString()):null};const{data,error}=await supabaseClient.from("course_progress").upsert(payload).select().single();if(error)throw error;if(completed&&!existing?.completed){const profile=await ensureLearnerProfile();await supabaseClient.from("profiles").update({xp:(profile.xp||0)+200,updated_at:new Date().toISOString()}).eq("user_id",session.user.id);await awardStarterBadges(session.user.id);if(course.certificate_enabled!==false)await ensureCertificate(course,finalScore)}return data}
+function certificateCode(){const y=new Date().getFullYear(),r=crypto.getRandomValues(new Uint32Array(2));return`KMT-${y}-${r[0].toString(36).toUpperCase()}${r[1].toString(36).toUpperCase()}`.slice(0,28)}
+async function ensureCertificate(course,finalScore){const session=await getCurrentSession();if(!session)return null;const profile=await ensureLearnerProfile(),q=await supabaseClient.from("certificates").select("*").eq("user_id",session.user.id).eq("course_id",course.id).maybeSingle();if(q.error)throw q.error;if(q.data)return q.data;const{data,error}=await supabaseClient.from("certificates").insert({certificate_code:certificateCode(),user_id:session.user.id,course_id:course.id,learner_name:profile.display_name||"Learner",course_title:course.title,final_score:finalScore}).select().single();if(error)throw error;return data}
+async function getMyCertificates(){const s=await getCurrentSession();if(!s)return[];const{data,error}=await supabaseClient.from("certificates").select("*").eq("user_id",s.user.id).order("issued_at",{ascending:false});if(error)throw error;return data||[]}
+async function verifyCertificate(code){const{data,error}=await supabaseClient.from("certificates").select("*").eq("certificate_code",code).maybeSingle();if(error)throw error;return data}
+async function awardStarterBadges(uid){const{data,error}=await supabaseClient.from("course_progress").select("course_id").eq("user_id",uid).eq("completed",true);if(error)throw error;const n=data?.length||0,b=[];if(n>=1)b.push({badge_key:"first-course",badge_name:"First Course Completed"});if(n>=5)b.push({badge_key:"five-courses",badge_name:"Five Course Finisher"});if(n>=10)b.push({badge_key:"ten-courses",badge_name:"Kraken Scholar"});for(const x of b)await supabaseClient.from("user_badges").upsert({user_id:uid,...x})}
+async function getMyBadges(){const s=await getCurrentSession();if(!s)return[];const{data,error}=await supabaseClient.from("user_badges").select("*").eq("user_id",s.user.id).order("awarded_at",{ascending:false});if(error)throw error;return data||[]}
