@@ -1,0 +1,11 @@
+KRAKEN QUIZ ANSWER VISIBILITY FIX
+
+Replace the existing quiz-player.css file on your website with this one.
+
+Then:
+1. Redeploy Cloudflare.
+2. Fully close the course browser tab.
+3. Reopen the course.
+4. If the old colours remain, clear the site's cached data.
+
+This forces answer text, question text and scenario text to use readable light colours.
