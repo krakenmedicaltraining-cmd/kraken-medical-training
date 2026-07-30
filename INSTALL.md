@@ -1,53 +1,41 @@
-# Kraken V12 Stage 1 Installation
+# Kraken V12.1 Mobile Fix Update
 
-This package replaces the individual course display with one dynamic course player. It is designed to remain compatible with existing `content_blocks`, so current published courses can still open before you create records in the new lesson tables.
+This update fixes the two problems visible in the screenshots:
 
-## 1. Back up
+1. **Courses returned a 404** because `courses.html` was missing.
+2. **Headings and descriptions were nearly invisible** because pale mint text was displayed over a pale background.
 
-Download a ZIP of the current GitHub repository before changing anything.
+## Upload these files to the repository root
 
-## 2. Run the database migration
+Replace existing files when GitHub asks:
 
-1. Open Supabase.
-2. Open **SQL Editor**.
-3. Create a new query.
-4. Paste all of `database/kraken-v12-stage1.sql`.
-5. Press **Run** once.
+- `kraken-v11.css` (replacement high-contrast shared theme)
+- `course.html`
+- `course-player.css`
+- `course-player.js`
+- `course-engine.js`
 
-The migration adds fields and tables. It does not delete existing courses.
+Add these new files:
 
-## 3. Upload files to the repository root
+- `courses.html`
+- `courses.css`
+- `courses.js`
 
-Upload these files beside `data.js` and `supabase-config.js`:
+All files must sit beside `index.html`, `data.js`, `common.js`, and `supabase-config.js`.
 
-- `course.html` (replace existing)
-- `course-player.css` (new)
-- `course-engine.js` (new)
-- `course-player.js` (new)
+## Do not run SQL again
 
-Do not upload the `database` or `docs` folders to the live site unless you want them stored for reference.
+This package does not change the V12 Stage 1 database. If you already ran the Stage 1 migration, nothing else is needed in Supabase.
 
-## 4. Test
+## Test after deployment
 
-Open a published course from `courses.html`. Its URL should look like:
+1. Open the pop-out menu and press **Courses**.
+2. Confirm the course catalogue opens rather than showing HTTP 404.
+3. Open Course Admin, Instructor Hub and Resource Manager.
+4. Confirm hero titles are dark navy and descriptions are clearly readable.
+5. Open a published course and confirm it opens through `course.html?id=...`.
+6. Hard-refresh Chrome if it still shows the previous colours.
 
-`course.html?id=YOUR_COURSE_ID`
+## Cloudflare cache
 
-Existing courses are translated from their current `content_blocks` automatically. New structured lessons can later be added to `course_lessons`.
-
-## What Stage 1 provides
-
-- One reusable cinematic course player
-- Lesson navigation
-- Mobile lesson drawer
-- Per-lesson completion
-- Overall course progress
-- Existing XP and certificate flow compatibility
-- Download/resource panel
-- Simulation launch panel
-- Existing content-block fallback
-- New Supabase lesson/download/certificate structure
-
-## Important
-
-The next package, Stage 2, should update the admin builder so it writes directly to `course_lessons` and `course_downloads`. Until then, your existing admin builder continues working and the player translates those blocks for display.
+Cloudflare may briefly retain the old stylesheet. If the old pale text remains, use a private tab or clear the site cache, then reload.

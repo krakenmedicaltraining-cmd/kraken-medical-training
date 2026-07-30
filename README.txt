@@ -1,14 +1,9 @@
-KRAKEN MEDICAL TRAINING V12 - STAGE 1
+KRAKEN V12.1 MOBILE FIX
 
-Open docs/INSTALL.md and follow the steps in order.
+Open docs/INSTALL.md before uploading.
 
-LIVE FILES:
-- course.html
-- course-player.css
-- course-engine.js
-- course-player.js
-
-DATABASE:
-- database/kraken-v12-stage1.sql
-
-This package is additive and includes fallback support for the existing Kraken content_blocks format.
+Main fixes:
+- Adds the missing courses.html catalogue page.
+- Replaces the washed-out shared colour theme with accessible dark text.
+- Reduces oversized mobile hero sections.
+- Keeps the V12 Stage 1 course player files together in the same update.
