@@ -1,9 +1,44 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Course | Kraken Medical Training</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="kraken-v11.css"></head>
-<body class="k-v11">
-<header class="topbar"><a class="icon-button" href="index.html" aria-label="Back home">←</a><a class="brand" href="index.html"><span class="brand-mark">K</span><span>Kraken Medical Training</span></a><a class="icon-button" href="admin.html" aria-label="Admin">⚙</a></header>
-<main id="coursePage"></main>
-<footer class="footer"><div class="brand"><span class="brand-mark">K</span><span>Kraken Medical Training</span></div><p>Custom course prototype stored in this browser.</p><p>© <span id="year"></span></p></footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="data.js"></script><script src="common.js"></script><script src="course.js"></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#06110e">
+  <meta name="description" content="Kraken Medical Training course player">
+  <title>Course | Kraken Medical Training</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="kraken-v11.css">
+  <link rel="stylesheet" href="course-player.css">
+</head>
+<body class="k-v11 course-player-body">
+  <header class="player-topbar">
+    <a class="player-back" href="courses.html" aria-label="Back to courses">←</a>
+    <a class="player-brand" href="index.html">
+      <span class="player-brand-mark">K</span>
+      <span><strong>KRAKEN</strong><small>MEDICAL TRAINING</small></span>
+    </a>
+    <div class="player-top-actions">
+      <span class="player-xp" id="topXp">0 XP</span>
+      <a class="player-profile" id="playerProfile" href="student-login.html">KM</a>
+    </div>
+  </header>
+
+  <main id="coursePlayer" class="course-player-shell" aria-live="polite">
+    <section class="player-loading">
+      <span class="player-spinner" aria-hidden="true"></span>
+      <h1>Preparing course</h1>
+      <p>Opening the Kraken learning environment…</p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="data.js"></script>
+  <script src="common.js"></script>
+  <script src="course-engine.js"></script>
+  <script src="course-player.js"></script>
+</body>
+</html>
