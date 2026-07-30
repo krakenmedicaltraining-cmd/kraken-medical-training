@@ -338,25 +338,20 @@ function renderLatestCourses(categoryName = "all") {
    ========================================================= */
 
 function selectCourseCategory(categoryName) {
-  krakenSelectedCategory =
+  const selectedCategory =
     categoryName || "all";
 
-  renderLatestCourses(
-    krakenSelectedCategory
-  );
-
-  updateSelectedChannel();
-
-  updateCategoryAddress();
-
-  const latestSection = document.querySelector(
-    "#customCoursesSection"
-  );
-
-  latestSection?.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
+  if (selectedCategory === "all") {
+    window.location.href =
+      "courses.html";
+  }
+  else {
+    window.location.href =
+      "courses.html?category=" +
+      encodeURIComponent(
+        selectedCategory
+      );
+  }
 }
 
 function updateSelectedChannel() {
