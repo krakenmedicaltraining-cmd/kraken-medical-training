@@ -1,22 +1,38 @@
-# Kraken V12.3 Page Refresh
+# Kraken V12.4 Course Builder
 
-This update refreshes:
+## What this update adds
 
-- instructor.html
-- dashboard.html
-- cpd-builder.html
-- games.html
-- library.html
-- kraken-v12-pages.css
+- Full mobile course builder
+- Unlimited lessons
+- Reordering and duplication
+- Learning blocks for text, video, image, download, podcast, simulation and reflection
+- Live preview
+- Draft and publish status
+- Phone autosave
+- Sticky mobile save bar
+- Course search and filtering
+- Duplicate and delete protection
+- Backwards compatibility with the current course player
 
-## Install from your phone
+## Installation
 
-1. Upload `kraken-v12-pages.css` to the same folder as `styles.css`.
-2. Replace the five HTML files with the versions in this ZIP.
-3. Do not delete the existing JavaScript files.
-4. Deploy the Cloudflare Pages/Workers project.
-5. On your phone, close the tab and reopen it, or clear the site cache if the old layout remains.
+1. In Supabase, open **SQL Editor**.
+2. Run `database/v12-4-course-builder.sql`.
+3. Upload these files to the same website folder:
+   - `admin.html`
+   - `admin-v12-4.css`
+   - `admin-v12-4.js`
+4. Keep your existing:
+   - `data.js`
+   - `common.js`
+   - `supabase-config.js`
+   - `styles.css`
+   - `kraken-v12-pages.css`
+5. Redeploy the Cloudflare project.
+6. Close and reopen the website tab on your phone. Clear the site cache if the old builder remains.
 
-No Supabase database changes are required.
+## Important
 
-All existing JavaScript IDs were preserved, so the learner counts, progress, announcements, simulations and library filters should continue working.
+The builder stores the full block structure in `course_lessons.blocks`. It also creates the existing text/video/podcast/simulation lesson fields, so the current course player continues to work.
+
+No existing courses are deleted.

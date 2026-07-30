@@ -1,8 +1,7 @@
-Kraken V12.3
-================
+Kraken Medical Training V12.4
+=============================
 
-A mobile-first visual refresh for the Instructor Hub, learner dashboard,
-CPD Builder, Kraken Sim and Kraken Library.
+This package upgrades the Course Admin into a visual, mobile-first course builder.
 
-The update uses one shared CSS file to keep typography, spacing, navigation,
-cards, forms and responsive behaviour consistent.
+Start with:
+docs/INSTALL.md

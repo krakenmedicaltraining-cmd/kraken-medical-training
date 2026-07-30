@@ -1,89 +1,164 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Course Builder | Kraken Medical Training</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="kraken-v11.css">
-<link rel="stylesheet" href="admin-v12.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Course Builder | Kraken Medical Training</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="kraken-v12-pages.css">
+  <link rel="stylesheet" href="admin-v12-4.css">
 </head>
-<body class="k-v11">
-<header class="v12-topbar">
-  <a class="v12-brand" href="index.html"><span>K</span><strong>Kraken Builder</strong></a>
-  <nav><a href="courses.html">Courses</a><a href="resource-admin.html">Library</a><a href="instructor.html">Instructor</a></nav>
-  <button class="v12-ghost" id="signOutButton">Sign out</button>
+<body>
+<header class="kb-topbar">
+  <a class="kb-brand" href="index.html"><span class="kb-mark">K</span><span>Kraken Builder</span></a>
+  <nav class="kb-nav">
+    <a href="courses.html">Courses</a>
+    <a href="resource-admin.html">Library</a>
+    <a href="instructor.html">Instructor</a>
+  </nav>
+  <button class="kb-ghost" id="signOutButton">Sign out</button>
 </header>
-<main class="v12-shell">
-<section class="v12-intro">
-  <div><span class="v12-eyebrow">Kraken V12.2</span><h1>Build courses without touching code</h1><p>Create the course, arrange lessons and preview the learner experience from one mobile-friendly workspace.</p></div>
-  <div class="v12-status" id="adminStatus">Checking administrator access…</div>
-</section>
-<div class="v12-builder-grid">
-<form id="courseForm" class="v12-panel v12-editor">
-<input type="hidden" id="editingId">
-<div class="v12-panel-head"><div><span class="v12-eyebrow" id="formEyebrow">New course</span><h2 id="formTitle">Course details</h2></div><span class="v12-save-state" id="draftState">Not saved</span></div>
 
-<div class="v12-tabs" role="tablist">
-<button type="button" class="active" data-tab="details">Details</button>
-<button type="button" data-tab="lessons">Lessons</button>
-<button type="button" data-tab="features">Features</button>
-<button type="button" data-tab="preview">Preview</button>
-</div>
+<main class="kb-shell">
+  <section class="kb-hero">
+    <div>
+      <span class="kb-eyebrow">Kraken V12.4</span>
+      <h1>Build a complete course from your phone</h1>
+      <p>Create lessons, arrange learning blocks, preview the learner experience and publish without editing code.</p>
+    </div>
+    <div class="kb-status" id="adminStatus">Checking administrator access…</div>
+  </section>
 
-<section class="v12-tab active" data-panel="details">
-<div class="v12-form-grid"><label>Title<input id="courseTitle" required placeholder="MARCH PAWS"></label><label>Subtitle<input id="courseSubtitle" placeholder="A practical trauma sequence"></label></div>
-<label>Description<textarea id="courseDescription" rows="4" required placeholder="What will the learner be able to do?"></textarea></label>
-<div class="v12-form-grid"><label>Category<select id="courseCategory"><option>Trauma care</option><option>Resuscitation</option><option>Communication</option><option>Primary healthcare</option><option>Clinical skills</option><option>Professional development</option><option>Games and simulations</option></select></label><label>Difficulty<select id="courseDifficulty"><option>Beginner</option><option selected>All levels</option><option>Intermediate</option><option>Advanced</option></select></label></div>
-<div class="v12-form-grid"><label>Estimated time<input id="courseEstimatedTime" placeholder="45 minutes"></label><label>Instructor<input id="courseInstructor" placeholder="Kraken Medical Training"></label></div>
-<div class="v12-form-grid"><label>Thumbnail URL<input id="courseThumbnail" type="url" placeholder="https://..."></label><label>Banner URL<input id="courseBanner" type="url" placeholder="https://..."></label></div>
-<div class="v12-form-grid"><label>Icon or initials<input id="courseIcon" maxlength="5" placeholder="MP"></label><label>Status<select id="courseStatus"><option>Draft</option><option>Published</option><option>Coming soon</option></select></label></div>
-</section>
+  <div class="kb-layout">
+    <aside class="kb-panel kb-course-browser">
+      <div class="kb-panel-head">
+        <div><span class="kb-eyebrow">Course library</span><h2>Your courses</h2></div>
+        <button class="kb-ghost" id="newCourseButton" type="button">+ New</button>
+      </div>
+      <label class="kb-field"><span>Search</span><input id="courseSearch" placeholder="Search courses"></label>
+      <div class="kb-filter-row">
+        <select id="statusFilter" aria-label="Filter by status">
+          <option value="">All statuses</option>
+          <option>Published</option><option>Draft</option><option>Coming soon</option>
+        </select>
+        <button class="kb-ghost" id="exportCourses" type="button">Export</button>
+      </div>
+      <div id="adminCourseList" class="kb-course-list"><div class="kb-empty">Loading courses…</div></div>
+    </aside>
 
-<section class="v12-tab" data-panel="lessons">
-<div class="v12-section-head"><div><span class="v12-eyebrow">Course structure</span><h3>Lessons</h3></div><button type="button" class="v12-primary" id="addLesson">+ Add lesson</button></div>
-<p class="v12-help">Drag lessons using the handle, or use the arrows on mobile. Each lesson supports text, video, podcast and simulation links.</p>
-<div id="lessonList" class="v12-lesson-list"></div>
-<div id="emptyLessons" class="v12-empty">No lessons yet. Add the first lesson to begin.</div>
-</section>
+    <form id="courseForm" class="kb-panel kb-editor">
+      <input type="hidden" id="editingId">
 
-<section class="v12-tab" data-panel="features">
-<div class="v12-form-grid"><label>XP reward<input id="courseXp" type="number" min="0" value="200"></label><label>Quiz pass mark (%)<input id="coursePassMark" type="number" min="0" max="100" value="80"></label></div>
-<div class="v12-toggle-grid">
-<label><input type="checkbox" id="courseFeatured"> Featured course</label>
-<label><input type="checkbox" id="quizEnabled"> Quiz included</label>
-<label><input type="checkbox" id="simulationEnabled"> Simulation included</label>
-<label><input type="checkbox" id="podcastEnabled"> Podcast included</label>
-<label><input type="checkbox" id="downloadsEnabled" checked> Downloads included</label>
-<label><input type="checkbox" id="reflectionEnabled"> Reflection included</label>
-<label><input type="checkbox" id="certificateEnabled" checked> Certificate enabled</label>
-<label><input type="checkbox" id="requireAllBlocks" checked> Require all lessons</label>
-</div>
-<label>Course simulation URL<input id="courseSimulationUrl" type="url" placeholder="https://..."></label>
-<div class="v12-form-grid"><label>Access<select id="courseAccess"><option value="public">Public</option><option value="login">Login required</option><option value="invite">Invite only</option></select></label><label>Prerequisite<select id="coursePrerequisite"><option value="">None</option></select></label></div>
-<div class="v12-form-grid"><label>Maximum quiz attempts<input id="maxQuizAttempts" type="number" min="1" placeholder="Unlimited"></label><label>Quiz time limit (minutes)<input id="quizTimeLimit" type="number" min="1" placeholder="Untimed"></label></div>
-</section>
+      <div class="kb-panel-head">
+        <div><span class="kb-eyebrow" id="formEyebrow">New course</span><h2 id="formTitle">Course details</h2></div>
+        <span class="kb-save-state" id="draftState">Not saved</span>
+      </div>
 
-<section class="v12-tab" data-panel="preview">
-<div id="livePreview" class="v12-preview-card"></div>
-</section>
+      <div class="kb-tabs" role="tablist">
+        <button type="button" class="active" data-tab="details">1. Details</button>
+        <button type="button" data-tab="lessons">2. Lessons</button>
+        <button type="button" data-tab="features">3. Features</button>
+        <button type="button" data-tab="preview">4. Preview</button>
+      </div>
 
-<div class="v12-actions"><button class="v12-primary" type="submit" id="saveButton">Save course</button><button class="v12-ghost" type="button" id="cancelEdit" hidden>Cancel edit</button><button class="v12-ghost" type="button" id="duplicateButton" hidden>Duplicate</button></div>
-</form>
+      <section class="kb-tab active" data-panel="details">
+        <div class="kb-grid-2">
+          <label class="kb-field"><span>Course title *</span><input id="courseTitle" required placeholder="MARCH PAWS"></label>
+          <label class="kb-field"><span>Subtitle</span><input id="courseSubtitle" placeholder="A practical trauma sequence"></label>
+        </div>
+        <label class="kb-field"><span>Description *</span><textarea id="courseDescription" rows="5" required placeholder="What will the learner be able to do by the end?"></textarea></label>
 
-<aside class="v12-panel v12-course-panel">
-<div class="v12-section-head"><div><span class="v12-eyebrow">Your content</span><h2>Courses</h2></div><button class="v12-ghost" id="exportCourses" type="button">Export</button></div>
-<label class="v12-search">Search<input id="courseSearch" placeholder="Search courses"></label>
-<div id="adminCourseList" class="v12-course-list"><div class="v12-empty">Loading courses…</div></div>
-</aside>
-</div>
+        <div class="kb-grid-2">
+          <label class="kb-field"><span>Category</span><select id="courseCategory">
+            <option>Trauma care</option><option>Resuscitation</option><option>Communication</option>
+            <option>Primary healthcare</option><option>Clinical skills</option>
+            <option>Professional development</option><option>Games and simulations</option>
+          </select></label>
+          <label class="kb-field"><span>Difficulty</span><select id="courseDifficulty">
+            <option>Beginner</option><option selected>All levels</option><option>Intermediate</option><option>Advanced</option>
+          </select></label>
+        </div>
+
+        <div class="kb-grid-3">
+          <label class="kb-field"><span>Estimated time</span><input id="courseEstimatedTime" placeholder="45 minutes"></label>
+          <label class="kb-field"><span>Instructor</span><input id="courseInstructor" placeholder="Kraken Medical Training"></label>
+          <label class="kb-field"><span>XP reward</span><input id="courseXp" type="number" min="0" value="200"></label>
+        </div>
+
+        <div class="kb-grid-2">
+          <label class="kb-field"><span>Thumbnail URL</span><input id="courseThumbnail" type="url" placeholder="https://..."></label>
+          <label class="kb-field"><span>Banner URL</span><input id="courseBanner" type="url" placeholder="https://..."></label>
+        </div>
+
+        <div class="kb-grid-3">
+          <label class="kb-field"><span>Icon or initials</span><input id="courseIcon" maxlength="5" placeholder="MP"></label>
+          <label class="kb-field"><span>Status</span><select id="courseStatus"><option>Draft</option><option>Published</option><option>Coming soon</option></select></label>
+          <label class="kb-field"><span>Access</span><select id="courseAccess"><option value="public">Public</option><option value="login">Login required</option><option value="invite">Invite only</option></select></label>
+        </div>
+      </section>
+
+      <section class="kb-tab" data-panel="lessons">
+        <div class="kb-section-head">
+          <div><span class="kb-eyebrow">Course structure</span><h3>Lessons and learning blocks</h3></div>
+          <button type="button" class="kb-primary" id="addLesson">+ Add lesson</button>
+        </div>
+        <p class="kb-help">Use the arrows to reorder lessons. Each lesson can contain text, video, image, download, podcast, simulation and reflection blocks.</p>
+        <div id="lessonList" class="kb-lesson-list"></div>
+        <div id="emptyLessons" class="kb-empty">No lessons yet. Add the first lesson to begin.</div>
+      </section>
+
+      <section class="kb-tab" data-panel="features">
+        <div class="kb-toggle-grid">
+          <label><input type="checkbox" id="courseFeatured"><span><strong>Featured course</strong><small>Show prominently in the catalogue</small></span></label>
+          <label><input type="checkbox" id="quizEnabled"><span><strong>Quiz included</strong><small>Enable assessment features</small></span></label>
+          <label><input type="checkbox" id="simulationEnabled"><span><strong>Simulation included</strong><small>Display simulation access</small></span></label>
+          <label><input type="checkbox" id="podcastEnabled"><span><strong>Podcast included</strong><small>Display audio learning</small></span></label>
+          <label><input type="checkbox" id="downloadsEnabled" checked><span><strong>Downloads included</strong><small>Allow supporting resources</small></span></label>
+          <label><input type="checkbox" id="reflectionEnabled"><span><strong>Reflection included</strong><small>Add CPD reflection activity</small></span></label>
+          <label><input type="checkbox" id="certificateEnabled" checked><span><strong>Certificate enabled</strong><small>Unlock after completion</small></span></label>
+          <label><input type="checkbox" id="requireAllBlocks" checked><span><strong>Require all lessons</strong><small>Completion needs every lesson</small></span></label>
+        </div>
+
+        <div class="kb-grid-2">
+          <label class="kb-field"><span>Quiz pass mark (%)</span><input id="coursePassMark" type="number" min="0" max="100" value="80"></label>
+          <label class="kb-field"><span>Maximum quiz attempts</span><input id="maxQuizAttempts" type="number" min="1" placeholder="Unlimited"></label>
+        </div>
+        <div class="kb-grid-2">
+          <label class="kb-field"><span>Quiz time limit (minutes)</span><input id="quizTimeLimit" type="number" min="1" placeholder="Untimed"></label>
+          <label class="kb-field"><span>Prerequisite</span><select id="coursePrerequisite"><option value="">None</option></select></label>
+        </div>
+        <label class="kb-field"><span>Course simulation URL</span><input id="courseSimulationUrl" type="url" placeholder="https://..."></label>
+      </section>
+
+      <section class="kb-tab" data-panel="preview">
+        <div class="kb-preview-toolbar">
+          <span>Live learner preview</span>
+          <a id="openCoursePreview" class="kb-ghost" href="#" target="_blank" rel="noopener">Open full player</a>
+        </div>
+        <div id="livePreview" class="kb-preview-card"></div>
+      </section>
+
+      <div class="kb-desktop-actions">
+        <button class="kb-primary" type="submit" id="saveButton">Save course</button>
+        <button class="kb-ghost" type="button" id="cancelEdit" hidden>Cancel edit</button>
+        <button class="kb-ghost" type="button" id="duplicateButton" hidden>Duplicate</button>
+        <button class="kb-danger" type="button" id="deleteEditingButton" hidden>Delete</button>
+      </div>
+    </form>
+  </div>
 </main>
+
+<div class="kb-mobile-savebar">
+  <div><strong id="mobileCourseName">New course</strong><small id="mobileSaveState">Not saved</small></div>
+  <button class="kb-primary" id="mobileSaveButton" type="button">Save</button>
+</div>
+
 <div id="toast" class="toast" role="status"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="data.js"></script>
 <script src="common.js"></script>
-<script src="admin-v12.js"></script>
+<script src="admin-v12-4.js"></script>
 </body>
 </html>
