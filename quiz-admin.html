@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Quiz Builder | Kraken Medical Training</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="kraken-v12-pages.css">
+  <link rel="stylesheet" href="quiz-admin.css">
+</head>
+<body>
+<header class="qa-topbar">
+  <a class="qa-brand" href="admin.html"><span>K</span><strong>Quiz Builder</strong></a>
+  <nav><a href="admin.html">Courses</a><a href="instructor.html">Instructor</a></nav>
+  <button id="signOut" class="qa-ghost">Sign out</button>
+</header>
+<main class="qa-shell">
+  <section class="qa-hero">
+    <span class="qa-eyebrow">Kraken V12.5</span>
+    <h1>Build assessments that measure learning</h1>
+    <p>Create reusable questions, control attempts and pass marks, and give learners useful feedback after every answer.</p>
+  </section>
+
+  <div class="qa-layout">
+    <aside class="qa-panel qa-sidebar">
+      <label class="qa-field"><span>Course</span><select id="courseSelect"></select></label>
+      <div id="quizSummary" class="qa-summary">Choose a course to begin.</div>
+      <a class="qa-ghost qa-full" id="previewCourse" href="courses.html">Preview course</a>
+    </aside>
+
+    <form id="quizForm" class="qa-panel qa-editor">
+      <div class="qa-head">
+        <div><span class="qa-eyebrow">Assessment settings</span><h2 id="quizHeading">Course quiz</h2></div>
+        <span id="saveState">Not saved</span>
+      </div>
+      <div class="qa-grid-2">
+        <label class="qa-field"><span>Quiz title</span><input id="quizTitle" required placeholder="End-of-course assessment"></label>
+        <label class="qa-field"><span>Pass mark (%)</span><input id="passMark" type="number" min="0" max="100" value="80"></label>
+      </div>
+      <div class="qa-grid-3">
+        <label class="qa-field"><span>Maximum attempts</span><input id="maxAttempts" type="number" min="1" placeholder="Unlimited"></label>
+        <label class="qa-field"><span>Time limit (minutes)</span><input id="timeLimit" type="number" min="1" placeholder="Untimed"></label>
+        <label class="qa-field"><span>Questions per attempt</span><input id="questionLimit" type="number" min="1" placeholder="All"></label>
+      </div>
+      <div class="qa-toggles">
+        <label><input id="shuffleQuestions" type="checkbox" checked><span><strong>Shuffle questions</strong><small>Use a different order each attempt</small></span></label>
+        <label><input id="shuffleAnswers" type="checkbox" checked><span><strong>Shuffle answers</strong><small>Reorder choices for each learner</small></span></label>
+        <label><input id="showFeedback" type="checkbox" checked><span><strong>Show explanations</strong><small>Display teaching feedback after submission</small></span></label>
+        <label><input id="requireQuiz" type="checkbox" checked><span><strong>Required for completion</strong><small>Certificate remains locked until passed</small></span></label>
+      </div>
+
+      <div class="qa-question-head">
+        <div><span class="qa-eyebrow">Question bank</span><h2>Questions</h2></div>
+        <button class="qa-primary" id="addQuestion" type="button">+ Add question</button>
+      </div>
+      <div id="questionList" class="qa-question-list"></div>
+      <div id="emptyQuestions" class="qa-empty">No questions yet. Add the first assessment question.</div>
+
+      <div class="qa-actions">
+        <button class="qa-primary" type="submit">Save quiz</button>
+        <button class="qa-ghost" id="duplicateQuiz" type="button">Duplicate quiz</button>
+        <button class="qa-danger" id="deleteQuiz" type="button">Delete quiz</button>
+      </div>
+    </form>
+  </div>
+</main>
+<div class="qa-mobilebar"><span id="mobileState">Quiz not saved</span><button class="qa-primary" id="mobileSave" type="button">Save</button></div>
+<div id="toast" class="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script><script src="data.js"></script><script src="common.js"></script><script src="quiz-admin.js"></script>
+</body></html>
