@@ -3,43 +3,87 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Course Admin | Kraken Medical Training</title>
+<title>Course Builder | Kraken Medical Training</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="kraken-v11.css">
+<link rel="stylesheet" href="admin-v12.css">
 </head>
 <body class="k-v11">
-<header class="topbar">
-<button class="icon-button" type="button" aria-label="Open menu">☰</button>
-<a class="brand" href="index.html"><span class="brand-mark">K</span><span>Kraken Medical Training</span></a>
-<div class="admin-toolbar"><a class="small-button" href="instructor.html">Instructor hub</a><a class="small-button" href="resource-admin.html">Library</a></div>
+<header class="v12-topbar">
+  <a class="v12-brand" href="index.html"><span>K</span><strong>Kraken Builder</strong></a>
+  <nav><a href="courses.html">Courses</a><a href="resource-admin.html">Library</a><a href="instructor.html">Instructor</a></nav>
+  <button class="v12-ghost" id="signOutButton">Sign out</button>
 </header>
-<main>
-<section class="page-hero"><span class="eyebrow">Visual content manager</span><h1>Course admin</h1><p>Build, edit and publish courses from your phone using reusable learning blocks.</p></section>
-<section class="section">
-<div class="notice" id="adminStatus"><strong>Connecting:</strong> Checking your secure administrator session…</div>
-<div class="admin-layout" style="margin-top:24px">
-<form class="panel admin-form" id="courseForm">
-<input type="hidden" id="editingId">
-<span class="eyebrow" id="formEyebrow">New course</span>
-<h2 id="formTitle">Course details</h2>
-<div class="form-row"><div class="field"><label for="courseIcon">Icon or initials</label><input id="courseIcon" maxlength="5" placeholder="ECG"></div><div class="field"><label for="courseStatus">Status</label><select id="courseStatus"><option>Draft</option><option>Published</option><option>Coming soon</option></select></div></div>
-<div class="field"><label for="courseTitle">Course title</label><input id="courseTitle" required placeholder="ECG Foundations"></div>
-<div class="field"><label for="courseCategory">Category</label><select id="courseCategory"><option>Trauma care</option><option>Resuscitation</option><option>Communication</option><option>Primary healthcare</option><option>Clinical skills</option><option>Professional development</option><option>Games and simulations</option></select></div>
-<div class="form-row"><div class="field"><label for="courseAccess">Access</label><select id="courseAccess"><option value="public">Public</option><option value="login">Login required</option><option value="invite">Invite only</option></select></div><div class="field"><label for="coursePrerequisite">Prerequisite</label><select id="coursePrerequisite"><option value="">None</option></select></div></div>
-<div class="form-row"><div class="field"><label for="maxQuizAttempts">Maximum quiz attempts</label><input id="maxQuizAttempts" type="number" min="1" placeholder="Unlimited"></div><div class="field"><label for="quizTimeLimit">Quiz time limit (minutes)</label><input id="quizTimeLimit" type="number" min="1" placeholder="Untimed"></div></div>
-<div class="field"><label for="courseDescription">Short description</label><textarea id="courseDescription" rows="3" required placeholder="What learners will gain from this course."></textarea></div>
-<section class="builder-section"><div class="section-head"><div><span class="eyebrow">Assessment rules</span><h2>Completion and certification</h2></div></div><div class="form-grid"><div class="field"><label for="coursePassMark">Quiz pass mark (%)</label><input id="coursePassMark" type="number" min="0" max="100" value="80"></div><label class="check-row"><input id="requireAllBlocks" type="checkbox" checked> Require all lesson blocks</label><label class="check-row"><input id="certificateEnabled" type="checkbox" checked> Issue certificate when passed</label></div></section>
-<section class="builder-section"><div class="section-head"><div><span class="eyebrow">Course content</span><h2>Visual lesson builder</h2></div><span class="tag" id="blockCount">0 blocks</span></div>
-<div class="block-toolbar"><button type="button" class="small-button" data-add="heading">+ Heading</button><button type="button" class="small-button" data-add="text">+ Text</button><button type="button" class="small-button" data-add="image">+ Image</button><button type="button" class="small-button" data-add="video">+ Video</button><button type="button" class="small-button" data-add="download">+ Download</button><button type="button" class="small-button" data-add="quiz">+ Quiz</button><button type="button" class="small-button" data-add="scenario">+ Scenario</button><button type="button" class="small-button" data-add="unity">+ Itch.io game</button><button type="button" class="small-button" data-add="divider">+ Divider</button></div>
-<div class="empty-panel" id="emptyBlocks">No content blocks yet. Add a heading, text, quiz or itch.io simulation above.</div><div id="blockList"></div></section>
-<section class="builder-section"><div class="section-head"><div><span class="eyebrow">Reusable resources</span><h2>Attach library items</h2></div><a class="small-button" href="resource-admin.html">Manage library</a></div><div class="field"><label for="courseResourceSearch">Search Kraken Library</label><input id="courseResourceSearch" placeholder="Search PDFs, PowerPoints, crib cards…"></div><div id="courseResourcePicker" class="resource-picker"><div class="empty-panel">Loading resources…</div></div></section>
-<div class="actions"><button class="button" type="submit" id="saveButton">Save course</button><button class="button secondary" type="button" id="cancelEdit" hidden>Cancel edit</button></div>
-</form>
-<section><div class="section-head"><div><span class="eyebrow">Your content</span><h2>Managed courses</h2></div></div><div class="admin-toolbar"><button class="small-button" id="exportCourses">Export online backup</button><button class="small-button danger" id="signOutButton">Sign out</button></div><div class="admin-list" id="adminCourseList"><div class="empty-panel">Loading courses…</div></div></section>
-</div>
+<main class="v12-shell">
+<section class="v12-intro">
+  <div><span class="v12-eyebrow">Kraken V12.2</span><h1>Build courses without touching code</h1><p>Create the course, arrange lessons and preview the learner experience from one mobile-friendly workspace.</p></div>
+  <div class="v12-status" id="adminStatus">Checking administrator access…</div>
 </section>
+<div class="v12-builder-grid">
+<form id="courseForm" class="v12-panel v12-editor">
+<input type="hidden" id="editingId">
+<div class="v12-panel-head"><div><span class="v12-eyebrow" id="formEyebrow">New course</span><h2 id="formTitle">Course details</h2></div><span class="v12-save-state" id="draftState">Not saved</span></div>
+
+<div class="v12-tabs" role="tablist">
+<button type="button" class="active" data-tab="details">Details</button>
+<button type="button" data-tab="lessons">Lessons</button>
+<button type="button" data-tab="features">Features</button>
+<button type="button" data-tab="preview">Preview</button>
+</div>
+
+<section class="v12-tab active" data-panel="details">
+<div class="v12-form-grid"><label>Title<input id="courseTitle" required placeholder="MARCH PAWS"></label><label>Subtitle<input id="courseSubtitle" placeholder="A practical trauma sequence"></label></div>
+<label>Description<textarea id="courseDescription" rows="4" required placeholder="What will the learner be able to do?"></textarea></label>
+<div class="v12-form-grid"><label>Category<select id="courseCategory"><option>Trauma care</option><option>Resuscitation</option><option>Communication</option><option>Primary healthcare</option><option>Clinical skills</option><option>Professional development</option><option>Games and simulations</option></select></label><label>Difficulty<select id="courseDifficulty"><option>Beginner</option><option selected>All levels</option><option>Intermediate</option><option>Advanced</option></select></label></div>
+<div class="v12-form-grid"><label>Estimated time<input id="courseEstimatedTime" placeholder="45 minutes"></label><label>Instructor<input id="courseInstructor" placeholder="Kraken Medical Training"></label></div>
+<div class="v12-form-grid"><label>Thumbnail URL<input id="courseThumbnail" type="url" placeholder="https://..."></label><label>Banner URL<input id="courseBanner" type="url" placeholder="https://..."></label></div>
+<div class="v12-form-grid"><label>Icon or initials<input id="courseIcon" maxlength="5" placeholder="MP"></label><label>Status<select id="courseStatus"><option>Draft</option><option>Published</option><option>Coming soon</option></select></label></div>
+</section>
+
+<section class="v12-tab" data-panel="lessons">
+<div class="v12-section-head"><div><span class="v12-eyebrow">Course structure</span><h3>Lessons</h3></div><button type="button" class="v12-primary" id="addLesson">+ Add lesson</button></div>
+<p class="v12-help">Drag lessons using the handle, or use the arrows on mobile. Each lesson supports text, video, podcast and simulation links.</p>
+<div id="lessonList" class="v12-lesson-list"></div>
+<div id="emptyLessons" class="v12-empty">No lessons yet. Add the first lesson to begin.</div>
+</section>
+
+<section class="v12-tab" data-panel="features">
+<div class="v12-form-grid"><label>XP reward<input id="courseXp" type="number" min="0" value="200"></label><label>Quiz pass mark (%)<input id="coursePassMark" type="number" min="0" max="100" value="80"></label></div>
+<div class="v12-toggle-grid">
+<label><input type="checkbox" id="courseFeatured"> Featured course</label>
+<label><input type="checkbox" id="quizEnabled"> Quiz included</label>
+<label><input type="checkbox" id="simulationEnabled"> Simulation included</label>
+<label><input type="checkbox" id="podcastEnabled"> Podcast included</label>
+<label><input type="checkbox" id="downloadsEnabled" checked> Downloads included</label>
+<label><input type="checkbox" id="reflectionEnabled"> Reflection included</label>
+<label><input type="checkbox" id="certificateEnabled" checked> Certificate enabled</label>
+<label><input type="checkbox" id="requireAllBlocks" checked> Require all lessons</label>
+</div>
+<label>Course simulation URL<input id="courseSimulationUrl" type="url" placeholder="https://..."></label>
+<div class="v12-form-grid"><label>Access<select id="courseAccess"><option value="public">Public</option><option value="login">Login required</option><option value="invite">Invite only</option></select></label><label>Prerequisite<select id="coursePrerequisite"><option value="">None</option></select></label></div>
+<div class="v12-form-grid"><label>Maximum quiz attempts<input id="maxQuizAttempts" type="number" min="1" placeholder="Unlimited"></label><label>Quiz time limit (minutes)<input id="quizTimeLimit" type="number" min="1" placeholder="Untimed"></label></div>
+</section>
+
+<section class="v12-tab" data-panel="preview">
+<div id="livePreview" class="v12-preview-card"></div>
+</section>
+
+<div class="v12-actions"><button class="v12-primary" type="submit" id="saveButton">Save course</button><button class="v12-ghost" type="button" id="cancelEdit" hidden>Cancel edit</button><button class="v12-ghost" type="button" id="duplicateButton" hidden>Duplicate</button></div>
+</form>
+
+<aside class="v12-panel v12-course-panel">
+<div class="v12-section-head"><div><span class="v12-eyebrow">Your content</span><h2>Courses</h2></div><button class="v12-ghost" id="exportCourses" type="button">Export</button></div>
+<label class="v12-search">Search<input id="courseSearch" placeholder="Search courses"></label>
+<div id="adminCourseList" class="v12-course-list"><div class="v12-empty">Loading courses…</div></div>
+</aside>
+</div>
 </main>
-<footer class="footer"><div class="brand"><span class="brand-mark">K</span><span>Kraken Medical Training</span></div><p>Secure course administration. Do not enter patient-identifiable information.</p><p>© <span id="year"></span></p></footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="data.js"></script><script src="common.js"></script><script src="admin.js"></script><script>document.addEventListener("input",e=>{if(e.target.id==="courseResourceSearch"&&window.renderResourcePicker)renderResourcePicker()})</script>
-</body></html>
+<div id="toast" class="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="data.js"></script>
+<script src="common.js"></script>
+<script src="admin-v12.js"></script>
+</body>
+</html>

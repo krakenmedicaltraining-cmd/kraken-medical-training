@@ -1,41 +1,45 @@
-# Kraken V12.1 Mobile Fix Update
+# Kraken V12.2 Course Builder
 
-This update fixes the two problems visible in the screenshots:
+## Before replacing files
+Keep a copy of your current repository or download a GitHub ZIP backup.
 
-1. **Courses returned a 404** because `courses.html` was missing.
-2. **Headings and descriptions were nearly invisible** because pale mint text was displayed over a pale background.
+## 1. Database check
+In Supabase, open **SQL Editor**, paste the contents of:
 
-## Upload these files to the repository root
+`database/v12-2-builder-check.sql`
 
-Replace existing files when GitHub asks:
+Run it once. It is safe after the V12 Stage 1 migration.
 
-- `kraken-v11.css` (replacement high-contrast shared theme)
-- `course.html`
-- `course-player.css`
-- `course-player.js`
-- `course-engine.js`
+## 2. Upload these files to the website root
+Replace:
 
-Add these new files:
+- `admin.html`
+- `data.js`
 
-- `courses.html`
-- `courses.css`
-- `courses.js`
+Add:
 
-All files must sit beside `index.html`, `data.js`, `common.js`, and `supabase-config.js`.
+- `admin-v12.css`
+- `admin-v12.js`
 
-## Do not run SQL again
+Do not delete `styles.css`, `kraken-v11.css`, `common.js`, `supabase-config.js` or your other existing files.
 
-This package does not change the V12 Stage 1 database. If you already ran the Stage 1 migration, nothing else is needed in Supabase.
+## 3. Test
+1. Sign in as an administrator.
+2. Open `admin.html`.
+3. Create a draft course with two lessons.
+4. Save it.
+5. Open its Preview button.
+6. Return to admin and edit it again.
 
-## Test after deployment
+## What this update adds
+- Course details, metadata and imagery
+- Proper lesson editor using `course_lessons`
+- Lesson order controls for mobile
+- Video, podcast and simulation links per lesson
+- Live course preview
+- Local draft autosave
+- Search, edit, duplicate and delete controls
+- Course feature toggles
 
-1. Open the pop-out menu and press **Courses**.
-2. Confirm the course catalogue opens rather than showing HTTP 404.
-3. Open Course Admin, Instructor Hub and Resource Manager.
-4. Confirm hero titles are dark navy and descriptions are clearly readable.
-5. Open a published course and confirm it opens through `course.html?id=...`.
-6. Hard-refresh Chrome if it still shows the previous colours.
-
-## Cloudflare cache
-
-Cloudflare may briefly retain the old stylesheet. If the old pale text remains, use a private tab or clear the site cache, then reload.
+## Important
+A phone draft is stored only in that browser until you press **Save course**. Saving writes the course and lessons to Supabase.

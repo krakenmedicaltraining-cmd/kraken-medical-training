@@ -50,6 +50,20 @@ async function saveCourseOnline(course) {
     max_quiz_attempts: course.max_quiz_attempts || null,
     quiz_time_limit: course.quiz_time_limit || null,
     content_blocks: course.content_blocks || [],
+    subtitle: course.subtitle || null,
+    difficulty: course.difficulty || "All levels",
+    estimated_time: course.estimated_time || null,
+    thumbnail_url: course.thumbnail_url || null,
+    banner_url: course.banner_url || null,
+    instructor: course.instructor || null,
+    xp_reward: Number(course.xp_reward || 200),
+    featured: Boolean(course.featured),
+    simulation_url: course.simulation_url || null,
+    quiz_enabled: Boolean(course.quiz_enabled),
+    simulation_enabled: Boolean(course.simulation_enabled),
+    podcast_enabled: Boolean(course.podcast_enabled),
+    downloads_enabled: course.downloads_enabled !== false,
+    reflection_enabled: Boolean(course.reflection_enabled),
     updated_at: new Date().toISOString()
   };
 
