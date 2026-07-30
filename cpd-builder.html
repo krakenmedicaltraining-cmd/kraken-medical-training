@@ -1,8 +1,53 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CPD Reflection Builder | Kraken Medical Training</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="kraken-v11.css"></head><body class="k-v11"><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">K</span><span>Kraken Medical Training</span></a><a class="button button-small button-ghost" href="courses.html">Back to training</a></header><main><section class="page-hero"><span class="eyebrow">Interactive tool</span><h1>CPD Reflection Builder</h1><p>Use fictional or properly anonymised information only. The completed reflection stays in your browser unless you copy it.</p></section><form class="form-card" id="cpdForm"><div class="field"><label for="experience">What happened?</label><textarea id="experience" rows="4" required></textarea></div><div class="field"><label for="learning">What did you learn?</label><textarea id="learning" rows="4" required></textarea></div><div class="field"><label for="action">What will you do differently?</label><textarea id="action" rows="4" required></textarea></div><button class="button button-full" type="submit">Build reflection</button></form><section class="section" id="resultSection" hidden><div class="content-panel"><span class="eyebrow">Your draft</span><h2>Structured reflection</h2><div id="reflectionResult"></div><div class="hero-actions"><button class="button" id="copyReflection">Copy reflection</button><button class="button button-ghost" id="clearReflection">Clear</button></div></div></section></main><script src="common.js"></script><script>let output="";$("#cpdForm").addEventListener("submit",e=>{e.preventDefault();output=`Description
-${$("#experience").value.trim()}
-
-Learning
-${$("#learning").value.trim()}
-
-Action plan
-${$("#action").value.trim()}`;$("#reflectionResult").innerHTML=`<h3>Description</h3><p>${escapeHtml($("#experience").value)}</p><h3>Learning</h3><p>${escapeHtml($("#learning").value)}</p><h3>Action plan</h3><p>${escapeHtml($("#action").value)}</p>`;$("#resultSection").hidden=false;$("#resultSection").scrollIntoView({behavior:"smooth"});});function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}$("#copyReflection").addEventListener("click",async()=>{await navigator.clipboard.writeText(output);showToast("Reflection copied");});$("#clearReflection").addEventListener("click",()=>{$("#cpdForm").reset();$("#resultSection").hidden=true;output="";});</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CPD Reflection Builder | Kraken</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="kraken-v12-pages.css">
+</head>
+<body class="k12-shell">
+<header class="k12-topbar">
+  <a class="k12-back" href="index.html#training" aria-label="Back to training">←</a>
+  <a class="k12-brand" href="index.html"><span class="k12-mark">K</span><span>CPD Builder</span></a>
+  <a class="k12-action primary" href="index.html#training">Training</a>
+</header>
+<main class="k12-main">
+  <section class="k12-hero">
+    <div class="k12-hero-inner">
+      <span class="k12-eyebrow">Interactive tool</span>
+      <h1>CPD reflection builder</h1>
+      <p>Turn an experience into a clear professional reflection. Use fictional or properly anonymised information only.</p>
+    </div>
+  </section>
+  <div class="k12-content">
+    <section class="k12-section k12-builder">
+      <form class="k12-card k12-panel" id="cpdForm">
+        <div class="k12-form-grid">
+          <div class="k12-field full"><label for="experience">What happened?</label><textarea id="experience" rows="5" required placeholder="Describe the situation without names or identifiable details."></textarea></div>
+          <div class="k12-field full"><label for="learning">What did you learn?</label><textarea id="learning" rows="5" required placeholder="What knowledge, skill or insight did you gain?"></textarea></div>
+          <div class="k12-field full"><label for="action">What will you do differently?</label><textarea id="action" rows="5" required placeholder="Describe the practical change you will make."></textarea></div>
+        </div>
+        <div class="k12-actions"><button class="k12-button full" type="submit">Build reflection</button></div>
+      </form>
+      <aside class="k12-card k12-tip">
+        <h3>Keep it safe and useful</h3>
+        <p>Your draft stays in this browser unless you copy it.</p>
+        <ul><li>Remove names, dates and service numbers.</li><li>Focus on decisions and learning.</li><li>Finish with a specific action.</li></ul>
+      </aside>
+    </section>
+    <section class="k12-section" id="resultSection" hidden>
+      <div class="k12-card k12-panel">
+        <span class="k12-eyebrow">Your draft</span><h2 style="font-size:clamp(30px,5vw,48px);margin:0 0 24px">Structured reflection</h2>
+        <div id="reflectionResult"></div>
+        <div class="k12-actions"><button class="k12-button" id="copyReflection">Copy reflection</button><button class="k12-button secondary" id="clearReflection">Clear</button></div>
+      </div>
+    </section>
+  </div>
+</main>
+<script src="common.js"></script><script>
+let output="";$("#cpdForm").addEventListener("submit",e=>{e.preventDefault();output=`Description\n${$("#experience").value.trim()}\n\nLearning\n${$("#learning").value.trim()}\n\nAction plan\n${$("#action").value.trim()}`;$("#reflectionResult").innerHTML=`<h3>Description</h3><p>${escapeHtml($("#experience").value)}</p><h3>Learning</h3><p>${escapeHtml($("#learning").value)}</p><h3>Action plan</h3><p>${escapeHtml($("#action").value)}</p>`;$("#resultSection").hidden=false;$("#resultSection").scrollIntoView({behavior:"smooth"});});
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+$("#copyReflection").addEventListener("click",async()=>{await navigator.clipboard.writeText(output);showToast("Reflection copied");});
+$("#clearReflection").addEventListener("click",()=>{$("#cpdForm").reset();$("#resultSection").hidden=true;output="";});
+</script></body></html>

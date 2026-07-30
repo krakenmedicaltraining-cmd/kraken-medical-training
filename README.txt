@@ -1,3 +1,8 @@
-Kraken Medical Training V12.2
-Visual Course Builder update.
-Read docs/INSTALL.md before uploading.
+Kraken V12.3
+================
+
+A mobile-first visual refresh for the Instructor Hub, learner dashboard,
+CPD Builder, Kraken Sim and Kraken Library.
+
+The update uses one shared CSS file to keep typography, spacing, navigation,
+cards, forms and responsive behaviour consistent.
