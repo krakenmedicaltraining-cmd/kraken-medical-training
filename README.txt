@@ -1,3 +1,2 @@
-Kraken Medical Training V12.6
-Certificates and CPD Records
-Start with docs/INSTALL.md
+Kraken V12 Course Builder Hotfix
+See docs/INSTALL.md

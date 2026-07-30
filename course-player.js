@@ -28,7 +28,10 @@ async function initialisePlayer() {
     if (!access.ok) return showError("Course locked", access.reason || "You do not currently have access to this course.", "student-login.html", "Sign in");
     playerState.bundle = bundle;
     const progressRows = await getLessonProgressV12(courseId);
-    progressRows.filter(x=>x.completed).forEach(x=>playerState.completed.add(String(x.lesson_id)));
+    const currentLessonIds = new Set((bundle.lessons || []).map(x => String(x.id)));
+    progressRows
+      .filter(x => x.completed && currentLessonIds.has(String(x.lesson_id)))
+      .forEach(x => playerState.completed.add(String(x.lesson_id)));
     playerState.progress = await getCourseProgress(courseId);
     renderPlayer();
     await renderProfile();
@@ -91,10 +94,21 @@ async function toggleCurrentLesson() {
 }
 
 function updateProgressDisplay() {
-  const total=playerState.bundle.lessons.length; const percent=total?Math.round(playerState.completed.size/total*100):0;
-  const bar=document.querySelector("#progressBar"),label=document.querySelector("#progressLabel"); if(bar)bar.style.width=`${percent}%`; if(label)label.textContent=`${percent}%`;
-  const cert=document.querySelector("#certificatePanel"); if(cert)cert.classList.toggle("locked-panel",percent<100);
-  const certButton=document.querySelector("#certificateAction"); if(certButton){certButton.textContent=percent===100?"View certificate":"Complete all lessons";certButton.href=percent===100?"certificate.html":"#";}
+  const lessons = playerState.bundle.lessons || [];
+  const validIds = new Set(lessons.map(x => String(x.id)));
+  const completedCount = [...playerState.completed].filter(id => validIds.has(String(id))).length;
+  const total = lessons.length;
+  const percent = Math.max(0, Math.min(100, total ? Math.round(completedCount / total * 100) : 0));
+  const bar=document.querySelector("#progressBar"),label=document.querySelector("#progressLabel");
+  if(bar) bar.style.width=`${percent}%`;
+  if(label) label.textContent=`${percent}%`;
+  const cert=document.querySelector("#certificatePanel");
+  if(cert) cert.classList.toggle("locked-panel",percent<100);
+  const certButton=document.querySelector("#certificateAction");
+  if(certButton){
+    certButton.textContent=percent===100?"View certificate":"Complete all lessons";
+    certButton.href=percent===100?`certificate.html?course=${encodeURIComponent(courseId)}`:"#";
+  }
 }
 
 function firstIncompleteIndex(){const lessons=playerState.bundle.lessons;const index=lessons.findIndex(x=>!playerState.completed.has(String(x.id)));return index<0?Math.max(0,lessons.length-1):index;}
