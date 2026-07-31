@@ -1,2 +1,2 @@
-Kraken Featured Course Selector
-See docs/INSTALL.md
+Kraken V12.9 Blog and News Hub
+Start with docs/INSTALL.md
