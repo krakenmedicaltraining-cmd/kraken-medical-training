@@ -2,149 +2,377 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Military and emergency medical training, simulations, courses, certificates and field-ready resources.">
-  <meta name="theme-color" content="#071411">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <meta
+    name="description"
+    content="Military and emergency medical training, simulations, courses, certificates, clinical articles and field-ready resources."
+  >
+
+  <meta
+    name="theme-color"
+    content="#071411"
+  >
+
   <title>Kraken Medical Training</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
 
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="stream-ui.css">
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="styles.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="stream-ui.css"
+  >
 </head>
 
 <body class="stream-home">
-  <div class="drawer-backdrop" id="drawerBackdrop"></div>
 
-  <aside class="drawer stream-drawer" id="drawer" aria-label="Main menu">
+  <!-- =====================================================
+       MOBILE DRAWER BACKDROP
+       ===================================================== -->
+
+  <div
+    class="drawer-backdrop"
+    id="drawerBackdrop"
+  ></div>
+
+
+  <!-- =====================================================
+       SLIDE-OUT MENU
+       ===================================================== -->
+
+  <aside
+    class="drawer stream-drawer"
+    id="drawer"
+    aria-label="Main menu"
+  >
+
     <div class="drawer-head">
-      <a class="brand" href="index.html">
+
+      <a
+        class="brand"
+        href="index.html"
+      >
         <span class="brand-mark">K</span>
+
         <span>Kraken Medical</span>
       </a>
-      <button class="icon-button" id="closeMenu" aria-label="Close menu">×</button>
+
+      <button
+        class="icon-button"
+        id="closeMenu"
+        type="button"
+        aria-label="Close menu"
+      >
+        ×
+      </button>
+
     </div>
 
+
     <nav class="drawer-nav">
-      <a class="active" href="index.html">⌂ <span>Home</span></a>
-      <a href="#continue">▶ <span>Continue training</span></a>
-      <a href="#courses">▤ <span>Courses</span></a>
-      <a href="library.html">▧ <span>Field library</span></a>
-      <a href="games.html">◆ <span>Simulations</span></a>
-      <a href="cpd-builder.html">✎ <span>CPD builder</span></a>
-      <div class="drawer-section">Account</div>
-      <a href="dashboard.html">● <span>My mission</span></a>
-      <a href="instructor.html">⌁ <span>Instructor hub</span></a>
-      <a href="login.html">→ <span>Log in</span></a>
+
+      <a
+        class="active"
+        href="index.html"
+      >
+        ⌂
+        <span>Home</span>
+      </a>
+
+      <a href="#continue">
+        ▶
+        <span>Continue training</span>
+      </a>
+
+      <a href="#courses">
+        ▤
+        <span>Courses</span>
+      </a>
+
+      <a href="library.html">
+        ▧
+        <span>Field library</span>
+      </a>
+
+      <!-- Kraken Journal public page -->
+      <a href="journal.html">
+        ☷
+        <span>Kraken Journal</span>
+      </a>
+
+      <a href="games.html">
+        ◆
+        <span>Simulations</span>
+      </a>
+
+      <a href="cpd-builder.html">
+        ✎
+        <span>CPD builder</span>
+      </a>
+
+
+      <div class="drawer-section">
+        Account
+      </div>
+
+
+      <a href="dashboard.html">
+        ●
+        <span>My mission</span>
+      </a>
+
+      <a href="profile.html">
+        ◉
+        <span>My profile</span>
+      </a>
+
+      <a href="instructor.html">
+        ⌁
+        <span>Instructor hub</span>
+      </a>
+
+      <!-- Journal administrator -->
+      <a href="journal-admin.html">
+        ✦
+        <span>Journal admin</span>
+      </a>
+
+      <a href="login.html">
+        →
+        <span>Log in</span>
+      </a>
+
     </nav>
+
   </aside>
 
+
+  <!-- =====================================================
+       MAIN WEBSITE SHELL
+       ===================================================== -->
+
   <div class="stream-shell">
+
+
+    <!-- ===================================================
+         TOP NAVIGATION
+         =================================================== -->
+
     <header class="stream-topbar">
+
       <div class="stream-topbar-left">
-        <button class="stream-menu-button" id="menuButton" aria-label="Open menu" aria-expanded="false">☰</button>
-        <a class="stream-brand" href="index.html">
-          <span class="stream-brand-mark">K</span>
-          <span class="stream-brand-copy">
-            <strong>KRAKEN</strong>
-            <small>MEDICAL TRAINING</small>
+
+        <button
+          class="stream-menu-button"
+          id="menuButton"
+          type="button"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          ☰
+        </button>
+
+
+        <a
+          class="stream-brand"
+          href="index.html"
+        >
+
+          <span class="stream-brand-mark">
+            K
           </span>
+
+          <span class="stream-brand-copy">
+
+            <strong>
+              KRAKEN
+            </strong>
+
+            <small>
+              MEDICAL TRAINING
+            </small>
+
+          </span>
+
         </a>
+
       </div>
 
-      <nav class="stream-nav" aria-label="Primary navigation">
-        <a class="active" href="index.html">Home</a>
-        <a href="#courses">Courses</a>
-        <a href="library.html">Library</a>
-        <a href="games.html">Simulations</a>
-        <a href="dashboard.html">My mission</a>
+
+      <nav
+        class="stream-nav"
+        aria-label="Primary navigation"
+      >
+
+        <a
+          class="active"
+          href="index.html"
+        >
+          Home
+        </a>
+
+        <a href="#courses">
+          Courses
+        </a>
+
+        <a href="library.html">
+          Library
+        </a>
+
+        <!-- New Journal link -->
+        <a href="journal.html">
+          Journal
+        </a>
+
+        <a href="games.html">
+          Simulations
+        </a>
+
+        <a href="dashboard.html">
+          My mission
+        </a>
+
       </nav>
 
+
       <div class="stream-topbar-actions">
-        <a class="stream-search" href="#courses" aria-label="Search training">⌕</a>
-        <a class="stream-profile" href="login.html" aria-label="Account">CB</a>
+
+        <a
+          class="stream-search"
+          href="#courses"
+          aria-label="Search training"
+        >
+          ⌕
+        </a>
+
+        <a
+          class="stream-profile"
+          href="profile.html"
+          aria-label="Account and profile"
+        >
+          CB
+        </a>
+
       </div>
+
     </header>
 
+
+    <!-- ===================================================
+         MAIN PAGE CONTENT
+         =================================================== -->
+
     <main>
+
+
+      <!-- =================================================
+           HERO
+           ================================================= -->
+
       <section class="stream-hero">
+
         <div class="stream-hero-overlay"></div>
+
         <div class="stream-hero-grid"></div>
 
+
         <div class="stream-hero-content">
-          <span class="stream-kicker">KRAKEN ORIGINAL TRAINING</span>
-          <h1>Train for the moment<br>that cannot be paused.</h1>
+
+          <span class="stream-kicker">
+            KRAKEN ORIGINAL TRAINING
+          </span>
+
+
+          <h1>
+            Train for the moment<br>
+            that cannot be paused.
+          </h1>
+
+
           <p>
-            Military medicine, emergency care, clinical skills and immersive simulations,
-            built for medics who need knowledge that survives contact with reality.
+            Military medicine, emergency care, clinical skills
+            and immersive simulations, built for medics who need
+            knowledge that survives contact with reality.
           </p>
 
+
           <div class="stream-hero-tags">
-            <span>Military Medicine</span>
-            <span>Trauma</span>
-            <span>Interactive</span>
-            <span>Certificate</span>
+
+            <span>
+              Military Medicine
+            </span>
+
+            <span>
+              Trauma
+            </span>
+
+            <span>
+              Interactive
+            </span>
+
+            <span>
+              Certificate
+            </span>
+
           </div>
+
 
           <div class="stream-hero-actions">
-            <a class="stream-button primary" id="heroFeaturedButton" href="courses.html">▶ Start training</a>
-            <a class="stream-button secondary" href="#courses">ⓘ Explore platform</a>
+
+            <a
+              class="stream-button primary"
+              id="heroFeaturedButton"
+              href="courses.html"
+            >
+              ▶ Start training
+            </a>
+
+            <a
+              class="stream-button secondary"
+              href="#courses"
+            >
+              ⓘ Explore platform
+            </a>
+
           </div>
+
         </div>
+
+
+        <!-- Featured course mission card -->
 
         <aside class="stream-mission-card">
+
           <div class="stream-mission-top">
+
             <span class="stream-status-dot"></span>
-            <span>ACTIVE MISSION</span>
-          </div>
 
-          <div class="stream-mission-symbol" id="heroFeaturedIcon">K</div>
-          <div>
-            <span class="stream-card-label" id="heroFeaturedCategory">Featured course</span>
-            <h2 id="heroFeaturedTitle">Kraken training</h2>
-            <p id="heroFeaturedDescription">Choose a featured course from the Course Builder.</p>
-          </div>
-
-          <div class="stream-progress">
-            <span id="heroProgress"></span>
-          </div>
-
-          <div class="stream-progress-meta">
-            <span id="heroProgressText">0% complete</span>
-            <span id="heroFeaturedTime">Self-paced</span>
-          </div>
-
-          <a class="stream-button primary full" id="heroMissionButton" href="courses.html">Open course</a>
-        </aside>
-      </section>
-
-      <section class="stream-content" id="continue">
-        <div class="stream-section-heading">
-          <div>
-            <span class="stream-eyebrow">YOUR MISSION</span>
-            <h2>Continue training</h2>
-          </div>
-          <a href="dashboard.html">View all progress →</a>
-        </div>
-
-        <div class="stream-continue-card" id="featuredCourseCard">
-          <div class="stream-continue-art" id="featuredCourseArt">
-            <span class="stream-art-badge">KMT FEATURED</span>
-            <div class="stream-art-copy">
-              <small id="featuredCourseCategory">FEATURED COURSE</small>
-              <strong id="featuredCourseArtTitle">KRAKEN<br>TRAINING</strong>
-            </div>
-          </div>
-
-          <div class="stream-continue-copy">
-            <span class="stream-card-label" id="featuredCourseStatus">Featured</span>
-            <h3 id="featuredCourseTitle">Choose a featured course</h3>
-            <p id="featuredCourseDescription">
-              Open Course Builder and tick “Featured course” on the course you want shown here.
-            </p>
-
+            <span>
+              ACTIVE MISSION
+            </span
             <div class="stream-progress dark">
               <span id="featuredProgress"></span>
             </div>
