@@ -1,2 +1,2 @@
-Kraken V12.9 Blog and News Hub
-Start with docs/INSTALL.md
+Kraken V13 Journal Hub
+See docs/INSTALL.md

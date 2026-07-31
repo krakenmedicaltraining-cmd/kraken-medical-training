@@ -1,9 +1,25 @@
-# Kraken V12.9 Blog Hub
+# Kraken V13 Journal Hub
 
-1. Run `database/v12-9-blog.sql` in Supabase SQL Editor.
-2. Upload all root-level files from this package.
-3. Add `blog.html` to your public menu.
-4. Add `blog-admin.html` to the admin menu.
-5. Redeploy Cloudflare and clear the browser cache.
+1. Run `database/v13-journal.sql` in Supabase SQL Editor.
+2. Upload:
+   - journal.html
+   - journal.css
+   - journal.js
+   - journal-admin.html
+   - journal-admin.css
+   - journal-admin.js
+   - journal-item.html
+   - journal-item.css
+   - journal-item.js
+3. Add `journal.html` to public navigation.
+4. Add `journal-admin.html` to admin navigation.
+5. Redeploy Cloudflare and clear browser cache.
 
-The admin builder supports headings, paragraphs, images, videos, links, quotes, lists and callouts.
+Content types:
+- articles
+- videos
+- podcasts
+- downloads
+- news
+- events
+- case studies

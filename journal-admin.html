@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Journal Admin | Kraken</title><link rel="stylesheet" href="journal-admin.css"></head>
+<body>
+<header class="a-top"><a class="brand" href="admin.html"><b>K</b><span>Journal Builder</span></a><nav><a href="admin.html">Courses</a><a href="journal.html">Public Journal</a></nav><button id="signOut">Sign out</button></header>
+<main class="a-shell">
+<section class="hero"><small>Kraken V13</small><h1>Build the whole Kraken Journal</h1><p>Publish articles, videos, podcasts, downloads, news, events and case studies.</p></section>
+<div class="layout">
+<aside class="panel side"><div class="head"><div><small>Content</small><h2>Journal items</h2></div><button id="newItem">+ New</button></div><input id="search" placeholder="Search content"><select id="filter"><option value="">All types</option><option value="article">Article</option><option value="video">Video</option><option value="podcast">Podcast</option><option value="download">Download</option><option value="news">News</option><option value="event">Event</option><option value="case_study">Case study</option></select><div id="itemList"></div></aside>
+<form id="itemForm" class="panel editor"><input id="itemId" type="hidden"><div class="head"><div><small>Content editor</small><h2 id="heading">New item</h2></div><span id="state">Not saved</span></div>
+<div class="grid"><label>Title<input id="title" required></label><label>Type<select id="type"><option value="article">Article</option><option value="video">Video</option><option value="podcast">Podcast</option><option value="download">Download</option><option value="news">News</option><option value="event">Event</option><option value="case_study">Case study</option></select></label></div>
+<label>Excerpt<textarea id="excerpt" required></textarea></label>
+<div class="grid"><label>Category<input id="category" value="Kraken news"></label><label>Author<input id="author" value="Kraken Medical Training"></label></div>
+<div class="grid"><label>Cover image URL<input id="cover" type="url"></label><label>Media or download URL<input id="media" type="url"></label></div>
+<div class="grid"><label>Slug<input id="slug"></label><label>Event date<input id="eventDate" type="datetime-local"></label></div>
+<div class="grid3"><label>Status<select id="status"><option value="draft">Draft</option><option value="published">Published</option></select></label><label>Publish date<input id="publishedAt" type="datetime-local"></label><label>Reading time<input id="readingTime" type="number" min="1" value="5"></label></div>
+<div class="toggles"><label><input id="featured" type="checkbox"><span><b>Featured</b><small>Show at the top</small></span></label><label><input id="sharing" type="checkbox" checked><span><b>Sharing</b><small>Enable share button</small></span></label></div>
+<div class="blockbar"><button type="button" data-add="heading">+ Heading</button><button type="button" data-add="paragraph">+ Text</button><button type="button" data-add="image">+ Image</button><button type="button" data-add="video">+ Video</button><button type="button" data-add="link">+ Link</button><button type="button" data-add="quote">+ Quote</button><button type="button" data-add="list">+ List</button><button type="button" data-add="callout">+ Callout</button></div>
+<div id="blocks"></div><div id="empty" class="empty">No content blocks yet.</div>
+<div class="actions"><button class="primary" type="submit">Save item</button><button id="deleteItem" class="danger" type="button">Delete</button></div>
+</form></div></main>
+<div class="mobilebar"><span id="mobileState">Not saved</span><button id="mobileSave" class="primary">Save</button></div><div id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="common.js"></script><script src="journal-admin.js"></script>
+</body></html>
