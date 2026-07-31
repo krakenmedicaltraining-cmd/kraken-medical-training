@@ -30,7 +30,7 @@
     <nav class="drawer-nav">
       <a class="active" href="index.html">⌂ <span>Home</span></a>
       <a href="#continue">▶ <span>Continue training</span></a>
-      <a href="courses.html">▤ <span>Courses</span></a>
+      <a href="#courses">▤ <span>Courses</span></a>
       <a href="library.html">▧ <span>Field library</span></a>
       <a href="games.html">◆ <span>Simulations</span></a>
       <a href="cpd-builder.html">✎ <span>CPD builder</span></a>
@@ -56,14 +56,14 @@
 
       <nav class="stream-nav" aria-label="Primary navigation">
         <a class="active" href="index.html">Home</a>
-        <a href="courses.html">Courses</a>
+        <a href="#courses">Courses</a>
         <a href="library.html">Library</a>
         <a href="games.html">Simulations</a>
         <a href="dashboard.html">My mission</a>
       </nav>
 
       <div class="stream-topbar-actions">
-        <a class="stream-search" href="courses.html" aria-label="Search training">⌕</a>
+        <a class="stream-search" href="#courses" aria-label="Search training">⌕</a>
         <a class="stream-profile" href="login.html" aria-label="Account">CB</a>
       </div>
     </header>
@@ -89,8 +89,8 @@
           </div>
 
           <div class="stream-hero-actions">
-            <a class="stream-button primary" href="module-march-paws.html">▶ Continue training</a>
-            <a class="stream-button secondary" href="courses.html">ⓘ Explore platform</a>
+            <a class="stream-button primary" id="heroFeaturedButton" href="courses.html">▶ Start training</a>
+            <a class="stream-button secondary" href="#courses">ⓘ Explore platform</a>
           </div>
         </div>
 
@@ -100,11 +100,11 @@
             <span>ACTIVE MISSION</span>
           </div>
 
-          <div class="stream-mission-symbol">M</div>
+          <div class="stream-mission-symbol" id="heroFeaturedIcon">K</div>
           <div>
-            <span class="stream-card-label">Trauma pathway</span>
-            <h2>MARCH PAWS</h2>
-            <p>Structured combat casualty care, decision points and final knowledge check.</p>
+            <span class="stream-card-label" id="heroFeaturedCategory">Featured course</span>
+            <h2 id="heroFeaturedTitle">Kraken training</h2>
+            <p id="heroFeaturedDescription">Choose a featured course from the Course Builder.</p>
           </div>
 
           <div class="stream-progress">
@@ -112,11 +112,11 @@
           </div>
 
           <div class="stream-progress-meta">
-            <span id="heroProgressText">0 of 6 lessons</span>
-            <span>25 min</span>
+            <span id="heroProgressText">0% complete</span>
+            <span id="heroFeaturedTime">Self-paced</span>
           </div>
 
-          <a class="stream-button primary full" href="module-march-paws.html">Resume mission</a>
+          <a class="stream-button primary full" id="heroMissionButton" href="courses.html">Open course</a>
         </aside>
       </section>
 
@@ -129,21 +129,20 @@
           <a href="dashboard.html">View all progress →</a>
         </div>
 
-        <div class="stream-continue-card">
-          <div class="stream-continue-art">
-            <span class="stream-art-badge">KMT SERIES</span>
+        <div class="stream-continue-card" id="featuredCourseCard">
+          <div class="stream-continue-art" id="featuredCourseArt">
+            <span class="stream-art-badge">KMT FEATURED</span>
             <div class="stream-art-copy">
-              <small>TRAUMA ESSENTIALS</small>
-              <strong>MARCH<br>PAWS</strong>
+              <small id="featuredCourseCategory">FEATURED COURSE</small>
+              <strong id="featuredCourseArtTitle">KRAKEN<br>TRAINING</strong>
             </div>
           </div>
 
           <div class="stream-continue-copy">
-            <span class="stream-card-label">In progress</span>
-            <h3>MARCH PAWS Essentials</h3>
-            <p>
-              Six focused lessons covering catastrophic haemorrhage, airway,
-              respiration, circulation and the wider PAWS sequence.
+            <span class="stream-card-label" id="featuredCourseStatus">Featured</span>
+            <h3 id="featuredCourseTitle">Choose a featured course</h3>
+            <p id="featuredCourseDescription">
+              Open Course Builder and tick “Featured course” on the course you want shown here.
             </p>
 
             <div class="stream-progress dark">
@@ -151,11 +150,11 @@
             </div>
 
             <div class="stream-progress-meta">
-              <span id="featuredProgressText">0 of 6 lessons</span>
-              <span>450 XP</span>
+              <span id="featuredProgressText">0% complete</span>
+              <span id="featuredCourseXp">0 XP</span>
             </div>
 
-            <a class="stream-button primary" id="featuredButton" href="module-march-paws.html">Start module</a>
+            <a class="stream-button primary" id="featuredButton" href="courses.html">Browse courses</a>
           </div>
         </div>
       </section>
@@ -340,7 +339,7 @@
 
     <nav class="stream-mobile-nav" aria-label="Mobile navigation">
       <a class="active" href="index.html"><span>⌂</span><small>Home</small></a>
-      <a href="courses.html"><span>▤</span><small>Courses</small></a>
+      <a href="#courses"><span>▤</span><small>Courses</small></a>
       <a href="games.html"><span>◆</span><small>Simulations</small></a>
       <a href="library.html"><span>▧</span><small>Library</small></a>
       <a href="dashboard.html"><span>●</span><small>Profile</small></a>
@@ -350,8 +349,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
   <script src="data.js"></script>
-<script src="common.js"></script>
-<script src="home.js"></script>
-<script src="course-channels.js"></script>
+  <script src="common.js"></script>
+  <script src="home.js"></script>
 </body>
 </html>

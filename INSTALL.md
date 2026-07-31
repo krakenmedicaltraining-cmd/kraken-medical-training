@@ -1,43 +1,31 @@
-# Kraken V12.8 Profile and Membership Preparation
+# Kraken Featured Course Selector
+
+This replaces the hardcoded MARCH PAWS prime course on the homepage.
 
 ## Install
 
-1. Run `database/v12-8-profile.sql` in Supabase SQL Editor.
-2. Upload:
-   - `profile-setup.html`
-   - `profile-setup.js`
-   - `profile.html`
-   - `profile.js`
-   - `profile.css`
-3. Add a link to `profile.html` from the learner dashboard/menu.
-4. After a successful signup, redirect new users to:
-   `profile-setup.html`
-5. Redeploy Cloudflare and clear the browser cache.
+1. Run `database/v12-featured-course.sql` in Supabase SQL Editor.
+2. Replace:
+   - `index.html`
+   - `home.js`
+3. Redeploy Cloudflare and clear the browser cache.
 
-## Certificate name
+## Choose the prime course
 
-Your current certificate code already checks `profiles.display_name`.
-Once the learner saves this profile, that name will appear on newly issued certificates.
+1. Open Course Builder.
+2. Edit any published course.
+3. Open the Features tab.
+4. Switch on `Featured course`.
+5. Save.
 
-## Password changes
+That course will automatically become the homepage prime course. Selecting another featured course automatically removes the old selection.
 
-Password changes use Supabase Auth's secure `updateUser()` method.
-
-## Delete button
-
-A browser client must not contain the Supabase service-role key, so the button does not permanently delete the Auth user directly.
-
-It:
-- creates an `account_deletion_requests` row,
-- marks the profile as deleted,
-- signs the member out.
-
-An administrator can then permanently delete the Auth account from Supabase Authentication, or a secure Edge Function can automate that later.
-
-## Signup redirect example
-
-After your existing signup succeeds, use:
-
-```javascript
-location.href = "profile-setup.html";
-```
+The homepage uses:
+- course title
+- description
+- category
+- icon
+- banner or thumbnail
+- estimated time
+- XP reward
+- learner lesson progress

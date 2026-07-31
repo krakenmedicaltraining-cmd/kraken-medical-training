@@ -1,2 +1,2 @@
-Kraken V12.8 Profile and Membership Preparation
+Kraken Featured Course Selector
 See docs/INSTALL.md
