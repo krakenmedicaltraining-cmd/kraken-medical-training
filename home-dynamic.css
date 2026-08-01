@@ -356,3 +356,184 @@
     min-height: 0;
   }
 }
+
+
+/* =========================================================
+   LATEST KRAKEN JOURNAL ON HOMEPAGE
+   ========================================================= */
+
+.home-journal-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.home-journal-card {
+  overflow: hidden;
+  border: 1px solid var(--dynamic-line);
+  border-radius: 25px;
+  background: #10231d;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.18);
+}
+
+.home-journal-cover {
+  position: relative;
+  display: block;
+  min-height: 230px;
+  overflow: hidden;
+  padding: 22px;
+  background:
+    radial-gradient(
+      circle at 78% 16%,
+      rgba(57, 210, 174, 0.5),
+      transparent 24%
+    ),
+    linear-gradient(145deg, #176b5b, #051511 76%);
+  background-position: center;
+  background-size: cover;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.featured-journal-card {
+  grid-column: span 2;
+}
+
+.featured-journal-card .home-journal-cover {
+  min-height: 300px;
+}
+
+.home-journal-cover::after {
+  position: absolute;
+  right: -45px;
+  bottom: -75px;
+  width: 220px;
+  height: 220px;
+  border-radius: 48%;
+  background: rgba(0, 0, 0, 0.34);
+  content: "";
+}
+
+.home-journal-type {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(5, 24, 19, 0.58);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+}
+
+.home-journal-icon {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: #eafaf5;
+  color: #0d8f7b;
+  font-size: 21px;
+  font-weight: 900;
+}
+
+.home-journal-cover-copy {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  left: 22px;
+  z-index: 2;
+}
+
+.home-journal-cover-copy small {
+  color: #42d6b4;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.home-journal-cover-copy h3 {
+  margin: 8px 0 0;
+  font-family: Oswald, sans-serif;
+  font-size: 34px;
+  line-height: 0.98;
+  text-transform: uppercase;
+}
+
+.featured-journal-card .home-journal-cover-copy h3 {
+  font-size: clamp(38px, 5vw, 55px);
+}
+
+.home-journal-body {
+  padding: 21px;
+}
+
+.home-journal-body > p {
+  margin: 0 0 16px;
+  color: var(--dynamic-muted);
+}
+
+.home-journal-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: #93aaa3;
+  font-size: 12px;
+}
+
+.home-journal-meta span:not(:last-child)::after {
+  margin-left: 8px;
+  content: "·";
+}
+
+.home-journal-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 50px;
+  margin-top: 18px;
+  border-radius: 15px;
+  background: #159a84;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 900;
+}
+
+@media (max-width: 1100px) {
+  .home-journal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .featured-journal-card {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 650px) {
+  .home-journal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .featured-journal-card {
+    grid-column: auto;
+  }
+
+  .featured-journal-card .home-journal-cover,
+  .home-journal-cover {
+    min-height: 245px;
+  }
+
+  .featured-journal-card .home-journal-cover-copy h3,
+  .home-journal-cover-copy h3 {
+    font-size: 36px;
+  }
+}

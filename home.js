@@ -539,13 +539,164 @@
     }).join("");
   }
 
+
+  const journalTypeLabels = {
+    article: "Article",
+    video: "Video",
+    podcast: "Podcast",
+    download: "Download",
+    news: "News",
+    event: "Event",
+    case_study: "Case study"
+  };
+
+  function journalItemUrl(item) {
+    return `journal-item.html?slug=${encodeURIComponent(item.slug)}`;
+  }
+
+  async function getLatestJournalItems() {
+    const now = new Date().toISOString();
+
+    const result = await supabaseClient
+      .from("journal_items")
+      .select("*")
+      .eq("status", "published")
+      .lte("published_at", now)
+      .order("published_at", { ascending: false })
+      .limit(4);
+
+    if (result.error) {
+      throw result.error;
+    }
+
+    return result.data || [];
+  }
+
+  function renderLatestJournal(items) {
+    const grid = $("#homeJournalGrid");
+    const section = $("#latestJournalSection");
+
+    if (!grid || !section) {
+      return;
+    }
+
+    if (!items.length) {
+      section.hidden = true;
+      return;
+    }
+
+    section.hidden = false;
+
+    grid.innerHTML = items.map((item, index) => {
+      const typeLabel =
+        journalTypeLabels[item.content_type] ||
+        safeText(item.content_type, "Journal");
+
+      const category =
+        safeText(item.category, "Kraken Journal");
+
+      const author =
+        safeText(item.author, "Kraken Medical Training");
+
+      const title =
+        safeText(item.title, "Untitled Journal item");
+
+      const excerpt =
+        safeText(
+          item.excerpt,
+          "Open this Journal item to continue reading."
+        );
+
+      const coverImage =
+        safeText(item.cover_image_url);
+
+      const dateText = item.published_at
+        ? new Date(item.published_at).toLocaleDateString(
+            undefined,
+            {
+              day: "numeric",
+              month: "short",
+              year: "numeric"
+            }
+          )
+        : "";
+
+      const mediaIcon = {
+        article: "☷",
+        video: "▶",
+        podcast: "◉",
+        download: "⇩",
+        news: "✦",
+        event: "◫",
+        case_study: "⌁"
+      }[item.content_type] || "K";
+
+      const style = coverImage
+        ? `style="background-image:linear-gradient(180deg,rgba(2,16,12,.05),rgba(2,16,12,.9)),url('${escapeHtml(coverImage)}')"`
+        : "";
+
+      return `
+        <article class="home-journal-card ${index === 0 ? "featured-journal-card" : ""}">
+          <a
+            class="home-journal-cover"
+            href="${journalItemUrl(item)}"
+            ${style}
+          >
+            <span class="home-journal-type">
+              ${escapeHtml(typeLabel)}
+            </span>
+
+            <span class="home-journal-icon">
+              ${escapeHtml(mediaIcon)}
+            </span>
+
+            <div class="home-journal-cover-copy">
+              <small>${escapeHtml(category)}</small>
+              <h3>${escapeHtml(title)}</h3>
+            </div>
+          </a>
+
+          <div class="home-journal-body">
+            <p>${escapeHtml(excerpt)}</p>
+
+            <div class="home-journal-meta">
+              <span>${escapeHtml(author)}</span>
+              ${dateText ? `<span>${escapeHtml(dateText)}</span>` : ""}
+              <span>
+                ${Number(item.reading_time_minutes || 5)} min
+              </span>
+            </div>
+
+            <a
+              class="home-journal-action"
+              href="${journalItemUrl(item)}"
+            >
+              ${item.content_type === "video"
+                ? "▶ Watch"
+                : item.content_type === "podcast"
+                  ? "◉ Listen"
+                  : item.content_type === "download"
+                    ? "⇩ Open download"
+                    : "Read Journal item"
+              }
+            </a>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
   async function initialiseHome() {
     try {
-      const [courses, featuredCourse, session] =
+      const [courses, featuredCourse, session, journalItems] =
         await Promise.all([
           getPublishedCourses(),
           getFeaturedCourse(),
-          getSession()
+          getSession(),
+          getLatestJournalItems().catch(error => {
+            console.warn("Latest Journal could not load:", error);
+            return [];
+          })
         ]);
 
       const courseIds = courses.map(course => course.id);
@@ -558,6 +709,7 @@
 
       renderCategories(courses, lessonCounts);
       renderLatestCourses(courses, lessonCounts, progressMap);
+      renderLatestJournal(journalItems);
 
       if (featuredCourse) {
         const featuredProgress =

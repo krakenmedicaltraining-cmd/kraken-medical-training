@@ -1,2 +1,2 @@
-Kraken V13.2 Dynamic Categories and Premium Course Cards
+Kraken V13.3 Latest Journal Homepage Shelf
 See docs/INSTALL.md
