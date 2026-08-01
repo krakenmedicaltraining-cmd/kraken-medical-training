@@ -1,9 +1,10 @@
-Replace:
-- journal-admin.html
-- journal-admin.css
-- journal-admin.js
+KRAKEN JOURNAL ADMIN STARTUP FIX
 
-Then redeploy Cloudflare and reopen the page.
+Replace only: journal-admin.js
 
-Existing posts now show Preview, Edit, Duplicate and Delete buttons.
-Delete requires confirmation and typing DELETE.
+This removes the missing requireAdmin() dependency and checks Supabase directly.
+
+After upload:
+1. Redeploy Cloudflare.
+2. Fully close the browser tab.
+3. Reopen journal-admin.html.

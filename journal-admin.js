@@ -151,5 +151,28 @@
   $("#mobileSave").onclick=()=>$("#itemForm").requestSubmit();
   $("#signOut").onclick=async()=>{await supabaseClient.auth.signOut();location.href="index.html"};
 
-  (async()=>{const session=await requireAdmin();if(!session)return;reset();await loadItems()})().catch(e=>alert(`Journal builder could not start: ${e.message}`));
+  async function requireJournalAdmin(){
+    const sessionResult=await supabaseClient.auth.getSession();
+    if(sessionResult.error)throw sessionResult.error;
+    const session=sessionResult.data.session;
+    if(!session){
+      localStorage.setItem("kmtReturnTo",location.pathname+location.search);
+      location.href="login.html";
+      return null;
+    }
+    const adminResult=await supabaseClient
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id",session.user.id)
+      .maybeSingle();
+    if(adminResult.error)throw adminResult.error;
+    if(!adminResult.data){
+      alert("This page is only available to Kraken administrators.");
+      location.href="journal.html";
+      return null;
+    }
+    return session;
+  }
+
+  (async()=>{const session=await requireJournalAdmin();if(!session)return;reset();await loadItems()})().catch(e=>alert(`Journal builder could not start: ${e.message}`));
 })();
