@@ -1,14 +1,9 @@
-KRAKEN JOURNAL ADMIN BUTTON UPDATE
+Replace:
+- journal-admin.html
+- journal-admin.css
+- journal-admin.js
 
-Replace these files on the website:
+Then redeploy Cloudflare and reopen the page.
 
-- journal.html
-- journal.css
-- journal.js
-
-Then redeploy Cloudflare and fully close/reopen the browser tab.
-
-The Manage Journal button:
-- appears on desktop and mobile,
-- links to journal-admin.html,
-- is only visible to users listed in admin_users.
+Existing posts now show Preview, Edit, Duplicate and Delete buttons.
+Delete requires confirmation and typing DELETE.
