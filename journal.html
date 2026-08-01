@@ -8,21 +8,41 @@
 </head>
 <body>
 <header class="j-topbar">
-  <a class="j-brand" href="index.html"><span>K</span><strong>Kraken Journal</strong></a>
+  <a class="j-brand" href="index.html">
+    <span>K</span>
+    <strong>Kraken Journal</strong>
+  </a>
+
   <nav>
     <a href="index.html">Home</a>
     <a href="courses.html">Courses</a>
     <a href="library.html">Library</a>
     <a href="journal.html" class="active">Journal</a>
   </nav>
+
+  <a
+    id="journalAdminButton"
+    class="journal-admin-button"
+    href="journal-admin.html"
+    hidden
+  >
+    ✎ Manage Journal
+  </a>
 </header>
 
 <main>
   <section class="j-hero">
     <div class="j-hero-inner">
-      <span class="j-eyebrow">Medical learning, updates and field notes</span>
+      <span class="j-eyebrow">
+        Medical learning, updates and field notes
+      </span>
+
       <h1>Kraken Journal</h1>
-      <p>Articles, videos, podcasts, downloads, events and clinical case studies in one content hub.</p>
+
+      <p>
+        Articles, videos, podcasts, downloads, events and
+        clinical case studies in one content hub.
+      </p>
     </div>
   </section>
 
@@ -32,7 +52,12 @@
     </section>
 
     <section class="j-controls">
-      <input id="journalSearch" type="search" placeholder="Search the Journal">
+      <input
+        id="journalSearch"
+        type="search"
+        placeholder="Search the Journal"
+      >
+
       <select id="journalType">
         <option value="">All content types</option>
         <option value="article">Articles</option>
@@ -43,14 +68,23 @@
         <option value="event">Events</option>
         <option value="case_study">Case studies</option>
       </select>
-      <select id="journalCategory"><option value="">All categories</option></select>
+
+      <select id="journalCategory">
+        <option value="">All categories</option>
+      </select>
     </section>
 
     <section>
       <div class="j-section-head">
-        <div><span class="j-eyebrow">Latest content</span><h2>Explore the Journal</h2></div>
+        <div>
+          <span class="j-eyebrow">Latest content</span>
+          <h2>Explore the Journal</h2>
+        </div>
       </div>
-      <div id="journalGrid" class="journal-grid"><div class="j-empty">Loading the Journal…</div></div>
+
+      <div id="journalGrid" class="journal-grid">
+        <div class="j-empty">Loading the Journal…</div>
+      </div>
     </section>
   </div>
 </main>

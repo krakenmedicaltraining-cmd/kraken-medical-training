@@ -1,11 +1,14 @@
-KRAKEN QUIZ ANSWER VISIBILITY FIX
+KRAKEN JOURNAL ADMIN BUTTON UPDATE
 
-Replace the existing quiz-player.css file on your website with this one.
+Replace these files on the website:
 
-Then:
-1. Redeploy Cloudflare.
-2. Fully close the course browser tab.
-3. Reopen the course.
-4. If the old colours remain, clear the site's cached data.
+- journal.html
+- journal.css
+- journal.js
 
-This forces answer text, question text and scenario text to use readable light colours.
+Then redeploy Cloudflare and fully close/reopen the browser tab.
+
+The Manage Journal button:
+- appears on desktop and mobile,
+- links to journal-admin.html,
+- is only visible to users listed in admin_users.
