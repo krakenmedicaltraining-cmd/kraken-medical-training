@@ -3,13 +3,91 @@
 (() => {
   const $ = selector => document.querySelector(selector);
 
+  const escapeHtml = value =>
+    String(value ?? "").replace(/[&<>"']/g, character => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[character]));
+
+  const categoryThemes = {
+    "trauma care": {
+      className: "cat-trauma",
+      icon: "✚",
+      label: "Trauma"
+    },
+    "resuscitation": {
+      className: "cat-resus",
+      icon: "♥",
+      label: "Resuscitation"
+    },
+    "communication": {
+      className: "cat-comms",
+      icon: "◫",
+      label: "Communication"
+    },
+    "clinical communication": {
+      className: "cat-comms",
+      icon: "◫",
+      label: "Communication"
+    },
+    "primary healthcare": {
+      className: "cat-primary",
+      icon: "⌁",
+      label: "Primary care"
+    },
+    "clinical skills": {
+      className: "cat-clinical",
+      icon: "✦",
+      label: "Clinical skills"
+    },
+    "professional development": {
+      className: "cat-development",
+      icon: "↑",
+      label: "Development"
+    },
+    "military medicine": {
+      className: "cat-military",
+      icon: "⬡",
+      label: "Military medicine"
+    },
+    "mental health": {
+      className: "cat-mental",
+      icon: "◎",
+      label: "Mental health"
+    },
+    "games and simulations": {
+      className: "cat-sim",
+      icon: "◆",
+      label: "Simulations"
+    }
+  };
+
   function safeText(value, fallback = "") {
     const text = String(value ?? "").trim();
     return text || fallback;
   }
 
+  function normaliseCategory(value) {
+    return safeText(value, "Other").toLowerCase();
+  }
+
+  function categoryTheme(category) {
+    return categoryThemes[normaliseCategory(category)] || {
+      className: "cat-default",
+      icon: "K",
+      label: category
+    };
+  }
+
   function courseUrl(course) {
     return `course.html?id=${encodeURIComponent(course.id)}`;
+  }
+
+  function categoryUrl(category) {
+    return `courses.html?category=${encodeURIComponent(category)}`;
   }
 
   function artTitle(title) {
@@ -23,6 +101,7 @@
     }
 
     const midpoint = Math.ceil(words.length / 2);
+
     return `${words.slice(0, midpoint).join(" ")}<br>${words.slice(midpoint).join(" ")}`;
   }
 
@@ -32,6 +111,20 @@
     } catch {
       return null;
     }
+  }
+
+  async function getPublishedCourses() {
+    const result = await supabaseClient
+      .from("courses")
+      .select("*")
+      .eq("status", "Published")
+      .order("updated_at", { ascending: false });
+
+    if (result.error) {
+      throw result.error;
+    }
+
+    return result.data || [];
   }
 
   async function getFeaturedCourse() {
@@ -44,73 +137,109 @@
       .limit(1)
       .maybeSingle();
 
-    if (result.error) throw result.error;
+    if (result.error) {
+      throw result.error;
+    }
+
     return result.data;
   }
 
+  async function getCourseLessonCounts(courseIds) {
+    if (!courseIds.length) {
+      return {};
+    }
+
+    const result = await supabaseClient
+      .from("course_lessons")
+      .select("course_id")
+      .in("course_id", courseIds);
+
+    if (result.error) {
+      console.warn("Could not load lesson counts:", result.error);
+      return {};
+    }
+
+    return (result.data || []).reduce((counts, row) => {
+      const key = String(row.course_id);
+      counts[key] = (counts[key] || 0) + 1;
+      return counts;
+    }, {});
+  }
+
+  async function getUserProgress(courseIds, session) {
+    if (!session || !courseIds.length) {
+      return {};
+    }
+
+    const result = await supabaseClient
+      .from("course_progress")
+      .select("course_id, percent, completed")
+      .eq("user_id", session.user.id)
+      .in("course_id", courseIds);
+
+    if (result.error) {
+      console.warn("Could not load course progress:", result.error);
+      return {};
+    }
+
+    return (result.data || []).reduce((progress, row) => {
+      progress[String(row.course_id)] = {
+        percent: Math.max(0, Math.min(100, Number(row.percent || 0))),
+        completed: Boolean(row.completed)
+      };
+      return progress;
+    }, {});
+  }
+
   async function getFeaturedProgress(course, session) {
-    const lessonsResult = await supabaseClient
+    const lessonResult = await supabaseClient
       .from("course_lessons")
       .select("id")
       .eq("course_id", course.id)
       .order("position");
 
-    if (lessonsResult.error) throw lessonsResult.error;
+    const lessonCount =
+      lessonResult.error
+        ? 0
+        : (lessonResult.data || []).length;
 
-    const lessons = lessonsResult.data || [];
-    const lessonCount = lessons.length;
-
-    if (!session || !lessonCount) {
-      return {
-        lessonCount,
-        completedCount: 0,
-        percent: 0
-      };
+    if (!session) {
+      return { lessonCount, completedCount: 0, percent: 0 };
     }
 
     const progressResult = await supabaseClient
-      .from("course_lesson_progress")
-      .select("lesson_id, completed")
+      .from("course_progress")
+      .select("percent, completed")
       .eq("course_id", course.id)
-      .eq("user_id", session.user.id);
+      .eq("user_id", session.user.id)
+      .maybeSingle();
 
-    if (progressResult.error) throw progressResult.error;
+    if (progressResult.error) {
+      return { lessonCount, completedCount: 0, percent: 0 };
+    }
 
-    const validIds = new Set(lessons.map(lesson => String(lesson.id)));
-    const completedIds = new Set(
-      (progressResult.data || [])
-        .filter(row => row.completed && validIds.has(String(row.lesson_id)))
-        .map(row => String(row.lesson_id))
-    );
-
-    const completedCount = completedIds.size;
     const percent = Math.max(
       0,
-      Math.min(100, Math.round((completedCount / lessonCount) * 100))
+      Math.min(100, Number(progressResult.data?.percent || 0))
     );
 
-    return {
-      lessonCount,
-      completedCount,
-      percent
-    };
+    const completedCount = lessonCount
+      ? Math.round((percent / 100) * lessonCount)
+      : 0;
+
+    return { lessonCount, completedCount, percent };
   }
 
   function renderEmptyFeaturedCourse() {
-    const title = $("#featuredCourseTitle");
-    const description = $("#featuredCourseDescription");
-
-    if (title) title.textContent = "No featured course selected";
-    if (description) {
-      description.textContent =
-        "Open Course Builder, edit a published course and switch on Featured course.";
+    if ($("#featuredCourseTitle")) {
+      $("#featuredCourseTitle").textContent =
+        "No featured course selected";
     }
 
-    $("#featuredButton")?.setAttribute("href", "admin.html");
-    if ($("#featuredButton")) $("#featuredButton").textContent = "Choose featured course";
-
-    $("#heroFeaturedButton")?.setAttribute("href", "courses.html");
-    $("#heroMissionButton")?.setAttribute("href", "courses.html");
+    if ($("#featuredCourseDescription")) {
+      $("#featuredCourseDescription").textContent =
+        "Open Course Builder and mark one published course as Featured.";
+    }
   }
 
   function renderFeaturedCourse(course, progress) {
@@ -121,162 +250,346 @@
       course.description,
       "Open this featured course to begin learning."
     );
-    const estimatedTime = safeText(course.estimated_time, "Self-paced");
+
+    const estimatedMinutes =
+      Number(course.estimated_minutes || 0);
+
+    const estimatedTime = estimatedMinutes
+      ? `${estimatedMinutes} min`
+      : safeText(course.estimated_time, "Self-paced");
+
     const xp = Number(course.xp_reward || 0);
 
-    if ($("#featuredCourseCategory")) {
-      $("#featuredCourseCategory").textContent = category.toUpperCase();
-    }
+    $("#featuredCourseCategory").textContent =
+      category.toUpperCase();
 
-    if ($("#featuredCourseArtTitle")) {
-      $("#featuredCourseArtTitle").innerHTML = artTitle(title);
-    }
+    $("#featuredCourseArtTitle").innerHTML =
+      artTitle(title);
 
-    if ($("#featuredCourseStatus")) {
-      $("#featuredCourseStatus").textContent =
-        progress.percent > 0 && progress.percent < 100
+    $("#featuredCourseStatus").textContent =
+      progress.percent >= 100
+        ? "Completed"
+        : progress.percent > 0
           ? "In progress"
-          : progress.percent === 100
-            ? "Completed"
-            : "Featured course";
-    }
+          : "Featured course";
 
-    if ($("#featuredCourseTitle")) {
-      $("#featuredCourseTitle").textContent = title;
-    }
+    $("#featuredCourseTitle").textContent = title;
+    $("#featuredCourseDescription").textContent = description;
+    $("#featuredProgress").style.width = `${progress.percent}%`;
 
-    if ($("#featuredCourseDescription")) {
-      $("#featuredCourseDescription").textContent = description;
-    }
-
-    if ($("#featuredProgress")) {
-      $("#featuredProgress").style.width = `${progress.percent}%`;
-    }
-
-    if ($("#featuredProgressText")) {
-      $("#featuredProgressText").textContent = progress.lessonCount
+    $("#featuredProgressText").textContent =
+      progress.lessonCount
         ? `${progress.completedCount} of ${progress.lessonCount} lessons`
         : `${progress.percent}% complete`;
-    }
 
-    if ($("#featuredCourseXp")) {
-      $("#featuredCourseXp").textContent = `${xp} XP`;
-    }
+    $("#featuredCourseXp").textContent = `${xp} XP`;
 
-    if ($("#featuredButton")) {
-      $("#featuredButton").href = url;
-      $("#featuredButton").textContent =
-        progress.percent > 0 && progress.percent < 100
+    $("#featuredButton").href = url;
+    $("#featuredButton").textContent =
+      progress.percent >= 100
+        ? "Review course"
+        : progress.percent > 0
           ? "Continue course"
-          : progress.percent === 100
-            ? "Review course"
-            : "Start course";
-    }
+          : "Start course";
 
-    if ($("#heroFeaturedIcon")) {
-      $("#heroFeaturedIcon").textContent =
-        safeText(course.icon, title.slice(0, 1)).slice(0, 3).toUpperCase();
-    }
+    $("#heroFeaturedIcon").textContent =
+      safeText(course.icon, title.slice(0, 1))
+        .slice(0, 3)
+        .toUpperCase();
 
-    if ($("#heroFeaturedCategory")) {
-      $("#heroFeaturedCategory").textContent = category;
-    }
+    $("#heroFeaturedCategory").textContent = category;
+    $("#heroFeaturedTitle").textContent = title;
+    $("#heroFeaturedDescription").textContent = description;
+    $("#heroFeaturedTime").textContent = estimatedTime;
+    $("#heroProgress").style.width = `${progress.percent}%`;
 
-    if ($("#heroFeaturedTitle")) {
-      $("#heroFeaturedTitle").textContent = title;
-    }
-
-    if ($("#heroFeaturedDescription")) {
-      $("#heroFeaturedDescription").textContent = description;
-    }
-
-    if ($("#heroFeaturedTime")) {
-      $("#heroFeaturedTime").textContent = estimatedTime;
-    }
-
-    if ($("#heroProgress")) {
-      $("#heroProgress").style.width = `${progress.percent}%`;
-    }
-
-    if ($("#heroProgressText")) {
-      $("#heroProgressText").textContent = progress.lessonCount
+    $("#heroProgressText").textContent =
+      progress.lessonCount
         ? `${progress.completedCount} of ${progress.lessonCount} lessons`
         : `${progress.percent}% complete`;
-    }
 
-    if ($("#heroFeaturedButton")) {
-      $("#heroFeaturedButton").href = url;
-      $("#heroFeaturedButton").textContent =
-        progress.percent > 0 ? "▶ Continue training" : "▶ Start training";
-    }
+    $("#heroFeaturedButton").href = url;
+    $("#heroMissionButton").href = url;
 
-    if ($("#heroMissionButton")) {
-      $("#heroMissionButton").href = url;
-      $("#heroMissionButton").textContent =
-        progress.percent > 0 ? "Resume mission" : "Start mission";
-    }
+    const coverImage =
+      safeText(
+        course.cover_image_url ||
+        course.banner_url ||
+        course.thumbnail_url
+      );
 
-    const art = $("#featuredCourseArt");
-    const image = safeText(course.banner_url || course.thumbnail_url);
+    if (coverImage) {
+      $("#featuredCourseArt").style.backgroundImage =
+        `linear-gradient(180deg,rgba(2,16,12,.08),rgba(2,16,12,.76)),url("${coverImage.replace(/"/g, "%22")}")`;
 
-    if (art && image) {
-      art.style.backgroundImage =
-        `linear-gradient(180deg,rgba(2,16,12,.08),rgba(2,16,12,.72)),url("${image.replace(/"/g, "%22")}")`;
-      art.style.backgroundSize = "cover";
-      art.style.backgroundPosition = "center";
+      $("#featuredCourseArt").style.backgroundSize = "cover";
+      $("#featuredCourseArt").style.backgroundPosition = "center";
     }
   }
 
-  async function renderFeatured() {
-    try {
-      const [course, session] = await Promise.all([
-        getFeaturedCourse(),
-        getSession()
-      ]);
+  function renderCategories(courses, lessonCounts) {
+    const shelf = $("#dynamicCategoryShelf");
 
-      if (!course) {
-        renderEmptyFeaturedCourse();
-        return;
-      }
-
-      const progress = await getFeaturedProgress(course, session);
-      renderFeaturedCourse(course, progress);
-    } catch (error) {
-      console.error("Could not load featured course:", error);
-      renderEmptyFeaturedCourse();
+    if (!shelf) {
+      return;
     }
-  }
 
-  async function renderOnlineCourses() {
-    const customSection = $("#customCoursesSection");
-    const customGrid = $("#customCourseGrid");
+    const categoryMap = new Map();
 
-    if (!customSection || !customGrid) return;
+    courses.forEach(course => {
+      const category = safeText(course.category, "Other");
+      const existing = categoryMap.get(category) || {
+        category,
+        count: 0,
+        lessons: 0,
+        minutes: 0
+      };
 
-    try {
-      const courses = await getPublicCoursesOnline();
+      existing.count += 1;
+      existing.lessons +=
+        lessonCounts[String(course.id)] || 0;
 
-      if (!courses.length) {
-        customSection.hidden = true;
-        return;
-      }
+      existing.minutes +=
+        Number(course.estimated_minutes || 0);
 
-      customSection.hidden = false;
-      customGrid.innerHTML = courses.map(course => `
-        <a class="card" href="course.html?id=${encodeURIComponent(course.id)}">
-          <span class="card-icon">${escapeHtml(course.icon || "K")}</span>
-          <span class="tag">${escapeHtml(course.category || "Course")}</span>
-          <h3>${escapeHtml(course.title)}</h3>
-          <p>${escapeHtml(course.description || "")}</p>
-          <span class="card-link">Open course →</span>
+      categoryMap.set(category, existing);
+    });
+
+    const categories = [...categoryMap.values()]
+      .sort((a, b) =>
+        b.count - a.count ||
+        a.category.localeCompare(b.category)
+      );
+
+    if (!categories.length) {
+      shelf.innerHTML = `
+        <div class="dynamic-loading-card">
+          No published course categories yet.
+        </div>
+      `;
+      return;
+    }
+
+    shelf.innerHTML = categories.map((item, index) => {
+      const theme = categoryTheme(item.category);
+      const hours =
+        item.minutes > 0
+          ? `${Math.max(1, Math.round(item.minutes / 60))} hr`
+          : `${item.lessons} lesson${item.lessons === 1 ? "" : "s"}`;
+
+      return `
+        <a
+          class="dynamic-category-card ${theme.className}"
+          href="${categoryUrl(item.category)}"
+        >
+          <span class="dynamic-category-number">
+            ${String(index + 1).padStart(2, "0")}
+          </span>
+
+          <span class="dynamic-category-icon">
+            ${escapeHtml(theme.icon)}
+          </span>
+
+          <div class="dynamic-category-copy">
+            <small>TRAINING CATEGORY</small>
+
+            <h3>${escapeHtml(item.category)}</h3>
+
+            <p>
+              ${item.count} course${item.count === 1 ? "" : "s"}
+              ·
+              ${escapeHtml(hours)}
+            </p>
+
+            <span>Browse category →</span>
+          </div>
         </a>
-      `).join("");
+      `;
+    }).join("");
+  }
+
+  function renderLatestCourses(
+    courses,
+    lessonCounts,
+    progressMap
+  ) {
+    const grid = $("#customCourseGrid");
+
+    if (!grid) {
+      return;
+    }
+
+    const latest = courses.slice(0, 8);
+
+    if (!latest.length) {
+      grid.innerHTML = `
+        <div class="dynamic-loading-card">
+          No published courses yet.
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = latest.map(course => {
+      const category =
+        safeText(course.category, "Kraken course");
+
+      const title =
+        safeText(course.title, "Untitled course");
+
+      const description =
+        safeText(
+          course.description,
+          "Open the course to begin training."
+        );
+
+      const lessons =
+        lessonCounts[String(course.id)] || 0;
+
+      const progress =
+        progressMap[String(course.id)] || {
+          percent: 0,
+          completed: false
+        };
+
+      const minutes =
+        Number(course.estimated_minutes || 0);
+
+      const xp =
+        Number(course.xp_reward || 0);
+
+      const difficulty =
+        safeText(course.difficulty, "All levels");
+
+      const coverImage =
+        safeText(
+          course.cover_image_url ||
+          course.banner_url ||
+          course.thumbnail_url
+        );
+
+      const style = coverImage
+        ? `style="background-image:linear-gradient(180deg,rgba(3,17,13,.05),rgba(3,17,13,.92)),url('${escapeHtml(coverImage)}')"`
+        : "";
+
+      const actionText =
+        progress.completed
+          ? "Review course"
+          : progress.percent > 0
+            ? "Continue course"
+            : "Start course";
+
+      return `
+        <article class="premium-course-card">
+          <a
+            class="premium-course-cover"
+            href="${courseUrl(course)}"
+            ${style}
+          >
+            <span class="premium-course-category">
+              ${escapeHtml(category)}
+            </span>
+
+            <span class="premium-course-icon">
+              ${escapeHtml(
+                safeText(course.icon, title.slice(0, 3))
+                  .slice(0, 3)
+                  .toUpperCase()
+              )}
+            </span>
+
+            <div class="premium-course-cover-copy">
+              <small>KRAKEN COURSE</small>
+              <h3>${escapeHtml(title)}</h3>
+            </div>
+          </a>
+
+          <div class="premium-course-body">
+            <p>${escapeHtml(description)}</p>
+
+            <div class="premium-course-meta">
+              <span>${escapeHtml(difficulty)}</span>
+              ${minutes ? `<span>${minutes} min</span>` : ""}
+              ${lessons ? `<span>${lessons} lesson${lessons === 1 ? "" : "s"}</span>` : ""}
+              ${xp ? `<span>${xp} XP</span>` : ""}
+            </div>
+
+            ${progress.percent > 0
+              ? `
+                <div class="premium-course-progress">
+                  <span style="width:${progress.percent}%"></span>
+                </div>
+
+                <small class="premium-progress-label">
+                  ${progress.percent}% complete
+                </small>
+              `
+              : ""
+            }
+
+            <a
+              class="premium-course-action"
+              href="${courseUrl(course)}"
+            >
+              ▶ ${actionText}
+            </a>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  async function initialiseHome() {
+    try {
+      const [courses, featuredCourse, session] =
+        await Promise.all([
+          getPublishedCourses(),
+          getFeaturedCourse(),
+          getSession()
+        ]);
+
+      const courseIds = courses.map(course => course.id);
+
+      const [lessonCounts, progressMap] =
+        await Promise.all([
+          getCourseLessonCounts(courseIds),
+          getUserProgress(courseIds, session)
+        ]);
+
+      renderCategories(courses, lessonCounts);
+      renderLatestCourses(courses, lessonCounts, progressMap);
+
+      if (featuredCourse) {
+        const featuredProgress =
+          await getFeaturedProgress(featuredCourse, session);
+
+        renderFeaturedCourse(
+          featuredCourse,
+          featuredProgress
+        );
+      } else {
+        renderEmptyFeaturedCourse();
+      }
     } catch (error) {
-      console.error("Could not load online courses:", error);
-      customSection.hidden = true;
+      console.error("Homepage could not load:", error);
+
+      if ($("#dynamicCategoryShelf")) {
+        $("#dynamicCategoryShelf").innerHTML = `
+          <div class="dynamic-loading-card">
+            Categories could not be loaded.
+          </div>
+        `;
+      }
+
+      if ($("#customCourseGrid")) {
+        $("#customCourseGrid").innerHTML = `
+          <div class="dynamic-loading-card">
+            Courses could not be loaded.
+          </div>
+        `;
+      }
     }
   }
 
-  renderFeatured();
-  renderOnlineCourses();
+  initialiseHome();
 })();
