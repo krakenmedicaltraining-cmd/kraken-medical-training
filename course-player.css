@@ -109,3 +109,157 @@ body.k-v11.course-player-body {
     width: 100%;
   }
 }
+
+
+/* =========================================================
+   COURSE BLOCK RENDERER FIX
+   ========================================================= */
+
+.lesson-block-stack {
+  display: grid;
+  gap: 22px;
+  margin: 24px 0;
+}
+
+.lesson-block {
+  overflow: hidden;
+  padding: 22px;
+  border: 1px solid rgba(15, 86, 68, 0.14);
+  border-radius: 22px;
+  background: #f8fbfa;
+}
+
+.lesson-block h3 {
+  margin: 5px 0 12px;
+  font-size: clamp(22px, 4vw, 31px);
+}
+
+.lesson-block p {
+  margin: 0;
+  line-height: 1.65;
+}
+
+.lesson-block-label {
+  display: inline-flex;
+  margin-bottom: 8px;
+  color: #12957e;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.lesson-rich-text {
+  color: #52666c;
+  font-size: 18px;
+  line-height: 1.72;
+}
+
+.lesson-block-image {
+  margin: 0;
+  padding: 0;
+  background: #071510;
+}
+
+.lesson-block-image img {
+  display: block;
+  width: 100%;
+  max-height: 620px;
+  object-fit: contain;
+  background: #071510;
+}
+
+.lesson-block-image figcaption {
+  padding: 13px 17px;
+  color: #c5d7d1;
+  font-size: 14px;
+}
+
+.lesson-block-media .lesson-media {
+  margin-top: 14px;
+}
+
+.lesson-block-podcast audio {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.lesson-block-download {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: center;
+}
+
+.lesson-block-reflection {
+  border-color: rgba(18, 149, 126, 0.35);
+  background:
+    radial-gradient(
+      circle at 95% 5%,
+      rgba(64, 210, 177, 0.13),
+      transparent 30%
+    ),
+    #edf8f5;
+}
+
+.reflection-answer {
+  width: 100%;
+  min-height: 140px;
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid #bcd5ce;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #102b35;
+  font: inherit;
+  resize: vertical;
+}
+
+.lesson-block-simulation {
+  border-color: rgba(64, 210, 177, 0.25);
+  background:
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(175, 234, 69, 0.18),
+      transparent 28%
+    ),
+    #0a211a;
+  color: #ffffff;
+}
+
+.lesson-block-simulation p {
+  color: #b8cbc5;
+}
+
+.course-simulation-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 650px) {
+  .lesson-block {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .lesson-block-image {
+    padding: 0;
+  }
+
+  .lesson-block-download {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-block-download .player-button {
+    width: 100%;
+  }
+
+  .course-simulation-list {
+    display: grid;
+  }
+
+  .course-simulation-list .player-button {
+    width: 100%;
+  }
+}

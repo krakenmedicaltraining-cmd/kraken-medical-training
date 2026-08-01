@@ -1,26 +1,32 @@
-KRAKEN CERTIFICATE LOGO UPDATE
+KRAKEN COURSE CONTENT BLOCK FIX
 
 Replace:
 
-- certificate.html
-- certificate.css
+- course-player.js
+- course-player.css
 
-The code expects the logo at:
+WHAT THIS FIXES
 
-kraken-medical-logo.png
+- Image blocks now display inside lessons.
+- Video blocks display in their correct block position.
+- Reflection blocks are styled and include a learner text area.
+- Reflection answers are saved locally on the learner's device.
+- Podcast/audio blocks display.
+- Download blocks appear inside the lesson and in the Downloads panel.
+- Simulation blocks display inside the lesson.
+- The course Simulation panel now finds simulations inside lesson blocks.
+- Multiple simulations can be shown.
+- Existing older courses still work through the fallback fields.
 
-Your current GitHub repository already has that file in the repository root,
-so no folder change is required.
+IMPORTANT ABOUT IMAGE LINKS
 
-The logo now appears:
+Use a direct public image URL ending in JPG, PNG, WEBP or a Supabase Storage
+public URL. Google Images thumbnail links such as encrypted-tbn0.gstatic.com
+may expire or block embedding.
 
-- in the certificate itself
-- in the certificate top navigation
-- in printed and PDF certificates
+No Supabase SQL is required for this update.
 
 After upload:
-
 1. Redeploy Cloudflare.
 2. Fully close and reopen the browser tab.
-3. Open an existing certificate.
-4. Test Print / Save PDF.
+3. Open the course again.
