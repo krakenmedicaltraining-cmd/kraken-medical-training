@@ -6,41 +6,168 @@
   <title>Instructor Hub | Kraken</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="kraken-v12-pages.css">
+  <link rel="stylesheet" href="achievement-system.css">
 </head>
 <body class="k12-shell">
 <header class="k12-topbar">
   <a class="k12-back" href="admin.html" aria-label="Course admin">←</a>
-  <a class="k12-brand" href="index.html"><span class="k12-mark">K</span><span>Instructor Hub</span></a>
+  <a class="k12-brand" href="index.html">
+    <span class="k12-mark">K</span>
+    <span>Instructor Hub</span>
+  </a>
   <button class="k12-action" id="logout">Sign out</button>
 </header>
+
 <main class="k12-main">
   <section class="k12-hero">
     <div class="k12-hero-inner">
       <span class="k12-eyebrow">Command centre</span>
       <h1>Instructor hub</h1>
-      <p>See the pulse of Kraken at a glance, communicate with learners and review course performance.</p>
+      <p>Manage learners, achievements, communication and course performance.</p>
     </div>
   </section>
+
   <div class="k12-content">
     <section class="k12-section">
       <div class="k12-stat-grid">
-        <article class="k12-card k12-stat"><span class="k12-label">Learners</span><strong id="learnerCount">0</strong><p>Registered accounts</p></article>
-        <article class="k12-card k12-stat"><span class="k12-label">Completions</span><strong id="completionCount">0</strong><p>Finished courses</p></article>
-        <article class="k12-card k12-stat"><span class="k12-label">Average score</span><strong id="averageScore">0%</strong><p>Across assessed learning</p></article>
-        <article class="k12-card k12-stat"><span class="k12-label">Certificates</span><strong id="certificateCount">0</strong><p>Issued credentials</p></article>
+        <article class="k12-card k12-stat">
+          <span class="k12-label">Learners</span>
+          <strong id="learnerCount">0</strong>
+          <p>Registered accounts</p>
+        </article>
+        <article class="k12-card k12-stat">
+          <span class="k12-label">Completions</span>
+          <strong id="completionCount">0</strong>
+          <p>Finished courses</p>
+        </article>
+        <article class="k12-card k12-stat">
+          <span class="k12-label">Average score</span>
+          <strong id="averageScore">0%</strong>
+          <p>Across assessed learning</p>
+        </article>
+        <article class="k12-card k12-stat">
+          <span class="k12-label">Certificates</span>
+          <strong id="certificateCount">0</strong>
+          <p>Issued credentials</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="k12-section" id="achievementManager">
+      <div class="k12-section-head">
+        <div>
+          <span class="k12-eyebrow">Progression system</span>
+          <h2>Achievement badges</h2>
+          <p>Create badges that unlock from courses, categories, scores, XP or simulation activity.</p>
+        </div>
+      </div>
+
+      <div class="achievement-admin-grid">
+        <form class="k12-card k12-panel" id="achievementForm">
+          <input id="achievementId" type="hidden">
+
+          <div class="k12-form-grid">
+            <div class="k12-field">
+              <label for="achievementName">Badge name</label>
+              <input id="achievementName" required placeholder="Trauma Initiate">
+            </div>
+
+            <div class="k12-field">
+              <label for="achievementIcon">Icon or emoji</label>
+              <input id="achievementIcon" value="🏅" maxlength="12">
+            </div>
+
+            <div class="k12-field full">
+              <label for="achievementDescription">Description</label>
+              <textarea id="achievementDescription" required></textarea>
+            </div>
+
+            <div class="k12-field full">
+              <label for="achievementUnlockText">How to unlock</label>
+              <textarea id="achievementUnlockText" required></textarea>
+            </div>
+
+            <div class="k12-field">
+              <label for="achievementRuleType">Rule</label>
+              <select id="achievementRuleType">
+                <option value="course_count">Complete a number of courses</option>
+                <option value="specific_course">Complete a specific course</option>
+                <option value="category_count">Complete courses in a category</option>
+                <option value="perfect_score">Achieve a quiz score</option>
+                <option value="xp_total">Reach an XP total</option>
+                <option value="simulation_count">Launch simulations</option>
+              </select>
+            </div>
+
+            <div class="k12-field">
+              <label for="achievementTarget">Target amount</label>
+              <input id="achievementTarget" type="number" min="1" value="1">
+            </div>
+
+            <div class="k12-field">
+              <label for="achievementCourse">Required course</label>
+              <select id="achievementCourse">
+                <option value="">None</option>
+              </select>
+            </div>
+
+            <div class="k12-field">
+              <label for="achievementCategory">Required category</label>
+              <input id="achievementCategory" placeholder="Trauma care">
+            </div>
+
+            <div class="k12-field">
+              <label for="achievementSort">Display order</label>
+              <input id="achievementSort" type="number" value="0">
+            </div>
+
+            <div class="k12-field">
+              <label>
+                <input id="achievementActive" type="checkbox" checked>
+                Active
+              </label>
+            </div>
+          </div>
+
+          <div class="k12-actions">
+            <button class="k12-button" type="submit">Save badge</button>
+            <button class="k12-action" id="cancelAchievementEdit" type="button">Clear</button>
+          </div>
+        </form>
+
+        <div class="achievement-admin-list" id="achievementAdminList"></div>
       </div>
     </section>
 
     <section class="k12-section">
-      <div class="k12-section-head"><div><span class="k12-eyebrow">Communication</span><h2>Announcements</h2><p>Send a clear update to every learner dashboard.</p></div></div>
+      <div class="k12-section-head">
+        <div>
+          <span class="k12-eyebrow">Communication</span>
+          <h2>Announcements</h2>
+          <p>Send a clear update to every learner dashboard.</p>
+        </div>
+      </div>
+
       <form class="k12-card k12-panel" id="announcementForm">
         <div class="k12-form-grid">
-          <div class="k12-field"><label for="announcementTitle">Title</label><input id="announcementTitle" required></div>
-          <div class="k12-field"><label for="announcementExpiry">Expires</label><input id="announcementExpiry" type="datetime-local"></div>
-          <div class="k12-field full"><label for="announcementMessage">Message</label><textarea id="announcementMessage" required></textarea></div>
+          <div class="k12-field">
+            <label for="announcementTitle">Title</label>
+            <input id="announcementTitle" required>
+          </div>
+          <div class="k12-field">
+            <label for="announcementExpiry">Expires</label>
+            <input id="announcementExpiry" type="datetime-local">
+          </div>
+          <div class="k12-field full">
+            <label for="announcementMessage">Message</label>
+            <textarea id="announcementMessage" required></textarea>
+          </div>
         </div>
-        <div class="k12-actions"><button class="k12-button">Publish announcement</button></div>
+        <div class="k12-actions">
+          <button class="k12-button">Publish announcement</button>
+        </div>
       </form>
+
       <div id="announcementList" class="admin-list k12-list" style="margin-top:20px"></div>
     </section>
 
@@ -49,20 +176,43 @@
         <div><span class="k12-eyebrow">People</span><h2>Learners</h2></div>
         <input class="k12-search" id="learnerSearch" placeholder="Search learners or courses" style="max-width:360px">
       </div>
-      <div class="k12-table-wrap"><table class="data-table"><thead><tr><th>Learner</th><th>XP</th><th>Courses</th><th>Average</th><th>Last active</th></tr></thead><tbody id="learnerRows"></tbody></table></div>
+
+      <div class="k12-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Learner</th>
+              <th>XP</th>
+              <th>Courses</th>
+              <th>Average</th>
+              <th>Last active</th>
+            </tr>
+          </thead>
+          <tbody id="learnerRows"></tbody>
+        </table>
+      </div>
     </section>
 
     <section class="k12-section">
-      <div class="k12-section-head"><div><span class="k12-eyebrow">Performance</span><h2>Course analytics</h2></div></div>
+      <div class="k12-section-head">
+        <div><span class="k12-eyebrow">Performance</span><h2>Course analytics</h2></div>
+      </div>
       <div id="courseAnalytics" class="analytics-grid"></div>
     </section>
 
     <section class="k12-section">
-      <div class="k12-section-head"><div><span class="k12-eyebrow">Credentials</span><h2>Certificates</h2></div></div>
+      <div class="k12-section-head">
+        <div><span class="k12-eyebrow">Credentials</span><h2>Certificates</h2></div>
+      </div>
       <div id="certificateAdmin" class="admin-list"></div>
     </section>
   </div>
 </main>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script><script src="data.js"></script><script src="common.js"></script><script src="instructor.js"></script>
-</body></html>
+<script src="supabase-config.js"></script>
+<script src="data.js"></script>
+<script src="common.js"></script>
+<script src="instructor.js"></script>
+</body>
+</html>

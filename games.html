@@ -1,17 +1,23 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Kraken Sim</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="kraken-v12-pages.css">
+  <link rel="stylesheet" href="achievement-system.css">
 </head>
 <body class="k12-shell">
 <header class="k12-topbar">
   <a class="k12-back" href="index.html" aria-label="Home">←</a>
-  <a class="k12-brand" href="index.html"><span class="k12-mark">K</span><span>Kraken Sim</span></a>
+  <a class="k12-brand" href="index.html">
+    <span class="k12-mark">K</span>
+    <span>Kraken Sim</span>
+  </a>
   <a class="k12-action primary" href="dashboard.html">Dashboard</a>
 </header>
+
 <main class="k12-main">
   <section class="k12-hero">
     <div class="k12-hero-inner">
@@ -20,13 +26,39 @@
       <p>Practise clinical decisions in interactive scenarios built to be replayed, tested and mastered.</p>
     </div>
   </section>
+
   <div class="k12-content">
     <section class="k12-section">
-      <div class="k12-section-head"><div><span class="k12-eyebrow">Simulation deck</span><h2>Choose an experience</h2><p>Unity WebGL experiences open from their hosted pages.</p></div></div>
-      <div class="course-grid" id="games"><div class="k12-empty">Loading simulations…</div></div>
+      <div class="k12-section-head">
+        <div>
+          <span class="k12-eyebrow">Simulation deck</span>
+          <h2>Choose an experience</h2>
+          <p>Course simulations, lesson simulations and Unity blocks all appear here automatically.</p>
+        </div>
+        <input
+          class="k12-search"
+          id="simulationSearch"
+          type="search"
+          placeholder="Search simulations"
+          style="max-width:340px"
+        >
+      </div>
+
+      <div class="simulation-filter-row" id="simulationFilters"></div>
+      <div class="course-grid simulation-grid" id="games">
+        <div class="k12-empty">Loading simulations…</div>
+      </div>
     </section>
   </div>
 </main>
+
+<div id="achievementPopupRoot"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script><script src="data.js"></script><script src="common.js"></script><script src="games.js"></script>
-</body></html>
+<script src="supabase-config.js"></script>
+<script src="data.js"></script>
+<script src="common.js"></script>
+<script src="achievement-system.js"></script>
+<script src="games.js"></script>
+</body>
+</html>

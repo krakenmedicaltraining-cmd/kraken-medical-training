@@ -1,55 +1,95 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Dashboard | Kraken</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="kraken-v12-pages.css">
+  <link rel="stylesheet" href="achievement-system.css">
 </head>
-<body class="k12-shell">
-<header class="k12-topbar">
-  <a class="k12-back" href="index.html" aria-label="Home">←</a>
-  <a class="k12-brand" href="index.html"><span class="k12-mark">K</span><span>Kraken Learn</span></a>
-  <button class="k12-action" id="logout">Sign out</button>
+<body>
+<header class="topbar">
+  <a href="index.html">←</a>
+  <a class="brand" href="index.html">
+    <span class="brand-mark">K</span>
+    <span>Kraken Learn</span>
+  </a>
+  <button class="small-button" id="logout">Sign out</button>
 </header>
-<main class="k12-main">
-  <section class="k12-hero">
-    <div class="k12-hero-inner">
-      <span class="k12-eyebrow">Learner dashboard</span>
-      <h1 id="welcome">Welcome back</h1>
-      <p>Your courses, progress and achievements, gathered into one clean learning record.</p>
+
+<main>
+  <section class="page-hero">
+    <span class="eyebrow">Learner dashboard</span>
+    <h1 id="welcome">Welcome back</h1>
+    <p>Your synced learning record.</p>
+  </section>
+
+  <section class="section" id="announcementSection" hidden>
+    <div class="section-head"><h2>Announcements</h2></div>
+    <div id="dashboardAnnouncements" class="announcement-grid"></div>
+  </section>
+
+  <section class="section">
+    <div class="dashboard-grid v10-stats">
+      <article class="stat-card">
+        <span class="eyebrow">XP</span>
+        <strong id="xp">0</strong>
+        <p id="level">Level 1</p>
+      </article>
+      <article class="stat-card">
+        <span class="eyebrow">Completed</span>
+        <strong id="completed">0</strong>
+        <p>Courses</p>
+      </article>
+      <article class="stat-card">
+        <span class="eyebrow">In progress</span>
+        <strong id="active">0</strong>
+        <p>Courses</p>
+      </article>
     </div>
   </section>
-  <div class="k12-content">
-    <section class="k12-section" id="announcementSection" hidden>
-      <div class="k12-section-head"><div><span class="k12-eyebrow">Latest</span><h2>Announcements</h2></div></div>
-      <div id="dashboardAnnouncements" class="announcement-grid"></div>
-    </section>
-    <section class="k12-section">
-      <div class="k12-stat-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
-        <article class="k12-card k12-stat"><span class="k12-label">XP</span><strong id="xp">0</strong><p id="level">Level 1</p></article>
-        <article class="k12-card k12-stat"><span class="k12-label">Completed</span><strong id="completed">0</strong><p>Courses</p></article>
-        <article class="k12-card k12-stat"><span class="k12-label">In progress</span><strong id="active">0</strong><p>Courses</p></article>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Continue learning</h2>
+      <a class="small-button" href="courses.html">Browse courses</a>
+    </div>
+    <div class="course-grid" id="courses"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Learning activity</h2></div>
+    <div class="panel">
+      <div id="studyCalendar" class="study-calendar"></div>
+      <p id="streakText"></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Certificates</h2></div>
+    <div class="course-grid" id="certificateList"></div>
+  </section>
+
+  <section class="section" id="achievements">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Milestones</span>
+        <h2>Achievements</h2>
+        <p>Earned badges are shown in colour. Locked badges show how to unlock them.</p>
       </div>
-    </section>
-    <section class="k12-section">
-      <div class="k12-section-head"><div><span class="k12-eyebrow">Pick up where you left off</span><h2>Continue learning</h2></div><a class="k12-action primary" href="courses.html">Browse courses</a></div>
-      <div class="course-grid" id="courses"></div>
-    </section>
-    <section class="k12-section">
-      <div class="k12-section-head"><div><span class="k12-eyebrow">Momentum</span><h2>Learning activity</h2></div></div>
-      <div class="k12-card k12-panel"><div id="studyCalendar" class="study-calendar"></div><p id="streakText"></p></div>
-    </section>
-    <section class="k12-section">
-      <div class="k12-section-head"><div><span class="k12-eyebrow">Credentials</span><h2>Certificates</h2></div></div>
-      <div class="course-grid" id="certificateList"></div>
-    </section>
-    <section class="k12-section">
-      <div class="k12-section-head"><div><span class="k12-eyebrow">Milestones</span><h2>Badges</h2></div></div>
-      <div class="badge-grid" id="badgeList"></div>
-    </section>
-  </div>
+    </div>
+    <div class="achievement-cabinet" id="achievementCabinet"></div>
+  </section>
 </main>
+
+<div id="achievementPopupRoot"></div>
+<div id="achievementDetailRoot"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script><script src="data.js"></script><script src="common.js"></script><script src="dashboard.js"></script>
-</body></html>
+<script src="supabase-config.js"></script>
+<script src="data.js"></script>
+<script src="common.js"></script>
+<script src="achievement-system.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

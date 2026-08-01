@@ -1,38 +1,60 @@
-# Kraken V13.4 Logo and Homepage Section Icons
+# Kraken V13.5 Simulation Deck and Achievement System
 
-## Upload and replace
+## Run Supabase first
 
-- `index.html`
-- `home-dynamic.css`
-- `home.js`
+Copy and run:
 
-## Upload this new asset
+`database/v13-5-simulations-achievements.sql`
 
-- `assets/kraken-medical-logo.png`
+The complete SQL is also supplied separately in the package.
 
-Keep the `assets` folder structure exactly as supplied.
+## Replace
 
-## Changes
+- `games.html`
+- `games.js`
+- `dashboard.html`
+- `dashboard.js`
+- `instructor.html`
+- `instructor.js`
 
-The green K has been replaced by the supplied Kraken medical logo in:
+## Add
 
-- the slide-out menu
-- the main top navigation
-- the footer
+- `achievement-system.css`
+- `achievement-system.js`
 
-New illustrated icon badges have been added beside:
+## Simulation fix
 
-- Your Mission
-- Quick Access
-- Training Categories
-- New Releases
-- Kraken Journal
+The simulation deck now checks:
 
-The icons are inline SVG graphics, so they remain sharp on every screen and require no additional image files.
+- course-level `simulation_url`
+- simulations stored in a course's `lessons` JSON
+- Unity, game, itch.io and simulation content blocks
+- simulation URLs in `course_lessons`, when that table exists
 
-## Deploy
+Each card links to both the simulation and its parent course.
 
-1. Upload the files.
-2. Confirm `assets/kraken-medical-logo.png` exists in GitHub.
-3. Redeploy Cloudflare.
-4. Fully close and reopen the browser tab.
+## Achievements
+
+Instructor Hub now contains an Achievement Badge manager.
+
+Available rules:
+
+- complete a number of courses
+- complete a specific course
+- complete courses within a category
+- achieve a quiz score
+- reach an XP total
+- launch a number of different simulations
+
+The learner dashboard shows:
+
+- earned badges in colour
+- locked badges in grey
+- progress towards each badge
+- how to unlock each badge
+- achievement detail panels
+- one-time achievement pop-ups
+
+## Important
+
+Simulation achievements require the learner to be signed in when launching the simulation.
