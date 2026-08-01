@@ -1,10 +1,26 @@
-KRAKEN JOURNAL ADMIN STARTUP FIX
+KRAKEN CERTIFICATE LOGO UPDATE
 
-Replace only: journal-admin.js
+Replace:
 
-This removes the missing requireAdmin() dependency and checks Supabase directly.
+- certificate.html
+- certificate.css
+
+The code expects the logo at:
+
+kraken-medical-logo.png
+
+Your current GitHub repository already has that file in the repository root,
+so no folder change is required.
+
+The logo now appears:
+
+- in the certificate itself
+- in the certificate top navigation
+- in printed and PDF certificates
 
 After upload:
+
 1. Redeploy Cloudflare.
-2. Fully close the browser tab.
-3. Reopen journal-admin.html.
+2. Fully close and reopen the browser tab.
+3. Open an existing certificate.
+4. Test Print / Save PDF.

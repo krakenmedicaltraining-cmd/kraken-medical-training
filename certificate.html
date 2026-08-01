@@ -10,32 +10,61 @@
 <body>
   <header class="certificate-topbar">
     <a href="dashboard.html">← Dashboard</a>
-    <strong>Kraken Medical Training</strong>
-    <button id="printCertificate" type="button">Print / Save PDF</button>
+
+    <a class="certificate-topbar-brand" href="index.html">
+      <img
+        src="kraken-medical-logo.png"
+        alt="Kraken Medical Training"
+      >
+      <strong>Kraken Medical Training</strong>
+    </a>
+
+    <button id="printCertificate" type="button">
+      Print / Save PDF
+    </button>
   </header>
 
   <main class="certificate-shell">
-    <section id="certificateStatus" class="certificate-status">
+    <section
+      id="certificateStatus"
+      class="certificate-status"
+    >
       Loading your certificate…
     </section>
 
-    <article id="certificateCard" class="certificate-card" hidden>
+    <article
+      id="certificateCard"
+      class="certificate-card"
+      hidden
+    >
       <div class="certificate-inner">
-        <div class="certificate-mark">K</div>
+        <div class="certificate-logo">
+          <img
+            src="kraken-medical-logo.png"
+            alt="Kraken Medical Training logo"
+          >
+        </div>
+
         <span class="certificate-eyebrow">
           Kraken Medical Training
         </span>
 
         <h1>Certificate of Completion</h1>
+
         <p>This certifies that</p>
 
-        <div id="learnerName" class="certificate-name">
+        <div
+          id="learnerName"
+          class="certificate-name"
+        >
           Learner Name
         </div>
 
         <p>has successfully completed</p>
 
-        <h2 id="courseTitle">Course title</h2>
+        <h2 id="courseTitle">
+          Course title
+        </h2>
 
         <div class="certificate-meta">
           <span id="issuedDate"></span>
