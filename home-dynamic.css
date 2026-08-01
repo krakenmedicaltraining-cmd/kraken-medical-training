@@ -537,3 +537,117 @@
     font-size: 36px;
   }
 }
+
+
+/* =========================================================
+   KRAKEN LOGO
+   ========================================================= */
+
+.brand-logo-wrap,
+.stream-logo-wrap {
+  overflow: hidden;
+  padding: 0 !important;
+  background: #050806 !important;
+}
+
+.brand-logo-wrap img,
+.stream-logo-wrap img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand-logo-wrap {
+  border-radius: 14px;
+}
+
+.stream-logo-wrap {
+  border: 1px solid rgba(130, 255, 77, 0.28);
+  border-radius: 14px;
+  box-shadow: 0 0 24px rgba(111, 255, 0, 0.12);
+}
+
+
+/* =========================================================
+   HOMEPAGE SECTION ICONS
+   ========================================================= */
+
+.section-title-lockup {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.section-heading-icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border: 1px solid rgba(66, 214, 180, 0.3);
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(40, 189, 155, 0.17),
+      rgba(6, 30, 24, 0.72)
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.section-heading-icon svg {
+  width: 27px;
+  height: 27px;
+  fill: #42d6b4;
+}
+
+.icon-mission {
+  background:
+    radial-gradient(circle at 70% 25%, rgba(184, 235, 71, 0.33), transparent 40%),
+    linear-gradient(145deg, #18392f, #081712);
+}
+
+.icon-access {
+  background:
+    radial-gradient(circle at 70% 25%, rgba(95, 191, 255, 0.28), transparent 40%),
+    linear-gradient(145deg, #173448, #08141d);
+}
+
+.icon-categories {
+  background:
+    radial-gradient(circle at 70% 25%, rgba(131, 111, 255, 0.3), transparent 40%),
+    linear-gradient(145deg, #302653, #100c1c);
+}
+
+.icon-releases {
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 181, 69, 0.33), transparent 40%),
+    linear-gradient(145deg, #49351c, #1a1005);
+}
+
+.icon-journal {
+  background:
+    radial-gradient(circle at 70% 25%, rgba(57, 210, 174, 0.33), transparent 40%),
+    linear-gradient(145deg, #19483d, #071712);
+}
+
+@media (max-width: 650px) {
+  .section-title-lockup {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .section-heading-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+  }
+
+  .section-heading-icon svg {
+    width: 23px;
+    height: 23px;
+  }
+}

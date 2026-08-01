@@ -1,42 +1,38 @@
-# Kraken V13.2 Dynamic Categories and Premium Cards
+# Kraken V13.4 Logo and Homepage Section Icons
 
-## Upload
-
-Replace:
+## Upload and replace
 
 - `index.html`
+- `home-dynamic.css`
 - `home.js`
 
-Add:
+## Upload this new asset
 
-- `home-dynamic.css`
+- `assets/kraken-medical-logo.png`
 
-## Supabase
+Keep the `assets` folder structure exactly as supplied.
 
-Run:
+## Changes
 
-- `database/v13-2-course-card-fields.sql`
+The green K has been replaced by the supplied Kraken medical logo in:
 
-## What changes
+- the slide-out menu
+- the main top navigation
+- the footer
 
-- Homepage categories are generated from the categories used by published courses.
-- Each category links to `courses.html?category=...`.
-- The category cards show course count and lesson/time information.
-- Latest courses use premium cover cards.
-- Cards show difficulty, duration, lesson count, XP and learner progress.
-- Course cover images use `courses.cover_image_url`.
+New illustrated icon badges have been added beside:
 
-## Course Builder
+- Your Mission
+- Quick Access
+- Training Categories
+- New Releases
+- Kraken Journal
 
-The SQL adds these optional course fields:
+The icons are inline SVG graphics, so they remain sharp on every screen and require no additional image files.
 
-- `cover_image_url`
-- `difficulty`
-- `estimated_minutes`
-- `xp_reward`
+## Deploy
 
-Your current Course Builder may not expose them yet. They can still be edited directly in Supabase until the builder fields are added in the next update.
-
-## Important
-
-The homepage queries `course_lessons` for lesson counts. If your table uses a different name, the cards will still load but lesson counts will be omitted.
+1. Upload the files.
+2. Confirm `assets/kraken-medical-logo.png` exists in GitHub.
+3. Redeploy Cloudflare.
+4. Fully close and reopen the browser tab.

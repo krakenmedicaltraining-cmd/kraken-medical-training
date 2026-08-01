@@ -1,2 +1,2 @@
-Kraken V13.3 Latest Journal Homepage Shelf
+Kraken V13.4 Logo and Homepage Section Icons
 See docs/INSTALL.md
