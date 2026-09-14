@@ -1,1573 +1,399 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width,initial-scale=1"
-  >
-
-  <meta
-    name="description"
-    content="Kraken Medical Training courses, simulations, instructor resources and field-ready medical learning."
-  >
-
-  <meta
-    name="theme-color"
-    content="#071b24"
-  >
-
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Military and emergency medical training, simulations, courses, certificates and field-ready resources.">
+  <meta name="theme-color" content="#071411">
   <title>Kraken Medical Training</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
 
-  <!-- FONTS -->
-
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  >
-
-  <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
-  >
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap"
-    rel="stylesheet"
-  >
-
-
-  <!-- EXISTING STYLES -->
-
-  <link
-    rel="stylesheet"
-    href="styles.css"
-  >
-
-  <link
-    rel="stylesheet"
-    href="stream-ui.css"
-  >
-
-  <link
-    rel="stylesheet"
-    href="home-dynamic.css"
-  >
-
-  <link
-    rel="stylesheet"
-    href="v14-home.css"
-  >
-
-
-  <!-- V15 GLOBAL THEME + DROPDOWN -->
-
-  <link
-    rel="stylesheet"
-    href="kraken-global.css"
-  >
-
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="stream-ui.css">
+  <link rel="stylesheet" href="home-dynamic.css">
+  <link rel="stylesheet" href="v14-home.css">
+  <link rel="stylesheet" href="kraken-global.css">
+  <link rel="stylesheet" href="admin-nav.css">
 </head>
 
-
 <body class="stream-home">
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
 
-
-  <!-- =====================================================
-       DRAWER
-       ===================================================== -->
-
-  <div
-    class="drawer-backdrop"
-    id="drawerBackdrop"
-  ></div>
-
-
-  <aside
-    class="drawer stream-drawer"
-    id="drawer"
-    aria-label="Main menu"
-  >
-
+  <aside class="drawer stream-drawer" id="drawer" aria-label="Main menu">
     <div class="drawer-head">
-
-      <a
-        class="brand"
-        href="index.html"
-      >
-
-        <span
-          class="brand-mark brand-logo-wrap"
-        >
-
-          <img
-            src="assets/kraken-medical-logo.png"
-            alt="Kraken Medical Training"
-          >
-
-        </span>
-
-
-        <span>
-          Kraken Medical
-        </span>
-
+      <a class="brand" href="index.html">
+        <span class="brand-mark brand-logo-wrap"><img src="assets/kraken-medical-logo.png" alt=""></span>
+        <span>Kraken Medical</span>
       </a>
-
-
-      <button
-        class="icon-button"
-        id="closeMenu"
-        type="button"
-        aria-label="Close menu"
-      >
-        ×
-      </button>
-
+      <button class="icon-button" id="closeMenu" aria-label="Close menu">×</button>
     </div>
 
-
     <nav class="drawer-nav">
+      <a class="active" href="index.html">⌂ <span>Home</span></a>
+      <a href="#continue">▶ <span>Continue training</span></a>
+      <a href="courses.html">▤ <span>Courses</span></a>
+      <a href="library.html">▧ <span>Field library</span></a>
+      <a href="journal.html">☷ <span>Kraken Journal</span></a>
+      <a href="games.html">◆ <span>Simulations</span></a>
+      <a href="instructor-tools.html">▣ <span>Instructor tools</span></a>
 
-      <a
-        class="active"
-        href="index.html"
-      >
-        ⌂
-        <span>Home</span>
-      </a>
-
-
-      <a href="#continue">
-        ▶
-        <span>Continue training</span>
-      </a>
-
-
-      <a href="courses.html">
-        ▤
-        <span>Courses</span>
-      </a>
-
-
-      <a href="instructor-tools.html">
-        ▣
-        <span>Instructor tools</span>
-      </a>
-
-
-      <a href="library.html">
-        ▧
-        <span>Field library</span>
-      </a>
-
-
-      <a href="journal.html">
-        ☷
-        <span>Kraken Journal</span>
-      </a>
-
-
-      <a href="games.html">
-        ◆
-        <span>Simulations</span>
-      </a>
-
-
-      <div class="drawer-section">
-        Account
-      </div>
-
-
-      <a href="dashboard.html">
-        ●
-        <span>My mission</span>
-      </a>
-
-
-      <a href="profile.html">
-        ◉
-        <span>My profile</span>
-      </a>
-
-
-      <a href="admin-hub.html">
-        ⚙
-        <span>Admin hub</span>
-      </a>
-
-
-      <a href="login.html">
-        →
-        <span>Log in</span>
-      </a>
-
+      <div class="drawer-section">Account</div>
+      <a href="dashboard.html">● <span>My mission</span></a>
+      <a href="profile.html">◉ <span>My profile</span></a>
+      <a href="admin-hub.html">⚙ <span>Admin hub</span></a>
+      <a href="instructor.html">⌁ <span>Instructor hub</span></a>
+      <a href="journal-admin.html">✦ <span>Journal admin</span></a>
+      <a href="login.html">→ <span>Log in</span></a>
     </nav>
-
   </aside>
 
-
-
-  <!-- =====================================================
-       PAGE SHELL
-       ===================================================== -->
-
   <div class="stream-shell">
-
-
-    <!-- ===================================================
-         TOP BAR
-         =================================================== -->
-
     <header class="stream-topbar">
-
-
       <div class="stream-topbar-left">
-
-
-        <button
-          class="stream-menu-button"
-          id="menuButton"
-          type="button"
-          aria-label="Open menu"
-          aria-expanded="false"
-        >
-          ☰
-        </button>
-
-
-        <a
-          class="stream-brand"
-          href="index.html"
-        >
-
-          <span
-            class="stream-brand-mark stream-logo-wrap"
-          >
-
-            <img
-              src="assets/kraken-medical-logo.png"
-              alt="Kraken Medical Training"
-            >
-
-          </span>
-
-
+        <button class="stream-menu-button" id="menuButton" aria-label="Open menu" aria-expanded="false">☰</button>
+        <a class="stream-brand" href="index.html">
+          <span class="stream-brand-mark stream-logo-wrap"><img src="assets/kraken-medical-logo.png" alt=""></span>
           <span class="stream-brand-copy">
-
-            <strong>
-              KRAKEN
-            </strong>
-
-            <small>
-              MEDICAL TRAINING
-            </small>
-
+            <strong>KRAKEN</strong>
+            <small>MEDICAL TRAINING</small>
           </span>
-
         </a>
-
       </div>
 
-
-
-      <!-- =================================================
-           DESKTOP NAVIGATION
-           ================================================= -->
-
-      <nav
-        class="stream-nav"
-        aria-label="Primary navigation"
-      >
-
-
-        <a
-          class="active"
-          href="index.html"
-        >
-          Home
-        </a>
-
-
-        <!--
-          kraken-nav.js will wrap this anchor and build
-          the Supabase course dropdown automatically.
-        -->
-
-        <a
-          href="courses.html"
-          data-course-menu-trigger
-        >
-
-          Courses
-
-          <span class="nav-caret">
-            ⌄
-          </span>
-
-        </a>
-
-
-        <a href="instructor-tools.html">
-          Instructor tools
-        </a>
-
-
-        <a href="library.html">
-          Library
-        </a>
-
-
-        <a href="journal.html">
-          Journal
-        </a>
-
-
-        <a href="games.html">
-          Simulations
-        </a>
-
-
-        <a href="dashboard.html">
-          My mission
-        </a>
-
+      <nav class="stream-nav" aria-label="Primary navigation">
+        <a class="active" href="index.html">Home</a>
+        <a href="courses.html" data-course-menu-trigger>Courses <span class="nav-caret">⌄</span></a>
+        <a href="instructor-tools.html">Instructor tools</a>
+        <a href="library.html">Library</a>
+        <a href="journal.html">Journal</a>
+        <a href="games.html">Simulations</a>
+        <a href="dashboard.html">My mission</a>
       </nav>
 
-
-
       <div class="stream-topbar-actions">
-
-
-        <a
-          class="stream-search"
-          href="courses.html"
-          aria-label="Browse training"
-        >
-          ⌕
-        </a>
-
-
-        <a
-          class="stream-profile"
-          href="profile.html"
-          aria-label="Profile"
-        >
-          CB
-        </a>
-
+        <a class="stream-search" href="courses.html" aria-label="Search training">⌕</a>
+        <a class="stream-profile" href="profile.html" aria-label="Account">CB</a>
       </div>
-
     </header>
 
-
-
-    <!-- =====================================================
-         MAIN
-         ===================================================== -->
-
     <main>
-
-
-      <!-- ===================================================
-           1. WELCOME
-           =================================================== -->
-
       <section class="stream-hero">
-
-
         <div class="stream-hero-overlay"></div>
-
         <div class="stream-hero-grid"></div>
 
-
-
         <div class="stream-hero-content">
-
-
-          <span class="stream-kicker">
-            MEDICAL LEARNING FOR THE REAL WORLD
-          </span>
-
-
-          <h1>
-            Train for what<br>
-            comes next.
-          </h1>
-
-
+          <span class="stream-kicker">MEDICAL LEARNING FOR THE REAL WORLD</span>
+          <h1>Train for what<br>comes next.</h1>
           <p>
-
-            Clinical skills, emergency medicine and
-            field-ready training for people who need
-            practical knowledge, not passive scrolling.
-
+            Clinical skills, emergency medicine and field-ready training for people who need practical knowledge, not passive scrolling.
           </p>
 
-
-
           <div class="stream-hero-tags">
-
-            <span>
-              Military Medicine
-            </span>
-
-            <span>
-              Trauma
-            </span>
-
-            <span>
-              Interactive
-            </span>
-
-            <span>
-              Certificate
-            </span>
-
+            <span>Military Medicine</span>
+            <span>Trauma</span>
+            <span>Interactive</span>
+            <span>Certificate</span>
           </div>
-
-
 
           <div class="stream-hero-actions">
-
-
-            <a
-              class="stream-button primary"
-              id="heroFeaturedButton"
-              href="courses.html"
-            >
-              ▶ Start training
-            </a>
-
-
-            <a
-              class="stream-button secondary"
-              href="#route"
-            >
-              ⓘ Explore platform
-            </a>
-
+            <a class="stream-button primary" id="heroFeaturedButton" href="courses.html">▶ Start training</a>
+            <a class="stream-button secondary" href="courses.html">ⓘ Explore platform</a>
           </div>
-
         </div>
-
-
-
-        <!-- FEATURED COURSE -->
 
         <aside class="stream-mission-card">
-
-
           <div class="stream-mission-top">
-
             <span class="stream-status-dot"></span>
-
-            <span>
-              ACTIVE MISSION
-            </span>
-
+            <span>ACTIVE MISSION</span>
           </div>
 
-
-
-          <div
-            class="stream-mission-symbol"
-            id="heroFeaturedIcon"
-          >
-            K
-          </div>
-
-
-
+          <div class="stream-mission-symbol" id="heroFeaturedIcon">K</div>
           <div>
-
-            <span
-              class="stream-card-label"
-              id="heroFeaturedCategory"
-            >
-              Featured course
-            </span>
-
-
-            <h2 id="heroFeaturedTitle">
-              Kraken training
-            </h2>
-
-
-            <p id="heroFeaturedDescription">
-
-              Choose a featured course from
-              the Course Builder.
-
-            </p>
-
+            <span class="stream-card-label" id="heroFeaturedCategory">Featured course</span>
+            <h2 id="heroFeaturedTitle">Kraken training</h2>
+            <p id="heroFeaturedDescription">Choose a featured course from the Course Builder.</p>
           </div>
 
-
-
-          <div class="stream-progress">
-
-            <span id="heroProgress"></span>
-
-          </div>
-
-
+          <div class="stream-progress"><span id="heroProgress"></span></div>
 
           <div class="stream-progress-meta">
-
-            <span id="heroProgressText">
-              0% complete
-            </span>
-
-            <span id="heroFeaturedTime">
-              Self-paced
-            </span>
-
+            <span id="heroProgressText">0% complete</span>
+            <span id="heroFeaturedTime">Self-paced</span>
           </div>
 
-
-
-          <a
-            class="stream-button primary full"
-            id="heroMissionButton"
-            href="courses.html"
-          >
-            Open course
-          </a>
-
+          <a class="stream-button primary full" id="heroMissionButton" href="courses.html">Open course</a>
         </aside>
-
       </section>
 
-
-
-      <!-- ===================================================
-           2. CHOOSE ROUTE
-           =================================================== -->
-
-      <section
-        class="stream-content"
-        id="route"
-      >
-
-
+<section class="stream-content">
         <div class="stream-section-heading">
-
-
           <div>
-
             <div class="section-title-lockup">
-
-
-              <span
-                class="section-heading-icon icon-access"
-                aria-hidden="true"
-              >
-
-                <svg viewBox="0 0 24 24">
-
-                  <path
-                    d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"
-                  />
-
-                </svg>
-
+              <span class="section-heading-icon icon-access" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
               </span>
-
-
               <div>
-
-                <span class="stream-eyebrow">
-                  START HERE
-                </span>
-
-
-                <h2>
-                  Choose your route
-                </h2>
-
+                <span class="stream-eyebrow">START HERE</span>
+                <h2>Choose your route</h2>
               </div>
-
             </div>
-
           </div>
-
         </div>
-
-
 
         <div class="v14-route-grid">
-
-
-          <a
-            class="v14-route-card"
-            href="courses.html"
-          >
-
-            <span class="v14-route-icon">
-              ▤
-            </span>
-
-
+          <a class="v14-route-card" href="courses.html">
+            <span class="v14-route-icon">▤</span>
             <div>
-
-              <strong>
-                Courses
-              </strong>
-
-              <small>
-                Structured learning and certificates
-              </small>
-
+              <strong>Courses</strong>
+              <small>Structured learning and certificates</small>
             </div>
-
-
-            <span>
-              →
-            </span>
-
+            <span>→</span>
           </a>
 
-
-
-          <a
-            class="v14-route-card"
-            href="instructor-tools.html"
-          >
-
-            <span class="v14-route-icon">
-              ▣
-            </span>
-
-
+          <a class="v14-route-card" href="instructor-tools.html">
+            <span class="v14-route-icon">▣</span>
             <div>
-
-              <strong>
-                Instructor tools
-              </strong>
-
-              <small>
-                Teaching packages, slides and handouts
-              </small>
-
+              <strong>Instructor tools</strong>
+              <small>Teaching packages, slides and handouts</small>
             </div>
-
-
-            <span>
-              →
-            </span>
-
+            <span>→</span>
           </a>
 
-
-
-          <a
-            class="v14-route-card"
-            href="games.html"
-          >
-
-            <span class="v14-route-icon">
-              ◆
-            </span>
-
-
+          <a class="v14-route-card" href="games.html">
+            <span class="v14-route-icon">◆</span>
             <div>
-
-              <strong>
-                Simulations
-              </strong>
-
-              <small>
-                Interactive scenarios and games
-              </small>
-
+              <strong>Simulations</strong>
+              <small>Interactive scenarios and games</small>
             </div>
-
-
-            <span>
-              →
-            </span>
-
+            <span>→</span>
           </a>
 
-
-
-          <a
-            class="v14-route-card"
-            href="journal.html"
-          >
-
-            <span class="v14-route-icon">
-              ☷
-            </span>
-
-
+          <a class="v14-route-card" href="journal.html">
+            <span class="v14-route-icon">☷</span>
             <div>
-
-              <strong>
-                Kraken Journal
-              </strong>
-
-              <small>
-                Articles, videos and field notes
-              </small>
-
+              <strong>Kraken Journal</strong>
+              <small>Articles, videos and field notes</small>
             </div>
-
-
-            <span>
-              →
-            </span>
-
+            <span>→</span>
           </a>
-
-
-
-          <a
-            class="v14-route-card"
-            href="library.html"
-          >
-
-            <span class="v14-route-icon">
-              ▧
-            </span>
-
-
-            <div>
-
-              <strong>
-                Field library
-              </strong>
-
-              <small>
-                Crib cards, downloads and SOPs
-              </small>
-
-            </div>
-
-
-            <span>
-              →
-            </span>
-
-          </a>
-
-
-
-          <a
-            class="v14-route-card"
-            href="dashboard.html"
-          >
-
-            <span class="v14-route-icon">
-              ◎
-            </span>
-
-
-            <div>
-
-              <strong>
-                My mission
-              </strong>
-
-              <small>
-                Progress, XP and certificates
-              </small>
-
-            </div>
-
-
-            <span>
-              →
-            </span>
-
-          </a>
-
         </div>
-
       </section>
 
-
-
-      <!-- ===================================================
-           3. CONTINUE COURSE
-           =================================================== -->
-
-      <section
-        class="stream-content"
-        id="continue"
-      >
-
-
+<section class="stream-content" id="continue">
         <div class="stream-section-heading">
-
-
           <div>
-
             <div class="section-title-lockup">
-
-
-              <span
-                class="section-heading-icon icon-mission"
-                aria-hidden="true"
-              >
-
-                <svg viewBox="0 0 24 24">
-
-                  <path
-                    d="M12 2l3 6 7 .9-5 4.8 1.3 6.8L12 17.2 5.7 20.5 7 13.7 2 8.9 9 8z"
-                  />
-
-                </svg>
-
+              <span class="section-heading-icon icon-mission" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 .9-5 4.8 1.3 6.8L12 17.2 5.7 20.5 7 13.7 2 8.9 9 8z"/></svg>
               </span>
-
-
               <div>
-
-                <span class="stream-eyebrow">
-                  YOUR MISSION
-                </span>
-
-
-                <h2>
-                  Continue training
-                </h2>
-
+                <span class="stream-eyebrow">YOUR MISSION</span>
+                <h2>Continue training</h2>
               </div>
-
             </div>
-
           </div>
-
-
-
-          <a href="dashboard.html">
-            View all progress →
-          </a>
-
+          <a href="dashboard.html">View all progress →</a>
         </div>
 
-
-
-        <div
-          class="stream-continue-card"
-          id="featuredCourseCard"
-        >
-
-
-          <div
-            class="stream-continue-art"
-            id="featuredCourseArt"
-          >
-
-
-            <span class="stream-art-badge">
-              KMT FEATURED
-            </span>
-
-
-
+        <div class="stream-continue-card" id="featuredCourseCard">
+          <div class="stream-continue-art" id="featuredCourseArt">
+            <span class="stream-art-badge">KMT FEATURED</span>
             <div class="stream-art-copy">
-
-              <small id="featuredCourseCategory">
-                FEATURED COURSE
-              </small>
-
-
-              <strong id="featuredCourseArtTitle">
-                KRAKEN<br>
-                TRAINING
-              </strong>
-
+              <small id="featuredCourseCategory">FEATURED COURSE</small>
+              <strong id="featuredCourseArtTitle">KRAKEN<br>TRAINING</strong>
             </div>
-
           </div>
-
-
 
           <div class="stream-continue-copy">
-
-
-            <span
-              class="stream-card-label"
-              id="featuredCourseStatus"
-            >
-              Featured
-            </span>
-
-
-
-            <h3 id="featuredCourseTitle">
-              Choose a featured course
-            </h3>
-
-
-
+            <span class="stream-card-label" id="featuredCourseStatus">Featured</span>
+            <h3 id="featuredCourseTitle">Choose a featured course</h3>
             <p id="featuredCourseDescription">
-
-              Select a featured course in
-              Course Builder and it will appear here.
-
+              Open Course Builder and tick “Featured course” on the course you want shown here.
             </p>
 
-
-
-            <div class="stream-progress dark">
-
-              <span id="featuredProgress"></span>
-
-            </div>
-
-
+            <div class="stream-progress dark"><span id="featuredProgress"></span></div>
 
             <div class="stream-progress-meta">
-
-              <span id="featuredProgressText">
-                0% complete
-              </span>
-
-
-              <span id="featuredCourseXp">
-                0 XP
-              </span>
-
+              <span id="featuredProgressText">0% complete</span>
+              <span id="featuredCourseXp">0 XP</span>
             </div>
 
-
-
-            <a
-              class="stream-button primary"
-              id="featuredButton"
-              href="courses.html"
-            >
-              Browse courses
-            </a>
-
+            <a class="stream-button primary" id="featuredButton" href="courses.html">Browse courses</a>
           </div>
-
         </div>
-
       </section>
 
+      
 
+      
 
-      <!-- ===================================================
-           4. COURSE CATEGORIES
-           =================================================== -->
-
-      <section
-        class="stream-content"
-        id="courseCategoriesSection"
-      >
-
-
+      <!-- Dynamic course categories -->
+      <section class="stream-content" id="courseCategoriesSection">
         <div class="stream-section-heading">
-
-
           <div>
-
             <div class="section-title-lockup">
-
-
-              <span
-                class="section-heading-icon icon-categories"
-                aria-hidden="true"
-              >
-
-                <svg viewBox="0 0 24 24">
-
-                  <path
-                    d="M3 3h8v8H3zM13 3h8v5h-8zM13 10h8v11h-8zM3 13h8v8H3z"
-                  />
-
-                </svg>
-
+              <span class="section-heading-icon icon-categories" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3zM13 3h8v5h-8zM13 10h8v11h-8zM3 13h8v8H3z"/></svg>
               </span>
-
-
               <div>
-
-                <span class="stream-eyebrow">
-                  TRAINING CATEGORIES
-                </span>
-
-
-                <h2>
-                  Browse by course category
-                </h2>
-
+                <span class="stream-eyebrow">TRAINING CATEGORIES</span>
+                <h2>Browse by course category</h2>
               </div>
-
             </div>
-
           </div>
-
-
-
-          <a href="courses.html">
-            Browse all →
-          </a>
-
+          <a href="courses.html">Browse all →</a>
         </div>
 
-
-
-        <div
-          class="dynamic-category-shelf"
-          id="dynamicCategoryShelf"
-        >
-
-          <div class="dynamic-loading-card">
-            Loading categories…
-          </div>
-
+        <div class="dynamic-category-shelf" id="dynamicCategoryShelf">
+          <div class="dynamic-loading-card">Loading categories…</div>
         </div>
-
       </section>
 
-
-
-      <!-- ===================================================
-           5. LATEST COURSES
-           =================================================== -->
-
-      <section
-        class="stream-content"
-        id="customCoursesSection"
-      >
-
-
+      <!-- Improved latest courses -->
+      <section class="stream-content" id="customCoursesSection">
         <div class="stream-section-heading">
-
-
           <div>
-
             <div class="section-title-lockup">
-
-
-              <span
-                class="section-heading-icon icon-releases"
-                aria-hidden="true"
-              >
-
-                <svg viewBox="0 0 24 24">
-
-                  <path
-                    d="M12 2l2.2 4.5L19 7l-3.5 3.4.8 4.8L12 13l-4.3 2.2.8-4.8L5 7l4.8-.5zM4 18h16v3H4z"
-                  />
-
-                </svg>
-
+              <span class="section-heading-icon icon-releases" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 2l2.2 4.5L19 7l-3.5 3.4.8 4.8L12 13l-4.3 2.2.8-4.8L5 7l4.8-.5zM4 18h16v3H4z"/></svg>
               </span>
-
-
               <div>
-
-                <span class="stream-eyebrow">
-                  NEW RELEASES
-                </span>
-
-
-                <h2>
-                  Latest Kraken courses
-                </h2>
-
+                <span class="stream-eyebrow">NEW RELEASES</span>
+                <h2>Latest Kraken courses</h2>
               </div>
-
             </div>
-
           </div>
-
-
-
-          <a href="courses.html">
-            Browse all courses →
-          </a>
-
+          <a href="courses.html">Browse all courses →</a>
         </div>
 
-
-
-        <div
-          class="premium-course-grid stream-dynamic-grid"
-          id="customCourseGrid"
-        >
-
-          <div class="dynamic-loading-card">
-            Loading courses…
-          </div>
-
+        <div class="premium-course-grid" id="customCourseGrid">
+          <div class="dynamic-loading-card">Loading latest courses…</div>
         </div>
-
       </section>
 
 
-
-      <!-- ===================================================
-           6. INSTRUCTOR PACKAGES
-           =================================================== -->
-
-      <section
-        class="stream-content v14-light-section"
-        id="instructorToolkitSection"
-      >
-
-
+      
+      <section class="stream-content v14-light-section" id="instructorToolkitSection">
         <div class="stream-section-heading">
-
-
           <div>
-
             <div class="section-title-lockup">
-
-
-              <span
-                class="section-heading-icon icon-instructor"
-                aria-hidden="true"
-              >
-
-                <svg viewBox="0 0 24 24">
-
-                  <path
-                    d="M12 3l9 4.5L12 12 3 7.5 12 3zm-6 8.4l6 3 6-3V17l-6 3-6-3z"
-                  />
-
-                </svg>
-
+              <span class="section-heading-icon icon-instructor" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3l9 4.5L12 12 3 7.5 12 3zm-6 8.4l6 3 6-3V17l-6 3-6-3z"/></svg>
               </span>
-
-
               <div>
-
-                <span class="stream-eyebrow">
-                  INSTRUCTOR TOOLKIT
-                </span>
-
-
-                <h2>
-                  Ready-to-teach packages
-                </h2>
-
+                <span class="stream-eyebrow">INSTRUCTOR TOOLKIT</span>
+                <h2>Ready-to-teach packages</h2>
               </div>
-
             </div>
-
           </div>
-
-
-
-          <a href="instructor-tools.html">
-            Browse all →
-          </a>
-
+          <a href="instructor-tools.html">Browse all →</a>
         </div>
 
-
-
-        <div
-          class="v14-package-grid"
-          id="homeInstructorPackages"
-        >
-
-          <div class="dynamic-loading-card">
-            Loading instructor packages…
-          </div>
-
+        <div class="v14-package-grid" id="homeInstructorPackages">
+          <div class="dynamic-loading-card">Loading instructor packages…</div>
         </div>
-
       </section>
 
 
-
-      <!-- ===================================================
-           7. SIMULATIONS
-           =================================================== -->
-
-      <section
-        class="stream-content stream-dark-panel"
-      >
-
-
+      <section class="stream-content stream-dark-panel">
         <div class="stream-section-heading">
-
-
           <div>
-
-            <span class="stream-eyebrow">
-              SIMULATIONS
-            </span>
-
-
-            <h2>
-              Practise decisions, not just facts
-            </h2>
-
+            <span class="stream-eyebrow">SIMULATIONS</span>
+            <h2>Practise decisions, not just facts</h2>
           </div>
-
         </div>
-
-
 
         <div class="stream-feature-split">
-
-
           <div>
-
-
-            <span class="stream-card-label">
-              Kraken Interactive
-            </span>
-
-
-            <h3>
-              Learn by doing.
-            </h3>
-
-
+            <span class="stream-card-label">Kraken Interactive</span>
+            <h3>Learn by doing, not by clicking “next”.</h3>
             <p>
-
-              Enter scenarios, practise handovers,
-              interpret information and receive
-              immediate feedback through Kraken's
-              interactive training tools.
-
+              Enter scenarios, practise handovers, interpret information and receive
+              immediate feedback through Kraken’s Unity training tools.
             </p>
-
-
-            <a
-              class="stream-button light"
-              href="games.html"
-            >
-              ▶ Launch simulations
-            </a>
-
+            <a class="stream-button light" href="games.html">▶ Launch simulations</a>
           </div>
-
-
 
           <div class="stream-radar">
-
-
             <div class="stream-radar-ring one"></div>
-
             <div class="stream-radar-ring two"></div>
-
             <div class="stream-radar-ring three"></div>
-
             <div class="stream-radar-sweep"></div>
-
-
-            <span
-              class="stream-radar-target target-one"
-            ></span>
-
-
-            <span
-              class="stream-radar-target target-two"
-            ></span>
-
-
-            <span
-              class="stream-radar-target target-three"
-            ></span>
-
-
-            <strong>
-              LIVE<br>
-              TRAINING
-            </strong>
-
+            <span class="stream-radar-target target-one"></span>
+            <span class="stream-radar-target target-two"></span>
+            <span class="stream-radar-target target-three"></span>
+            <strong>LIVE<br>TRAINING</strong>
           </div>
-
         </div>
-
       </section>
 
-
-
-      <!-- ===================================================
-           8. MAILING LIST
-           =================================================== -->
-
-      <section
-        class="stream-content v15-mail-section"
-        id="mailingList"
-      >
-
-
-        <div class="v15-mail-card">
-
-
+      <section class="stream-content">
+        <div class="stream-command-banner">
           <div>
-
-
-            <span class="stream-eyebrow">
-              KRAKEN MAIL LIST
-            </span>
-
-
-            <h2>
-              Useful medical learning.
-              No inbox fog.
-            </h2>
-
-
+            <span class="stream-eyebrow">READY ROOM</span>
+            <h2>Built for medics. Ready for organisations.</h2>
             <p>
-
-              Get new courses, instructor packages,
-              simulations and Journal releases sent
-              straight to your inbox.
-
+              Mobile-first learning, verified certificates, reusable resources and
+              interactive training in one operational platform.
             </p>
-
           </div>
-
-
-
-          <form
-            class="v15-mail-form"
-            id="mailingListForm"
-          >
-
-
-            <label
-              class="sr-only"
-              for="mailingEmail"
-            >
-              Email address
-            </label>
-
-
-            <input
-              id="mailingEmail"
-              type="email"
-              required
-              autocomplete="email"
-              placeholder="you@example.com"
-            >
-
-
-            <button
-              class="stream-button primary"
-              type="submit"
-            >
-              Join the list
-            </button>
-
-
-            <small id="mailingListState">
-
-              No spam.
-              Unsubscribe whenever you like.
-
-            </small>
-
-          </form>
-
+          <a class="stream-button primary" href="student-login.html">Enter Kraken</a>
         </div>
-
       </section>
 
+      <section class="stream-content v15-mail-section" id="mailingList">
+        <div class="v15-mail-card">
+          <div>
+            <span class="stream-eyebrow">KRAKEN MAIL LIST</span>
+            <h2>Useful medical learning. No inbox fog.</h2>
+            <p>
+              Get new courses, instructor packages, simulations and Journal releases
+              sent straight to your inbox.
+            </p>
+          </div>
+
+          <form class="v15-mail-form" id="mailingListForm">
+            <label class="sr-only" for="mailingEmail">Email address</label>
+            <input id="mailingEmail" type="email" required autocomplete="email" placeholder="you@example.com">
+            <button class="stream-button primary" type="submit">Join the list</button>
+            <small id="mailingListState">No spam. Unsubscribe whenever you like.</small>
+          </form>
+        </div>
+      </section>
 
     </main>
 
-
-
-    <!-- =====================================================
-         FOOTER
-         ===================================================== -->
-
     <footer class="stream-footer">
-
-
-      <a
-        class="stream-brand"
-        href="index.html"
-      >
-
-
-        <span
-          class="stream-brand-mark stream-logo-wrap"
-        >
-
-          <img
-            src="assets/kraken-medical-logo.png"
-            alt="Kraken Medical Training"
-          >
-
-        </span>
-
-
-
+      <a class="stream-brand" href="index.html">
+        <span class="stream-brand-mark stream-logo-wrap"><img src="assets/kraken-medical-logo.png" alt=""></span>
         <span class="stream-brand-copy">
-
-          <strong>
-            KRAKEN
-          </strong>
-
-          <small>
-            MEDICAL TRAINING
-          </small>
-
+          <strong>KRAKEN</strong>
+          <small>MEDICAL TRAINING</small>
         </span>
-
       </a>
 
-
-
-      <p>
-
-        Educational content only.
-        Follow current authorised guidance,
-        clinical governance and local policy.
-
-      </p>
-
-
-
-      <p>
-        © <span id="year"></span>
-      </p>
-
+      <p>Educational content only. Follow current authorised guidance, clinical governance and local policy.</p>
+      <p>© <span id="year"></span></p>
     </footer>
 
-
-
-    <!-- =====================================================
-         MOBILE NAV
-         ===================================================== -->
-
-    <nav
-      class="stream-mobile-nav"
-      aria-label="Mobile navigation"
-    >
-
-
-      <a
-        class="active"
-        href="index.html"
-      >
-
-        <span>
-          ⌂
-        </span>
-
-        <small>
-          Home
-        </small>
-
-      </a>
-
-
-
-      <a href="courses.html">
-
-        <span>
-          ▤
-        </span>
-
-        <small>
-          Courses
-        </small>
-
-      </a>
-
-
-
-      <a href="games.html">
-
-        <span>
-          ◆
-        </span>
-
-        <small>
-          Simulations
-        </small>
-
-      </a>
-
-
-
-      <a href="instructor-tools.html">
-
-        <span>
-          ▣
-        </span>
-
-        <small>
-          Tools
-        </small>
-
-      </a>
-
-
-
-      <a href="profile.html">
-
-        <span>
-          ●
-        </span>
-
-        <small>
-          Profile
-        </small>
-
-      </a>
-
+    <nav class="stream-mobile-nav" aria-label="Mobile navigation">
+      <a class="active" href="index.html"><span>⌂</span><small>Home</small></a>
+      <a href="courses.html"><span>▤</span><small>Courses</small></a>
+      <a href="games.html"><span>◆</span><small>Simulations</small></a>
+      <a href="library.html"><span>▧</span><small>Library</small></a>
+      <a href="profile.html"><span>●</span><small>Profile</small></a>
     </nav>
-
-
   </div>
 
-
-
-  <!-- =====================================================
-       JAVASCRIPT
-       ===================================================== -->
-
-
-  <!-- Supabase library -->
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-  ></script>
-
-
-  <!-- Supabase configuration -->
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
-
-
-  <!-- Existing data / helper system -->
-
   <script src="data.js"></script>
-
   <script src="common.js"></script>
-
-
-  <!--
-    IMPORTANT:
-    Creates the dynamic hover Courses dropdown.
-  -->
-
   <script src="kraken-nav.js"></script>
-
-
-  <!-- Mailing list -->
-
   <script src="newsletter.js"></script>
-
-
-  <!-- Homepage engine -->
-
   <script src="home.js"></script>
-
-
 </body>
-
 </html>

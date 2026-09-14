@@ -1,7 +1,8 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Certificate Builder | Kraken</title>
-<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="kraken-v12-pages.css"><link rel="stylesheet" href="certificate-admin.css"></head>
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="kraken-v12-pages.css"><link rel="stylesheet" href="certificate-admin.css">  <link rel="stylesheet" href="admin-nav.css">
+</head>
 <body><header class="ca-top"><a href="admin.html" class="brand"><b>K</b><span>Certificate Builder</span></a><nav><a href="admin.html">Courses</a><a href="quiz-admin.html">Quizzes</a><a href="instructor.html">Instructor</a></nav><button id="signOut">Sign out</button></header>
 <main class="ca-shell"><section class="hero"><small>Kraken V12.6</small><h1>Certificates and CPD records</h1><p>Configure course certificates, CPD hours, verification codes and expiry periods.</p></section>
 <div class="layout"><aside class="panel side"><label>Course<select id="courseSelect"></select></label><div id="summary" class="summary">Choose a course.</div><a id="previewLink" class="button secondary" href="certificate.html">Preview certificate</a></aside>
@@ -16,4 +17,5 @@
 <section><small>Live preview</small><div id="preview" class="certificate"></div></section>
 <div class="actions"><button class="button" type="submit">Save certificate</button><button class="danger" id="deleteButton" type="button">Delete settings</button></div></form></div></main>
 <div class="mobilebar"><span id="mobileState">Not saved</span><button id="mobileSave" class="button">Save</button></div><div id="toast" class="toast"></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="data.js"></script><script src="common.js"></script><script src="certificate-admin.js"></script></body></html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="data.js"></script><script src="common.js"></script><script src="certificate-admin.js"></script>  <script src="admin-nav.js"></script>
+</body></html>

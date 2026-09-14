@@ -1,2 +1,2 @@
-Kraken V15 — Admin Hub, Dynamic Course Menu, Homepage Flow & Calm Theme
+Kraken V15.1 Unified Admin Navigation
 See docs/INSTALL.md

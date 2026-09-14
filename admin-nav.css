@@ -1,0 +1,193 @@
+/* =========================================================
+   KRAKEN ADMIN NAVIGATION SYSTEM
+   V15.1
+   ========================================================= */
+
+.kraken-admin-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 64px;
+  padding: 8px 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: rgba(7, 27, 36, 0.985);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 10px 30px rgba(4, 19, 24, 0.12);
+  scrollbar-width: thin;
+}
+
+.kraken-admin-nav::-webkit-scrollbar { height: 5px; }
+.kraken-admin-nav::-webkit-scrollbar-thumb {
+  background: rgba(72, 214, 189, 0.28);
+  border-radius: 999px;
+}
+
+.kraken-admin-nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding-right: 14px;
+  margin-right: 4px;
+  border-right: 1px solid rgba(255, 255, 255, 0.10);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 900;
+}
+
+.kraken-admin-nav-brand img {
+  width: 38px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: 11px;
+}
+
+.kraken-admin-nav-title { display: grid; gap: 1px; }
+.kraken-admin-nav-title strong { font-size: 13px; letter-spacing: 0.04em; }
+.kraken-admin-nav-title small {
+  color: #7ce2cd;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.kraken-admin-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.kraken-admin-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: #dce9e4;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.kraken-admin-nav-link:hover {
+  border-color: rgba(72, 214, 189, 0.22);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.kraken-admin-nav-link.active {
+  border-color: rgba(72, 214, 189, 0.22);
+  background: rgba(72, 214, 189, 0.12);
+  color: #6de3ca;
+}
+
+.kraken-admin-nav-link.home-link {
+  margin-left: 4px;
+  border-color: rgba(224, 109, 66, 0.30);
+  color: #ffc0aa;
+}
+
+.kraken-admin-nav-separator {
+  width: 1px;
+  height: 30px;
+  flex: 0 0 auto;
+  margin: 0 3px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.kraken-admin-nav-menu-button {
+  display: none;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.kraken-admin-nav-mobile-label {
+  display: none;
+  color: #8ce7d3;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+/* Home page Admin Hub shortcut */
+.v15-admin-route-card {
+  border-color: rgba(224, 109, 66, 0.26) !important;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(224, 109, 66, 0.13), transparent 34%),
+    #ffffff !important;
+}
+
+.v15-admin-route-card .v14-route-icon {
+  background: #fcebe4 !important;
+  color: #d96038 !important;
+}
+
+@media (max-width: 900px) {
+  .kraken-admin-nav {
+    min-height: 60px;
+    padding: 8px 10px;
+  }
+
+  .kraken-admin-nav-brand {
+    border-right: 0;
+    padding-right: 0;
+    margin-right: 0;
+  }
+
+  .kraken-admin-nav-title { display: none; }
+
+  .kraken-admin-nav-menu-button {
+    display: inline-grid;
+    place-items: center;
+  }
+
+  .kraken-admin-nav-mobile-label { display: block; }
+
+  .kraken-admin-nav-links {
+    position: fixed;
+    top: 66px;
+    left: 10px;
+    right: 10px;
+    z-index: 10001;
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 18px;
+    background: rgba(7, 27, 36, 0.995);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  }
+
+  .kraken-admin-nav.open .kraken-admin-nav-links { display: grid; }
+
+  .kraken-admin-nav-link {
+    min-height: 48px;
+    padding: 0 13px;
+    background: rgba(255, 255, 255, 0.035);
+  }
+
+  .kraken-admin-nav-separator { display: none; }
+}
+
+@media (max-width: 520px) {
+  .kraken-admin-nav-links { grid-template-columns: 1fr; }
+}
