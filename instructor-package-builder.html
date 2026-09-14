@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Instructor Package Builder | Kraken</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="instructor-tools.css">
+</head>
+<body>
+<header class="it-topbar">
+  <a class="it-brand" href="instructor-tools.html">
+    <img src="assets/kraken-medical-logo.png" alt="">
+    <span>Package Builder</span>
+  </a>
+  <nav>
+    <a href="instructor-tools.html">Public library</a>
+    <a href="instructor.html">Instructor hub</a>
+  </nav>
+  <button class="it-top-button secondary" id="signOut">Sign out</button>
+</header>
+
+<section class="it-hero">
+  <div class="it-hero-inner">
+    <span class="it-eyebrow">INSTRUCTOR PACKAGE BUILDER</span>
+    <h1>Build teaching packages</h1>
+    <p>Create a product-style teaching package with clear descriptions, downloadable files, supporting links and reusable instructor sections.</p>
+  </div>
+</section>
+
+<main class="it-shell">
+  <div class="it-admin-layout">
+    <aside class="it-panel it-sidebar">
+      <div class="it-head">
+        <div>
+          <span class="it-eyebrow">PACKAGES</span>
+          <h2 style="font-size:28px">Your library</h2>
+        </div>
+        <button class="it-button" id="newPackage" type="button">+ New</button>
+      </div>
+
+      <input id="packageAdminSearch" placeholder="Search packages">
+      <div class="it-admin-list" id="packageAdminList" style="margin-top:14px"></div>
+    </aside>
+
+    <form class="it-panel" id="packageForm">
+      <input type="hidden" id="packageId">
+
+      <div class="it-head">
+        <div>
+          <span class="it-eyebrow">PACKAGE DETAILS</span>
+          <h2 id="builderHeading" style="font-size:32px">New package</h2>
+        </div>
+        <span id="saveState">Not saved</span>
+      </div>
+
+      <div class="it-form-grid">
+        <div class="it-field">
+          <label>Title *</label>
+          <input id="title" required>
+        </div>
+
+        <div class="it-field">
+          <label>Category</label>
+          <input id="category" placeholder="Resuscitation">
+        </div>
+
+        <div class="it-field full">
+          <label>Subtitle</label>
+          <input id="subtitle" placeholder="Complete resources for delivering a 60-minute session">
+        </div>
+
+        <div class="it-field full">
+          <label>Description</label>
+          <textarea id="description"></textarea>
+        </div>
+
+        <div class="it-field">
+          <label>Cover image URL</label>
+          <input id="coverImage" type="url">
+        </div>
+
+        <div class="it-field">
+          <label>Estimated teaching time (minutes)</label>
+          <input id="estimatedMinutes" type="number" min="0">
+        </div>
+
+        <div class="it-field">
+          <label>Target audience</label>
+          <input id="targetAudience" placeholder="BLS instructors">
+        </div>
+
+        <div class="it-field">
+          <label>Instructor level</label>
+          <input id="instructorLevel" placeholder="Instructor">
+        </div>
+
+        <div class="it-field">
+          <label>Version</label>
+          <input id="version" placeholder="1.0">
+        </div>
+
+        <div class="it-field">
+          <label>Author</label>
+          <input id="author" value="Kraken Medical Training">
+        </div>
+
+        <div class="it-field">
+          <label>Status</label>
+          <select id="status">
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+          </select>
+        </div>
+
+        <div class="it-field">
+          <label>Display order</label>
+          <input id="sortOrder" type="number" value="0">
+        </div>
+      </div>
+
+      <section class="it-subbuilder">
+        <div class="it-head">
+          <div>
+            <span class="it-eyebrow">CONTENT SECTIONS</span>
+            <h2 style="font-size:28px">Instructor content</h2>
+          </div>
+          <button class="it-button secondary" id="addSection" type="button">+ Section</button>
+        </div>
+        <div id="sectionRows"></div>
+      </section>
+
+      <section class="it-subbuilder">
+        <div class="it-head">
+          <div>
+            <span class="it-eyebrow">DOWNLOADS AND LINKS</span>
+            <h2 style="font-size:28px">Package resources</h2>
+          </div>
+          <button class="it-button secondary" id="addResource" type="button">+ Resource</button>
+        </div>
+        <div id="resourceRows"></div>
+      </section>
+
+      <div class="it-savebar">
+        <span id="mobileSaveState">Not saved</span>
+        <div style="display:flex;gap:8px">
+          <button class="it-button danger" id="deletePackage" type="button" hidden>Delete</button>
+          <button class="it-button" type="submit">Save package</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="instructor-package-builder.js"></script>
+</body>
+</html>

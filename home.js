@@ -686,9 +686,78 @@
     }).join("");
   }
 
+
+  async function getLatestInstructorPackages() {
+    const result = await supabaseClient
+      .from("instructor_packages")
+      .select("id,title,subtitle,description,category,cover_image_url,estimated_minutes,target_audience,resource_count,status,updated_at")
+      .eq("status", "published")
+      .order("updated_at", { ascending: false })
+      .limit(4);
+
+    if (result.error) {
+      console.warn("Instructor packages could not load:", result.error);
+      return [];
+    }
+
+    return result.data || [];
+  }
+
+  function instructorPackageUrl(item) {
+    return `instructor-package.html?id=${encodeURIComponent(item.id)}`;
+  }
+
+  function renderHomeInstructorPackages(items) {
+    const grid = $("#homeInstructorPackages");
+    if (!grid) return;
+
+    if (!items.length) {
+      grid.innerHTML = `
+        <div class="dynamic-loading-card">
+          Instructor packages will appear here when published.
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = items.map(item => {
+      const image = safeText(item.cover_image_url);
+      const style = image
+        ? `style="background-image:linear-gradient(180deg,rgba(6,26,31,.06),rgba(6,26,31,.78)),url('${escapeHtml(image)}')"`
+        : "";
+
+      return `
+        <article class="v14-package-card">
+          <a class="v14-package-art" href="${instructorPackageUrl(item)}" ${style}>
+            <span class="v14-package-type">${escapeHtml(item.category || "Instructor package")}</span>
+            <span class="v14-package-badge">INSTRUCTOR</span>
+            <div>
+              <small>KRAKEN TEACHING PACKAGE</small>
+              <h3>${escapeHtml(item.title)}</h3>
+            </div>
+          </a>
+
+          <div class="v14-package-copy">
+            <p>${escapeHtml(item.subtitle || item.description || "Complete instructor resources.")}</p>
+
+            <div class="v14-package-meta">
+              ${item.estimated_minutes ? `<span>${Number(item.estimated_minutes)} min</span>` : ""}
+              ${item.target_audience ? `<span>${escapeHtml(item.target_audience)}</span>` : ""}
+              ${Number(item.resource_count || 0) ? `<span>${Number(item.resource_count)} resources</span>` : ""}
+            </div>
+
+            <a class="v14-inline-action" href="${instructorPackageUrl(item)}">
+              View package →
+            </a>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
   async function initialiseHome() {
     try {
-      const [courses, featuredCourse, session, journalItems] =
+      const [courses, featuredCourse, session, journalItems, instructorPackages] =
         await Promise.all([
           getPublishedCourses(),
           getFeaturedCourse(),
@@ -696,7 +765,8 @@
           getLatestJournalItems().catch(error => {
             console.warn("Latest Journal could not load:", error);
             return [];
-          })
+          }),
+          getLatestInstructorPackages()
         ]);
 
       const courseIds = courses.map(course => course.id);
@@ -709,6 +779,7 @@
 
       renderCategories(courses, lessonCounts);
       renderLatestCourses(courses, lessonCounts, progressMap);
+      renderHomeInstructorPackages(instructorPackages);
       renderLatestJournal(journalItems);
 
       if (featuredCourse) {

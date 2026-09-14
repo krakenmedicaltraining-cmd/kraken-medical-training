@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Kraken Medical Training instructor packages, teaching resources and downloadable materials.">
+  <title>Instructor Tools | Kraken Medical Training</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="instructor-tools.css">
+</head>
+<body>
+<header class="it-topbar">
+  <a class="it-brand" href="index.html">
+    <img src="assets/kraken-medical-logo.png" alt="">
+    <span>Kraken Instructor Tools</span>
+  </a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="courses.html">Courses</a>
+    <a class="active" href="instructor-tools.html">Instructor tools</a>
+    <a href="journal.html">Journal</a>
+    <a href="games.html">Simulations</a>
+  </nav>
+  <a class="it-top-button" href="instructor-package-builder.html">Manage packages</a>
+</header>
+
+<section class="it-hero">
+  <div class="it-hero-inner">
+    <span class="it-eyebrow">READY-TO-TEACH RESOURCES</span>
+    <h1>Instructor tools</h1>
+    <p>
+      Complete teaching packages for medical instructors: lesson plans, presentations,
+      learner handouts, equipment lists, assessments and supporting links in one place.
+    </p>
+  </div>
+</section>
+
+<main class="it-shell">
+  <section>
+    <div class="it-head">
+      <div>
+        <span class="it-eyebrow">PACKAGE LIBRARY</span>
+        <h2>Choose a teaching package</h2>
+      </div>
+    </div>
+
+    <div class="it-filters">
+      <input id="packageSearch" type="search" placeholder="Search instructor packages">
+      <select id="packageCategory">
+        <option value="">All categories</option>
+      </select>
+    </div>
+
+    <div class="it-grid" id="packageGrid">
+      <div class="it-empty">Loading instructor packages…</div>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="instructor-tools.js"></script>
+</body>
+</html>
