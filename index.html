@@ -11,7 +11,7 @@
 
   <meta
     name="description"
-    content="Military and emergency medical training, simulations, courses, certificates and field-ready resources."
+    content="Kraken Medical Training courses, simulations, instructor resources and field-ready medical learning."
   >
 
   <meta
@@ -22,9 +22,7 @@
   <title>Kraken Medical Training</title>
 
 
-  <!-- =====================================================
-       FONTS
-       ===================================================== -->
+  <!-- FONTS -->
 
   <link
     rel="preconnect"
@@ -43,19 +41,35 @@
   >
 
 
-  <!-- =====================================================
-       STYLES
-       ===================================================== -->
+  <!-- EXISTING STYLES -->
 
-  <link rel="stylesheet" href="styles.css">
+  <link
+    rel="stylesheet"
+    href="styles.css"
+  >
 
-  <link rel="stylesheet" href="stream-ui.css">
+  <link
+    rel="stylesheet"
+    href="stream-ui.css"
+  >
 
-  <link rel="stylesheet" href="home-dynamic.css">
+  <link
+    rel="stylesheet"
+    href="home-dynamic.css"
+  >
 
-  <link rel="stylesheet" href="v14-home.css">
+  <link
+    rel="stylesheet"
+    href="v14-home.css"
+  >
 
-  <link rel="stylesheet" href="kraken-global.css">
+
+  <!-- V15 GLOBAL THEME + DROPDOWN -->
+
+  <link
+    rel="stylesheet"
+    href="kraken-global.css"
+  >
 
 </head>
 
@@ -64,7 +78,7 @@
 
 
   <!-- =====================================================
-       DRAWER BACKDROP
+       DRAWER
        ===================================================== -->
 
   <div
@@ -72,10 +86,6 @@
     id="drawerBackdrop"
   ></div>
 
-
-  <!-- =====================================================
-       MOBILE / SIDE DRAWER
-       ===================================================== -->
 
   <aside
     class="drawer stream-drawer"
@@ -96,10 +106,11 @@
 
           <img
             src="assets/kraken-medical-logo.png"
-            alt=""
+            alt="Kraken Medical Training"
           >
 
         </span>
+
 
         <span>
           Kraken Medical
@@ -111,6 +122,7 @@
       <button
         class="icon-button"
         id="closeMenu"
+        type="button"
         aria-label="Close menu"
       >
         ×
@@ -189,18 +201,6 @@
       </a>
 
 
-      <a href="instructor.html">
-        ⌁
-        <span>Instructor hub</span>
-      </a>
-
-
-      <a href="journal-admin.html">
-        ✦
-        <span>Journal admin</span>
-      </a>
-
-
       <a href="login.html">
         →
         <span>Log in</span>
@@ -211,6 +211,7 @@
   </aside>
 
 
+
   <!-- =====================================================
        PAGE SHELL
        ===================================================== -->
@@ -219,10 +220,11 @@
 
 
     <!-- ===================================================
-         TOP NAVIGATION
+         TOP BAR
          =================================================== -->
 
     <header class="stream-topbar">
+
 
       <div class="stream-topbar-left">
 
@@ -230,6 +232,7 @@
         <button
           class="stream-menu-button"
           id="menuButton"
+          type="button"
           aria-label="Open menu"
           aria-expanded="false"
         >
@@ -248,7 +251,7 @@
 
             <img
               src="assets/kraken-medical-logo.png"
-              alt=""
+              alt="Kraken Medical Training"
             >
 
           </span>
@@ -271,14 +274,16 @@
       </div>
 
 
+
       <!-- =================================================
-           DESKTOP NAV
+           DESKTOP NAVIGATION
            ================================================= -->
 
       <nav
         class="stream-nav"
         aria-label="Primary navigation"
       >
+
 
         <a
           class="active"
@@ -288,20 +293,22 @@
         </a>
 
 
-        <!-- ===============================================
-             DYNAMIC COURSE DROPDOWN
-             kraken-nav.js attaches the menu here
-             =============================================== -->
+        <!--
+          kraken-nav.js will wrap this anchor and build
+          the Supabase course dropdown automatically.
+        -->
 
         <a
           href="courses.html"
           data-course-menu-trigger
         >
+
           Courses
 
           <span class="nav-caret">
             ⌄
           </span>
+
         </a>
 
 
@@ -332,12 +339,14 @@
       </nav>
 
 
+
       <div class="stream-topbar-actions">
+
 
         <a
           class="stream-search"
           href="courses.html"
-          aria-label="Search training"
+          aria-label="Browse training"
         >
           ⌕
         </a>
@@ -346,7 +355,7 @@
         <a
           class="stream-profile"
           href="profile.html"
-          aria-label="Account"
+          aria-label="Profile"
         >
           CB
         </a>
@@ -357,25 +366,28 @@
 
 
 
-    <!-- ===================================================
-         MAIN CONTENT
-         =================================================== -->
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
 
     <main>
 
 
-      <!-- =================================================
-           1. WELCOME / HERO
-           ================================================= -->
+      <!-- ===================================================
+           1. WELCOME
+           =================================================== -->
 
       <section class="stream-hero">
+
 
         <div class="stream-hero-overlay"></div>
 
         <div class="stream-hero-grid"></div>
 
 
+
         <div class="stream-hero-content">
+
 
           <span class="stream-kicker">
             MEDICAL LEARNING FOR THE REAL WORLD
@@ -395,6 +407,7 @@
             practical knowledge, not passive scrolling.
 
           </p>
+
 
 
           <div class="stream-hero-tags">
@@ -418,7 +431,9 @@
           </div>
 
 
+
           <div class="stream-hero-actions">
+
 
             <a
               class="stream-button primary"
@@ -442,9 +457,7 @@
 
 
 
-        <!-- ===============================================
-             ACTIVE / FEATURED COURSE
-             =============================================== -->
+        <!-- FEATURED COURSE -->
 
         <aside class="stream-mission-card">
 
@@ -460,12 +473,14 @@
           </div>
 
 
+
           <div
             class="stream-mission-symbol"
             id="heroFeaturedIcon"
           >
             K
           </div>
+
 
 
           <div>
@@ -493,11 +508,13 @@
           </div>
 
 
+
           <div class="stream-progress">
 
             <span id="heroProgress"></span>
 
           </div>
+
 
 
           <div class="stream-progress-meta">
@@ -511,6 +528,7 @@
             </span>
 
           </div>
+
 
 
           <a
@@ -527,9 +545,9 @@
 
 
 
-      <!-- =================================================
-           2. CHOOSE YOUR ROUTE
-           ================================================= -->
+      <!-- ===================================================
+           2. CHOOSE ROUTE
+           =================================================== -->
 
       <section
         class="stream-content"
@@ -538,6 +556,7 @@
 
 
         <div class="stream-section-heading">
+
 
           <div>
 
@@ -566,6 +585,7 @@
                   START HERE
                 </span>
 
+
                 <h2>
                   Choose your route
                 </h2>
@@ -583,8 +603,6 @@
         <div class="v14-route-grid">
 
 
-          <!-- COURSES -->
-
           <a
             class="v14-route-card"
             href="courses.html"
@@ -593,6 +611,7 @@
             <span class="v14-route-icon">
               ▤
             </span>
+
 
             <div>
 
@@ -606,6 +625,7 @@
 
             </div>
 
+
             <span>
               →
             </span>
@@ -613,8 +633,6 @@
           </a>
 
 
-
-          <!-- INSTRUCTOR TOOLS -->
 
           <a
             class="v14-route-card"
@@ -624,6 +642,7 @@
             <span class="v14-route-icon">
               ▣
             </span>
+
 
             <div>
 
@@ -637,6 +656,7 @@
 
             </div>
 
+
             <span>
               →
             </span>
@@ -644,8 +664,6 @@
           </a>
 
 
-
-          <!-- SIMULATIONS -->
 
           <a
             class="v14-route-card"
@@ -655,6 +673,7 @@
             <span class="v14-route-icon">
               ◆
             </span>
+
 
             <div>
 
@@ -668,6 +687,7 @@
 
             </div>
 
+
             <span>
               →
             </span>
@@ -675,8 +695,6 @@
           </a>
 
 
-
-          <!-- JOURNAL -->
 
           <a
             class="v14-route-card"
@@ -687,6 +705,7 @@
               ☷
             </span>
 
+
             <div>
 
               <strong>
@@ -694,10 +713,11 @@
               </strong>
 
               <small>
-                Articles, video and field notes
+                Articles, videos and field notes
               </small>
 
             </div>
+
 
             <span>
               →
@@ -706,8 +726,6 @@
           </a>
 
 
-
-          <!-- LIBRARY -->
 
           <a
             class="v14-route-card"
@@ -718,6 +736,7 @@
               ▧
             </span>
 
+
             <div>
 
               <strong>
@@ -725,10 +744,11 @@
               </strong>
 
               <small>
-                Crib cards, SOPs and downloads
+                Crib cards, downloads and SOPs
               </small>
 
             </div>
+
 
             <span>
               →
@@ -738,8 +758,6 @@
 
 
 
-          <!-- MY MISSION -->
-
           <a
             class="v14-route-card"
             href="dashboard.html"
@@ -748,6 +766,7 @@
             <span class="v14-route-icon">
               ◎
             </span>
+
 
             <div>
 
@@ -761,6 +780,7 @@
 
             </div>
 
+
             <span>
               →
             </span>
@@ -773,9 +793,9 @@
 
 
 
-      <!-- =================================================
+      <!-- ===================================================
            3. CONTINUE COURSE
-           ================================================= -->
+           =================================================== -->
 
       <section
         class="stream-content"
@@ -784,6 +804,7 @@
 
 
         <div class="stream-section-heading">
+
 
           <div>
 
@@ -812,6 +833,7 @@
                   YOUR MISSION
                 </span>
 
+
                 <h2>
                   Continue training
                 </h2>
@@ -821,6 +843,7 @@
             </div>
 
           </div>
+
 
 
           <a href="dashboard.html">
@@ -842,9 +865,11 @@
             id="featuredCourseArt"
           >
 
+
             <span class="stream-art-badge">
               KMT FEATURED
             </span>
+
 
 
             <div class="stream-art-copy">
@@ -876,17 +901,20 @@
             </span>
 
 
+
             <h3 id="featuredCourseTitle">
               Choose a featured course
             </h3>
 
 
+
             <p id="featuredCourseDescription">
 
-              Open Course Builder and select the
-              course you want featured here.
+              Select a featured course in
+              Course Builder and it will appear here.
 
             </p>
+
 
 
             <div class="stream-progress dark">
@@ -896,17 +924,20 @@
             </div>
 
 
+
             <div class="stream-progress-meta">
 
               <span id="featuredProgressText">
                 0% complete
               </span>
 
+
               <span id="featuredCourseXp">
                 0 XP
               </span>
 
             </div>
+
 
 
             <a
@@ -925,9 +956,9 @@
 
 
 
-      <!-- =================================================
-           4. TRAINING CATEGORIES
-           ================================================= -->
+      <!-- ===================================================
+           4. COURSE CATEGORIES
+           =================================================== -->
 
       <section
         class="stream-content"
@@ -965,6 +996,7 @@
                   TRAINING CATEGORIES
                 </span>
 
+
                 <h2>
                   Browse by course category
                 </h2>
@@ -974,6 +1006,7 @@
             </div>
 
           </div>
+
 
 
           <a href="courses.html">
@@ -990,9 +1023,7 @@
         >
 
           <div class="dynamic-loading-card">
-
             Loading categories…
-
           </div>
 
         </div>
@@ -1001,9 +1032,9 @@
 
 
 
-      <!-- =================================================
+      <!-- ===================================================
            5. LATEST COURSES
-           ================================================= -->
+           =================================================== -->
 
       <section
         class="stream-content"
@@ -1041,6 +1072,7 @@
                   NEW RELEASES
                 </span>
 
+
                 <h2>
                   Latest Kraken courses
                 </h2>
@@ -1052,6 +1084,7 @@
           </div>
 
 
+
           <a href="courses.html">
             Browse all courses →
           </a>
@@ -1061,14 +1094,12 @@
 
 
         <div
-          class="premium-course-grid"
+          class="premium-course-grid stream-dynamic-grid"
           id="customCourseGrid"
         >
 
           <div class="dynamic-loading-card">
-
-            Loading latest courses…
-
+            Loading courses…
           </div>
 
         </div>
@@ -1077,9 +1108,9 @@
 
 
 
-      <!-- =================================================
+      <!-- ===================================================
            6. INSTRUCTOR PACKAGES
-           ================================================= -->
+           =================================================== -->
 
       <section
         class="stream-content v14-light-section"
@@ -1117,6 +1148,7 @@
                   INSTRUCTOR TOOLKIT
                 </span>
 
+
                 <h2>
                   Ready-to-teach packages
                 </h2>
@@ -1126,6 +1158,7 @@
             </div>
 
           </div>
+
 
 
           <a href="instructor-tools.html">
@@ -1142,9 +1175,7 @@
         >
 
           <div class="dynamic-loading-card">
-
             Loading instructor packages…
-
           </div>
 
         </div>
@@ -1153,9 +1184,9 @@
 
 
 
-      <!-- =================================================
+      <!-- ===================================================
            7. SIMULATIONS
-           ================================================= -->
+           =================================================== -->
 
       <section
         class="stream-content stream-dark-panel"
@@ -1164,11 +1195,13 @@
 
         <div class="stream-section-heading">
 
+
           <div>
 
             <span class="stream-eyebrow">
               SIMULATIONS
             </span>
+
 
             <h2>
               Practise decisions, not just facts
@@ -1184,6 +1217,7 @@
 
 
           <div>
+
 
             <span class="stream-card-label">
               Kraken Interactive
@@ -1227,13 +1261,16 @@
 
             <div class="stream-radar-sweep"></div>
 
+
             <span
               class="stream-radar-target target-one"
             ></span>
 
+
             <span
               class="stream-radar-target target-two"
             ></span>
+
 
             <span
               class="stream-radar-target target-three"
@@ -1241,10 +1278,8 @@
 
 
             <strong>
-
               LIVE<br>
               TRAINING
-
             </strong>
 
           </div>
@@ -1255,9 +1290,9 @@
 
 
 
-      <!-- =================================================
+      <!-- ===================================================
            8. MAILING LIST
-           ================================================= -->
+           =================================================== -->
 
       <section
         class="stream-content v15-mail-section"
@@ -1269,6 +1304,7 @@
 
 
           <div>
+
 
             <span class="stream-eyebrow">
               KRAKEN MAIL LIST
@@ -1342,9 +1378,9 @@
 
 
 
-    <!-- ===================================================
+    <!-- =====================================================
          FOOTER
-         =================================================== -->
+         ===================================================== -->
 
     <footer class="stream-footer">
 
@@ -1361,10 +1397,11 @@
 
           <img
             src="assets/kraken-medical-logo.png"
-            alt=""
+            alt="Kraken Medical Training"
           >
 
         </span>
+
 
 
         <span class="stream-brand-copy">
@@ -1392,20 +1429,18 @@
       </p>
 
 
+
       <p>
-
-        ©
-        <span id="year"></span>
-
+        © <span id="year"></span>
       </p>
 
     </footer>
 
 
 
-    <!-- ===================================================
+    <!-- =====================================================
          MOBILE NAV
-         =================================================== -->
+         ===================================================== -->
 
     <nav
       class="stream-mobile-nav"
@@ -1429,6 +1464,7 @@
       </a>
 
 
+
       <a href="courses.html">
 
         <span>
@@ -1440,6 +1476,7 @@
         </small>
 
       </a>
+
 
 
       <a href="games.html">
@@ -1455,6 +1492,7 @@
       </a>
 
 
+
       <a href="instructor-tools.html">
 
         <span>
@@ -1466,6 +1504,7 @@
         </small>
 
       </a>
+
 
 
       <a href="profile.html">
@@ -1489,47 +1528,42 @@
 
   <!-- =====================================================
        JAVASCRIPT
-       ORDER MATTERS
        ===================================================== -->
 
 
-  <!-- SUPABASE -->
+  <!-- Supabase library -->
 
   <script
     src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
   ></script>
 
 
-  <!-- SUPABASE CONFIG -->
+  <!-- Supabase configuration -->
 
   <script src="supabase-config.js"></script>
 
 
-  <!-- EXISTING KRAKEN DATA -->
+  <!-- Existing data / helper system -->
 
   <script src="data.js"></script>
-
-
-  <!-- SHARED KRAKEN FUNCTIONS -->
 
   <script src="common.js"></script>
 
 
-  <!-- =====================================================
-       DYNAMIC COURSE HOVER MENU
-
-       This MUST load before home.js.
-       ===================================================== -->
+  <!--
+    IMPORTANT:
+    Creates the dynamic hover Courses dropdown.
+  -->
 
   <script src="kraken-nav.js"></script>
 
 
-  <!-- MAILING LIST -->
+  <!-- Mailing list -->
 
   <script src="newsletter.js"></script>
 
 
-  <!-- HOMEPAGE DATA -->
+  <!-- Homepage engine -->
 
   <script src="home.js"></script>
 
