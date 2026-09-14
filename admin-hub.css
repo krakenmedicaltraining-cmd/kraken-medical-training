@@ -1,0 +1,45 @@
+:root{
+  --ah-navy:#071b24;
+  --ah-teal:#18a88e;
+  --ah-aqua:#48d6bd;
+  --ah-orange:#e06d42;
+  --ah-paper:#f6f9f6;
+  --ah-ink:#102b35;
+  --ah-muted:#617673;
+  --ah-line:#d6e3de;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ah-paper);color:var(--ah-ink);font-family:Inter,system-ui,sans-serif}
+.ah-topbar{
+  display:flex;align-items:center;gap:18px;padding:12px 4vw;
+  background:var(--ah-navy);color:#fff;border-bottom:1px solid rgba(255,255,255,.08)
+}
+.ah-brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:900}
+.ah-brand img{width:46px;height:46px;border-radius:13px;object-fit:cover}
+.ah-topbar>a:nth-child(2){margin-left:auto;color:#dbe9e4;text-decoration:none;font-weight:800}
+.ah-topbar button{min-height:42px;padding:0 13px;border:1px solid rgba(255,255,255,.16);border-radius:12px;background:transparent;color:#fff;font-weight:900}
+.ah-hero{
+  padding:clamp(48px,7vw,90px) 5vw;
+  background:radial-gradient(circle at 80% 20%,rgba(72,214,189,.25),transparent 28%),linear-gradient(145deg,#071b24,#0c3d45);
+  color:#fff
+}
+.ah-hero>div{max-width:1280px;margin:auto}
+.ah-kicker{color:var(--ah-aqua);font-size:12px;font-weight:900;letter-spacing:.16em}
+.ah-hero h1{margin:8px 0;font-family:Oswald,sans-serif;font-size:clamp(60px,9vw,115px);line-height:.88;text-transform:uppercase}
+.ah-hero p{max-width:750px;color:#c8d9d3;font-size:19px;line-height:1.6}
+.ah-shell{max-width:1320px;margin:auto;padding:clamp(28px,5vw,64px) clamp(14px,4vw,48px)}
+.ah-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.ah-card{
+  min-height:300px;display:flex;flex-direction:column;padding:23px;border:1px solid var(--ah-line);border-radius:24px;
+  background:#fff;color:var(--ah-ink);text-decoration:none;box-shadow:0 16px 42px rgba(15,50,55,.07)
+}
+.ah-card.primary{background:linear-gradient(145deg,#0b6671,#071b24);color:#fff;border-color:transparent}
+.ah-icon{display:grid;place-items:center;width:58px;height:58px;margin-bottom:24px;border-radius:18px;background:#e8f4f0;color:var(--ah-teal);font-size:24px;font-weight:900}
+.ah-card.primary .ah-icon{background:rgba(255,255,255,.12);color:var(--ah-aqua)}
+.ah-card small{color:var(--ah-teal);font-weight:900;letter-spacing:.13em}
+.ah-card h2{margin:8px 0 10px;font-size:28px}
+.ah-card p{color:var(--ah-muted);line-height:1.55}
+.ah-card.primary p{color:#c6d8d2}
+.ah-card b{margin-top:auto;color:var(--ah-orange)}
+@media(max-width:1050px){.ah-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.ah-grid{grid-template-columns:1fr}.ah-card{min-height:240px}.ah-topbar>a:nth-child(2){display:none}}

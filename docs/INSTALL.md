@@ -1,76 +1,89 @@
-# Kraken V14 — Medical Expedition UI + Instructor Toolkit
+# Kraken V15 — Admin Hub, Dynamic Course Menu, Homepage Flow & Calm Theme
 
-## 1. Run Supabase first
+## Run Supabase
 
 Run:
 
-`database/v14-instructor-toolkit.sql`
+`database/v15-mailing-list.sql`
 
-## 2. Replace existing files
+The Instructor Package tables from V14 must already exist.
+
+## Replace
 
 - `index.html`
 - `home.js`
-- `home-dynamic.css`
-
-## 3. Add new files
-
 - `v14-home.css`
-- `instructor-tools.css`
 - `instructor-tools.html`
-- `instructor-tools.js`
 - `instructor-package.html`
-- `instructor-package.js`
 - `instructor-package-builder.html`
-- `instructor-package-builder.js`
 
-Keep:
+## Add
 
-- `assets/kraken-medical-logo.png`
+- `kraken-global.css`
+- `kraken-nav.js`
+- `newsletter.js`
+- `admin-hub.html`
+- `admin-hub.css`
+- `admin-hub.js`
+- `database/v15-mailing-list.sql`
 
-## 4. What changes
+## Homepage order
 
-### Homepage
-- lighter medical/editorial visual direction
-- deep navy rather than near-black
-- warmer orange accent for actions
-- simpler four-route navigation
-- CPD Builder removed from visible navigation
-- Instructor Tools added
-- dynamic Instructor Toolkit shelf added
-- existing courses, categories, Journal and learner systems retained
+1. Welcome / hero
+2. Choose your route
+3. Continue course
+4. Training categories
+5. Latest courses
+6. Instructor packages
+7. Simulations
+8. Mailing list
 
-### Instructor Tools
-Public package library with:
-- search
-- categories
-- product-style cards
-- package detail pages
-- downloadable resources and links
+The Journal remains available from the route selector and navigation, but its full latest-post shelf is removed from the homepage to keep the page calmer.
 
-### Instructor Package Builder
-Admins can:
-- create draft/published packages
-- add title, subtitle, description and cover image
-- set teaching duration, audience, level and version
-- add reusable content sections
-- add unlimited files/download links
-- edit, duplicate and delete packages
+## Admin Hub
 
-## 5. File links
+Open:
 
-Package resources are URL based, so they can point to:
-- Supabase Storage
-- Google Drive public/shared links
-- OneDrive
-- Dropbox
-- GitHub
-- other public HTTPS links
+`admin-hub.html`
 
-For reliable direct downloads, Supabase Storage is still recommended.
+It gives direct access to:
 
-## 6. Cloudflare
+- Course Builder
+- Instructor Package Builder
+- Journal Admin
+- Uploads & Resources
+- Instructor Hub
+- Quiz Builder
+- Certificate Admin
+- Public Instructor Tools
 
-After uploading:
-1. Redeploy.
-2. Fully close and reopen the site.
-3. Clear cached site data if old styling remains.
+## Dynamic Courses menu
+
+`kraken-nav.js` loads every published course from Supabase and groups them by the course category.
+
+When a published course is added later, it automatically appears in the top Courses dropdown. No HTML editing is required.
+
+## Site-wide visual theme
+
+`kraken-global.css` is the shared Kraken V15 palette:
+
+- calm deep navy headers
+- off-white page backgrounds
+- teal/aqua highlights
+- warm orange actions
+- higher text contrast
+- softer cards and spacing
+
+To migrate older legacy pages, add this inside their `<head>`:
+
+`<link rel="stylesheet" href="kraken-global.css">`
+
+To give a page the live Courses dropdown, also add before its own page JS:
+
+`<script src="kraken-nav.js"></script>`
+
+and mark its Courses navigation link:
+
+`<a href="courses.html" data-course-menu-trigger>Courses <span class="nav-caret">⌄</span></a>`
+
+This keeps the styling and menu logic centralized instead of duplicating it across every page.

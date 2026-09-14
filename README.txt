@@ -1,2 +1,2 @@
-Kraken V14 Medical Expedition UI + Instructor Toolkit
+Kraken V15 — Admin Hub, Dynamic Course Menu, Homepage Flow & Calm Theme
 See docs/INSTALL.md

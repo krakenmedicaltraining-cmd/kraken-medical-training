@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="stream-ui.css">
   <link rel="stylesheet" href="home-dynamic.css">
   <link rel="stylesheet" href="v14-home.css">
+  <link rel="stylesheet" href="kraken-global.css">
 </head>
 
 <body class="stream-home">
@@ -41,6 +42,7 @@
       <div class="drawer-section">Account</div>
       <a href="dashboard.html">● <span>My mission</span></a>
       <a href="profile.html">◉ <span>My profile</span></a>
+      <a href="admin-hub.html">⚙ <span>Admin hub</span></a>
       <a href="instructor.html">⌁ <span>Instructor hub</span></a>
       <a href="journal-admin.html">✦ <span>Journal admin</span></a>
       <a href="login.html">→ <span>Log in</span></a>
@@ -62,7 +64,7 @@
 
       <nav class="stream-nav" aria-label="Primary navigation">
         <a class="active" href="index.html">Home</a>
-        <a href="courses.html">Courses</a>
+        <a href="courses.html" data-course-menu-trigger>Courses <span class="nav-caret">⌄</span></a>
         <a href="instructor-tools.html">Instructor tools</a>
         <a href="library.html">Library</a>
         <a href="journal.html">Journal</a>
@@ -125,51 +127,7 @@
         </aside>
       </section>
 
-      <section class="stream-content" id="continue">
-        <div class="stream-section-heading">
-          <div>
-            <div class="section-title-lockup">
-              <span class="section-heading-icon icon-mission" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 .9-5 4.8 1.3 6.8L12 17.2 5.7 20.5 7 13.7 2 8.9 9 8z"/></svg>
-              </span>
-              <div>
-                <span class="stream-eyebrow">YOUR MISSION</span>
-                <h2>Continue training</h2>
-              </div>
-            </div>
-          </div>
-          <a href="dashboard.html">View all progress →</a>
-        </div>
-
-        <div class="stream-continue-card" id="featuredCourseCard">
-          <div class="stream-continue-art" id="featuredCourseArt">
-            <span class="stream-art-badge">KMT FEATURED</span>
-            <div class="stream-art-copy">
-              <small id="featuredCourseCategory">FEATURED COURSE</small>
-              <strong id="featuredCourseArtTitle">KRAKEN<br>TRAINING</strong>
-            </div>
-          </div>
-
-          <div class="stream-continue-copy">
-            <span class="stream-card-label" id="featuredCourseStatus">Featured</span>
-            <h3 id="featuredCourseTitle">Choose a featured course</h3>
-            <p id="featuredCourseDescription">
-              Open Course Builder and tick “Featured course” on the course you want shown here.
-            </p>
-
-            <div class="stream-progress dark"><span id="featuredProgress"></span></div>
-
-            <div class="stream-progress-meta">
-              <span id="featuredProgressText">0% complete</span>
-              <span id="featuredCourseXp">0 XP</span>
-            </div>
-
-            <a class="stream-button primary" id="featuredButton" href="courses.html">Browse courses</a>
-          </div>
-        </div>
-      </section>
-
-      <section class="stream-content">
+<section class="stream-content">
         <div class="stream-section-heading">
           <div>
             <div class="section-title-lockup">
@@ -177,7 +135,7 @@
                 <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
               </span>
               <div>
-                <span class="stream-eyebrow">QUICK ACCESS</span>
+                <span class="stream-eyebrow">START HERE</span>
                 <h2>Choose your route</h2>
               </div>
             </div>
@@ -222,6 +180,54 @@
           </a>
         </div>
       </section>
+
+<section class="stream-content" id="continue">
+        <div class="stream-section-heading">
+          <div>
+            <div class="section-title-lockup">
+              <span class="section-heading-icon icon-mission" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 .9-5 4.8 1.3 6.8L12 17.2 5.7 20.5 7 13.7 2 8.9 9 8z"/></svg>
+              </span>
+              <div>
+                <span class="stream-eyebrow">YOUR MISSION</span>
+                <h2>Continue training</h2>
+              </div>
+            </div>
+          </div>
+          <a href="dashboard.html">View all progress →</a>
+        </div>
+
+        <div class="stream-continue-card" id="featuredCourseCard">
+          <div class="stream-continue-art" id="featuredCourseArt">
+            <span class="stream-art-badge">KMT FEATURED</span>
+            <div class="stream-art-copy">
+              <small id="featuredCourseCategory">FEATURED COURSE</small>
+              <strong id="featuredCourseArtTitle">KRAKEN<br>TRAINING</strong>
+            </div>
+          </div>
+
+          <div class="stream-continue-copy">
+            <span class="stream-card-label" id="featuredCourseStatus">Featured</span>
+            <h3 id="featuredCourseTitle">Choose a featured course</h3>
+            <p id="featuredCourseDescription">
+              Open Course Builder and tick “Featured course” on the course you want shown here.
+            </p>
+
+            <div class="stream-progress dark"><span id="featuredProgress"></span></div>
+
+            <div class="stream-progress-meta">
+              <span id="featuredProgressText">0% complete</span>
+              <span id="featuredCourseXp">0 XP</span>
+            </div>
+
+            <a class="stream-button primary" id="featuredButton" href="courses.html">Browse courses</a>
+          </div>
+        </div>
+      </section>
+
+      
+
+      
 
       <!-- Dynamic course categories -->
       <section class="stream-content" id="courseCategoriesSection">
@@ -291,33 +297,11 @@
       </section>
 
 
-      <!-- Latest Kraken Journal content -->
-      <section class="stream-content" id="latestJournalSection">
-        <div class="stream-section-heading">
-          <div>
-            <div class="section-title-lockup">
-              <span class="section-heading-icon icon-journal" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M5 3h13a1 1 0 011 1v16H6a3 3 0 01-3-3V5a2 2 0 012-2zm1 2v12a1 1 0 001 1h10V5zm3 2h6v2H9zm0 4h6v2H9z"/></svg>
-              </span>
-              <div>
-                <span class="stream-eyebrow">KRAKEN JOURNAL</span>
-                <h2>Latest from the Journal</h2>
-              </div>
-            </div>
-          </div>
-          <a href="journal.html">Read all →</a>
-        </div>
-
-        <div class="home-journal-grid" id="homeJournalGrid">
-          <div class="dynamic-loading-card">Loading Journal content…</div>
-        </div>
-      </section>
-
       <section class="stream-content stream-dark-panel">
         <div class="stream-section-heading">
           <div>
-            <span class="stream-eyebrow">IMMERSIVE TRAINING</span>
-            <h2>Simulations that make decisions visible</h2>
+            <span class="stream-eyebrow">SIMULATIONS</span>
+            <h2>Practise decisions, not just facts</h2>
           </div>
         </div>
 
@@ -358,6 +342,27 @@
           <a class="stream-button primary" href="student-login.html">Enter Kraken</a>
         </div>
       </section>
+
+      <section class="stream-content v15-mail-section" id="mailingList">
+        <div class="v15-mail-card">
+          <div>
+            <span class="stream-eyebrow">KRAKEN MAIL LIST</span>
+            <h2>Useful medical learning. No inbox fog.</h2>
+            <p>
+              Get new courses, instructor packages, simulations and Journal releases
+              sent straight to your inbox.
+            </p>
+          </div>
+
+          <form class="v15-mail-form" id="mailingListForm">
+            <label class="sr-only" for="mailingEmail">Email address</label>
+            <input id="mailingEmail" type="email" required autocomplete="email" placeholder="you@example.com">
+            <button class="stream-button primary" type="submit">Join the list</button>
+            <small id="mailingListState">No spam. Unsubscribe whenever you like.</small>
+          </form>
+        </div>
+      </section>
+
     </main>
 
     <footer class="stream-footer">
@@ -386,6 +391,8 @@
   <script src="supabase-config.js"></script>
   <script src="data.js"></script>
   <script src="common.js"></script>
+  <script src="kraken-nav.js"></script>
+  <script src="newsletter.js"></script>
   <script src="home.js"></script>
 </body>
 </html>
