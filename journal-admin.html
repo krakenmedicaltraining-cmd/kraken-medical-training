@@ -3,21 +3,29 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>News Admin | Kraken</title>
+  <title>News Admin | Kraken Medical Training</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="journal-admin.css">
+  <link rel="stylesheet" href="admin-nav.css">
 </head>
 <body>
 <header class="a-top">
-  <a class="brand" href="admin.html"><b>K</b><span>News Builder</span></a>
-  <nav><a href="admin.html">Courses</a><a href="journal.html">Public News</a></nav>
+  <a class="brand" href="admin-hub.html"><b>K</b><span>News Builder</span></a>
+  <nav>
+    <a href="admin-hub.html">Admin Hub</a>
+    <a href="journal.html">Public News</a>
+    <a href="newsletter-admin.html">Mailing List</a>
+  </nav>
   <button id="signOut" type="button">Sign out</button>
 </header>
 
 <main class="a-shell">
   <section class="hero">
-    <small>Kraken V13.1</small>
+    <small>KRAKEN NEWS + NEWSLETTER</small>
     <h1>Manage Kraken News</h1>
-    <p>Create picture-led news stories, publish website updates and optionally send them to newsletter subscribers.</p>
+    <p>Create picture-led news stories and optionally email each published story to active mailing-list subscribers.</p>
   </section>
 
   <div class="layout">
@@ -27,14 +35,14 @@
         <button id="newItem" type="button">+ New</button>
       </div>
 
-      <input id="search" placeholder="Search content">
+      <input id="search" placeholder="Search news">
       <select id="filter">
         <option value="">All types</option>
+        <option value="news">News</option>
         <option value="article">Article</option>
         <option value="video">Video</option>
         <option value="podcast">Podcast</option>
         <option value="download">Download</option>
-        <option value="news">News</option>
         <option value="event">Event</option>
         <option value="case_study">Case study</option>
       </select>
@@ -46,26 +54,28 @@
       <input id="itemId" type="hidden">
 
       <div class="head">
-        <div><small>Content editor</small><h2 id="heading">New item</h2></div>
+        <div><small>News editor</small><h2 id="heading">New story</h2></div>
         <span id="state">Not saved</span>
       </div>
 
       <div class="grid">
-        <label>Title<input id="title" required></label>
+        <label>Headline<input id="title" required></label>
         <label>Type
           <select id="type">
+            <option value="news">News</option>
             <option value="article">Article</option>
             <option value="video">Video</option>
             <option value="podcast">Podcast</option>
             <option value="download">Download</option>
-            <option value="news">News</option>
             <option value="event">Event</option>
             <option value="case_study">Case study</option>
           </select>
         </label>
       </div>
 
-      <label>Subtitle / summary<textarea id="excerpt" required placeholder="Short standfirst shown beneath the headline"></textarea></label>
+      <label>Subtitle / summary
+        <textarea id="excerpt" required placeholder="Short standfirst shown under the headline and inside the email"></textarea>
+      </label>
 
       <div class="grid">
         <label>Category<input id="category" value="Kraken news"></label>
@@ -73,8 +83,8 @@
       </div>
 
       <div class="grid">
-        <label>Cover image URL<input id="cover" type="url"></label>
-        <label>Media or download URL<input id="media" type="url"></label>
+        <label>Cover image URL<input id="cover" type="url" placeholder="https://..."></label>
+        <label>Media or download URL<input id="media" type="url" placeholder="Optional"></label>
       </div>
 
       <div class="grid">
@@ -89,15 +99,28 @@
             <option value="published">Published</option>
           </select>
         </label>
-
         <label>Publish date<input id="publishedAt" type="datetime-local"></label>
         <label>Reading time<input id="readingTime" type="number" min="1" value="5"></label>
       </div>
 
       <div class="toggles">
-        <label><input id="featured" type="checkbox"><span><b>Featured</b><small>Show at the top</small></span></label>
-        <label><input id="sharing" type="checkbox" checked><span><b>Sharing</b><small>Enable share button</small></span></label>
-        <label><input id="sendNewsletter" type="checkbox"><span><b>Send as newsletter</b><small>Email active subscribers when this published story is saved</small></span></label>
+        <label>
+          <input id="featured" type="checkbox">
+          <span><b>Featured</b><small>Feature this story on News</small></span>
+        </label>
+
+        <label>
+          <input id="sharing" type="checkbox" checked>
+          <span><b>Sharing</b><small>Enable public sharing</small></span>
+        </label>
+
+        <label>
+          <input id="sendNewsletter" type="checkbox">
+          <span>
+            <b>Send as newsletter</b>
+            <small>When saved as Published, email this story to active subscribers</small>
+          </span>
+        </label>
       </div>
 
       <div class="blockbar">
@@ -115,8 +138,8 @@
       <div id="empty" class="empty">No content blocks yet.</div>
 
       <div class="actions">
-        <button class="primary" type="submit">Save item</button>
-        <button id="deleteItem" class="danger" type="button" hidden>Delete current item</button>
+        <button class="primary" type="submit">Save story</button>
+        <button id="deleteItem" class="danger" type="button" hidden>Delete current story</button>
       </div>
     </form>
   </div>
@@ -133,5 +156,6 @@
 <script src="supabase-config.js"></script>
 <script src="common.js"></script>
 <script src="journal-admin.js"></script>
+<script src="admin-nav.js"></script>
 </body>
 </html>
