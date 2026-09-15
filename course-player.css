@@ -263,3 +263,46 @@ body.k-v11.course-player-body {
     width: 100%;
   }
 }
+/* =========================================================
+   KRAKEN V16 GLOBAL NAV COMPATIBILITY
+   ========================================================= */
+
+.course-player-body {
+  padding-top: 0 !important;
+}
+
+.course-player-body .player-topbar {
+  display: none !important;
+}
+
+/* Keep the course player directly beneath global navigation */
+
+.course-player-shell {
+  min-height: calc(100vh - 64px);
+}
+
+/* Loading state */
+
+.player-loading-kicker {
+  margin: 0 0 10px;
+
+  color: #18a88e;
+
+  font-size: 0.72rem;
+  font-weight: 900;
+
+  letter-spacing: 0.16em;
+
+  text-transform: uppercase;
+}
+
+
+/* Mobile global navigation is 62px */
+
+@media (max-width: 900px) {
+
+  .course-player-shell {
+    min-height: calc(100vh - 62px);
+  }
+
+}
