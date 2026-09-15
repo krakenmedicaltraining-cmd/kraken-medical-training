@@ -1,22 +1,411 @@
-/* Kraken Sim V15.2 */
-.simulation-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:start}
-.simulation-card{overflow:hidden;padding:0!important;border:1px solid #d7e4df;border-radius:22px;background:#fff;box-shadow:0 14px 36px rgba(10,45,48,.07);transition:transform .2s ease,box-shadow .2s ease}
-.simulation-card:hover{transform:translateY(-5px);box-shadow:0 22px 48px rgba(10,45,48,.12)}
-.simulation-art{position:relative;min-height:250px;padding:20px;display:flex;align-items:flex-end;overflow:hidden;background:radial-gradient(circle at 80% 15%,rgba(72,214,189,.18),transparent 30%),linear-gradient(145deg,#0b3438,#071b24);background-size:cover;background-position:center;color:#fff}
-.simulation-art:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 40%,rgba(4,20,16,.76))}
-.simulation-source,.simulation-controller,.simulation-art-title{position:relative;z-index:2}
-.simulation-source{position:absolute;top:18px;left:18px;padding:7px 10px;border-radius:999px;background:rgba(6,34,32,.78);backdrop-filter:blur(8px);color:#70e1ca;font-size:10px;font-weight:900;letter-spacing:.12em}
-.simulation-controller{position:absolute;top:18px;right:18px;width:46px;height:46px;display:grid;place-items:center;border-radius:15px;background:#fff;color:#159b83;box-shadow:0 10px 28px rgba(0,0,0,.14)}
-.simulation-art-title{width:100%}.simulation-art-title small{display:block;margin-bottom:7px;color:#68e0c7;font-size:10px;font-weight:900;letter-spacing:.13em}
-.simulation-art-title h3{margin:0;max-width:92%;color:#fff;font-size:clamp(23px,2vw,32px);line-height:1.04}
-.simulation-copy{padding:20px}.simulation-meta{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:15px}
-.simulation-meta span{padding:6px 9px;border-radius:999px;background:#eaf6f2;color:#087c68;font-size:10px;font-weight:900}
-.simulation-description{min-height:66px;margin:0 0 18px;color:#5d716e;line-height:1.55}
-.simulation-launch{display:flex!important;width:100%;justify-content:center;margin-bottom:17px;padding:13px 16px!important;border-radius:13px!important;text-align:center}
-.simulation-course-link{padding-top:15px;border-top:1px solid #e0ebe7}
-.simulation-course-link>span{display:block;margin-bottom:5px;color:#899b97;font-size:9px;font-weight:900;letter-spacing:.14em}
-.simulation-course-link a{color:#123d42;font-size:13px;font-weight:900;text-decoration:none}.simulation-course-link a:hover{color:#159b83}
-.simulation-filter-row{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}.simulation-filter{padding:9px 14px;border:1px solid #d2e1dc;border-radius:999px;background:#fff;color:#173d42;cursor:pointer;font-weight:800}
-.simulation-filter:hover{border-color:#17a68e}.simulation-filter.active{border-color:#17a68e;background:#17a68e;color:#fff}
-@media(max-width:1050px){.simulation-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:680px){.simulation-grid{grid-template-columns:1fr}.simulation-art{min-height:220px}.simulation-description{min-height:0}}
+/* =========================================================
+   KRAKEN V16
+   SIMULATION PAGE + GLOBAL NAV
+   ========================================================= */
+
+.simulation-page {
+  margin: 0;
+  padding: 0;
+  background: #f6f9f6;
+  color: #102b35;
+}
+
+
+/* Kill old page header if an old cached/template version exists */
+
+.simulation-page .k12-topbar {
+  display: none !important;
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.simulation-main {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.simulation-hero {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  overflow: hidden;
+
+  min-height: 480px;
+
+  margin: 0 !important;
+
+  padding:
+    75px
+    clamp(24px, 5vw, 80px)
+    90px !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  background:
+    radial-gradient(
+      circle at 78% 42%,
+      rgba(24, 168, 142, .18),
+      transparent 31%
+    ),
+    linear-gradient(
+      110deg,
+      #020c0a 0%,
+      #061713 48%,
+      #0b3029 100%
+    ) !important;
+
+  color: #fff;
+}
+
+
+/* Kraken grid */
+
+.simulation-hero::before {
+  position: absolute;
+  inset: 0;
+
+  content: "";
+
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(
+      rgba(72, 214, 189, .035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(72, 214, 189, .035) 1px,
+      transparent 1px
+    );
+
+  background-size: 68px 68px;
+}
+
+
+/* ambient glow */
+
+.simulation-hero::after {
+  position: absolute;
+
+  top: 50%;
+  right: 5%;
+
+  width: 520px;
+  height: 520px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(24,168,142,.12),
+      transparent 68%
+    );
+
+  content: "";
+
+  transform: translateY(-50%);
+
+  pointer-events: none;
+}
+
+
+.simulation-hero .k12-hero-inner {
+  position: relative;
+  z-index: 2;
+
+  width: min(900px, 100%);
+
+  margin: 0 !important;
+}
+
+
+.simulation-hero .k12-eyebrow {
+  color: #48d6bd;
+}
+
+
+.simulation-hero h1 {
+  margin:
+    12px
+    0
+    22px;
+
+  color: #f5f7f3;
+
+  font-family: Oswald, sans-serif;
+
+  font-size:
+    clamp(
+      5rem,
+      10vw,
+      9rem
+    );
+
+  font-weight: 700;
+
+  line-height: .86;
+
+  letter-spacing: -.025em;
+
+  text-transform: uppercase;
+}
+
+
+.simulation-hero p {
+  max-width: 700px;
+
+  margin: 0;
+
+  color: #c8dad5;
+
+  font-size:
+    clamp(
+      1rem,
+      1.6vw,
+      1.2rem
+    );
+
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.simulation-content {
+  width:
+    min(
+      1320px,
+      calc(100% - 36px)
+    ) !important;
+
+  margin: 0 auto !important;
+
+  padding:
+    65px
+    0
+    100px !important;
+}
+
+
+.simulation-content .k12-section {
+  margin: 0 !important;
+}
+
+
+/* =========================================================
+   SECTION HEADING
+   ========================================================= */
+
+.simulation-section-head {
+  display: grid !important;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(250px, 340px);
+
+  align-items: end;
+
+  gap: 30px;
+
+  margin-bottom: 26px !important;
+}
+
+
+.simulation-section-head .k12-eyebrow {
+  color: #18a88e;
+}
+
+
+.simulation-section-head h2 {
+  margin:
+    8px
+    0
+    12px;
+
+  color: #071b24;
+
+  font-family: Oswald, sans-serif;
+
+  font-size:
+    clamp(
+      2.8rem,
+      5vw,
+      4.5rem
+    );
+
+  line-height: 1;
+
+  text-transform: uppercase;
+}
+
+
+.simulation-section-head p {
+  max-width: 720px;
+
+  margin: 0;
+
+  color: #617673;
+
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.simulation-section-head .k12-search {
+  width: 100% !important;
+  max-width: none !important;
+
+  min-height: 54px;
+
+  padding: 0 17px;
+
+  border:
+    1px solid
+    #d6e3de !important;
+
+  border-radius:
+    14px !important;
+
+  background:
+    #fff !important;
+
+  color:
+    #102b35 !important;
+
+  font-family:
+    Inter,
+    sans-serif;
+
+  font-weight: 600;
+
+  outline: none;
+}
+
+
+.simulation-section-head .k12-search:focus {
+  border-color:
+    #18a88e !important;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(24,168,142,.1);
+}
+
+
+/* =========================================================
+   FILTERS
+   ========================================================= */
+
+.simulation-filter-row {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  margin-bottom: 28px;
+}
+
+
+/* =========================================================
+   SIMULATION GRID
+   ========================================================= */
+
+.simulation-grid {
+  display: grid !important;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0,1fr)
+    ) !important;
+
+  gap: 22px !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 950px) {
+
+  .simulation-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0,1fr)
+      ) !important;
+  }
+
+
+  .simulation-section-head {
+    grid-template-columns:
+      1fr !important;
+
+    align-items: start;
+  }
+
+}
+
+
+@media (max-width: 650px) {
+
+  .simulation-hero {
+    min-height: 360px;
+
+    padding:
+      55px
+      20px
+      65px !important;
+  }
+
+
+  .simulation-hero h1 {
+    font-size:
+      clamp(
+        4rem,
+        21vw,
+        5.8rem
+      );
+  }
+
+
+  .simulation-content {
+    width:
+      calc(100% - 28px) !important;
+
+    padding-top:
+      44px !important;
+  }
+
+
+  .simulation-grid {
+    grid-template-columns:
+      1fr !important;
+  }
+
+
+  .simulation-section-head h2 {
+    font-size: 2.8rem;
+  }
+
+}
