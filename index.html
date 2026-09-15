@@ -17,6 +17,8 @@
   <link rel="stylesheet" href="v14-home.css">
   <link rel="stylesheet" href="kraken-global.css">
   <link rel="stylesheet" href="admin-nav.css">
+  <link rel="stylesheet" href="kraken-nav-v16.css">
+  <link rel="stylesheet" href="v16-home-routes.css">
 </head>
 
 <body class="stream-home">
@@ -34,7 +36,7 @@
     <nav class="drawer-nav">
       <a class="active" href="index.html">⌂ <span>Home</span></a>
       <a href="#continue">▶ <span>Continue training</span></a>
-      <a href="courses.html">▤ <span>Courses</span></a>
+      <a href="courses.html">▤ <span>CPD Courses</span></a>
       <a href="library.html">▧ <span>Field library</span></a>
       <a href="journal.html">☷ <span>Kraken Journal</span></a>
       <a href="games.html">◆ <span>Simulations</span></a>
@@ -65,7 +67,8 @@
 
       <nav class="stream-nav" aria-label="Primary navigation">
         <a class="active" href="index.html">Home</a>
-        <a href="courses.html" data-course-menu-trigger>Courses <span class="nav-caret">⌄</span></a>
+        <a href="courses.html" data-v16-menu="cpd">CPD Courses <span class="nav-caret">⌄</span></a>
+        <a href="in-person-training.html" data-v16-menu="physical">In-Person Training <span class="nav-caret">⌄</span></a>
         <a href="instructor-tools.html">Instructor tools</a>
         <a href="library.html">Library</a>
         <a href="journal.html">Journal</a>
@@ -78,6 +81,7 @@
         <a class="stream-profile" href="profile.html" aria-label="Account">CB</a>
       </div>
     </header>
+    <div id="v16MegaMenuMount"></div>
 
     <main>
       <section class="stream-hero">
@@ -149,6 +153,15 @@
             <div>
               <strong>Courses</strong>
               <small>Structured learning and certificates</small>
+            </div>
+            <span>→</span>
+          </a>
+
+          <a class="v14-route-card v16-inperson-route" href="in-person-training.html">
+            <span class="v14-route-icon">✚</span>
+            <div>
+              <strong>In-Person Training</strong>
+              <small>Practical instructor-led medical training</small>
             </div>
             <span>→</span>
           </a>
@@ -266,7 +279,7 @@
               </div>
             </div>
           </div>
-          <a href="courses.html">Browse all courses →</a>
+          <a href="courses.html">Browse all CPD →</a>
         </div>
 
         <div class="premium-course-grid" id="customCourseGrid">
@@ -381,7 +394,7 @@
 
     <nav class="stream-mobile-nav" aria-label="Mobile navigation">
       <a class="active" href="index.html"><span>⌂</span><small>Home</small></a>
-      <a href="courses.html"><span>▤</span><small>Courses</small></a>
+      <a href="courses.html"><span>▤</span><small>CPD</small></a>
       <a href="games.html"><span>◆</span><small>Simulations</small></a>
       <a href="library.html"><span>▧</span><small>Library</small></a>
       <a href="profile.html"><span>●</span><small>Profile</small></a>
@@ -393,6 +406,7 @@
   <script src="data.js"></script>
   <script src="common.js"></script>
   <script src="kraken-nav.js"></script>
+  <script src="v16-home-mega-menu.js"></script>
   <script src="newsletter.js"></script>
   <script src="home.js"></script>
 </body>
