@@ -3,28 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Journal Admin | Kraken</title>
+  <title>News Admin | Kraken</title>
   <link rel="stylesheet" href="journal-admin.css">
-  <link rel="stylesheet" href="admin-nav.css">
 </head>
 <body>
 <header class="a-top">
-  <a class="brand" href="admin.html"><b>K</b><span>Journal Builder</span></a>
-  <nav><a href="admin.html">Courses</a><a href="journal.html">Public Journal</a></nav>
+  <a class="brand" href="admin.html"><b>K</b><span>News Builder</span></a>
+  <nav><a href="admin.html">Courses</a><a href="journal.html">Public News</a></nav>
   <button id="signOut" type="button">Sign out</button>
 </header>
 
 <main class="a-shell">
   <section class="hero">
     <small>Kraken V13.1</small>
-    <h1>Manage the Kraken Journal</h1>
-    <p>Create, edit, preview, duplicate and delete previously published content.</p>
+    <h1>Manage Kraken News</h1>
+    <p>Create picture-led news stories, publish website updates and optionally send them to newsletter subscribers.</p>
   </section>
 
   <div class="layout">
     <aside class="panel side">
       <div class="head">
-        <div><small>Content</small><h2>Journal items</h2></div>
+        <div><small>Content</small><h2>News stories</h2></div>
         <button id="newItem" type="button">+ New</button>
       </div>
 
@@ -66,7 +65,7 @@
         </label>
       </div>
 
-      <label>Excerpt<textarea id="excerpt" required></textarea></label>
+      <label>Subtitle / summary<textarea id="excerpt" required placeholder="Short standfirst shown beneath the headline"></textarea></label>
 
       <div class="grid">
         <label>Category<input id="category" value="Kraken news"></label>
@@ -98,6 +97,7 @@
       <div class="toggles">
         <label><input id="featured" type="checkbox"><span><b>Featured</b><small>Show at the top</small></span></label>
         <label><input id="sharing" type="checkbox" checked><span><b>Sharing</b><small>Enable share button</small></span></label>
+        <label><input id="sendNewsletter" type="checkbox"><span><b>Send as newsletter</b><small>Email active subscribers when this published story is saved</small></span></label>
       </div>
 
       <div class="blockbar">
@@ -133,6 +133,5 @@
 <script src="supabase-config.js"></script>
 <script src="common.js"></script>
 <script src="journal-admin.js"></script>
-  <script src="admin-nav.js"></script>
 </body>
 </html>

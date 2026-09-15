@@ -54,6 +54,7 @@
       status:$("#status").value,
       featured:$("#featured").checked,
       allow_sharing:$("#sharing").checked,
+      send_newsletter:$("#sendNewsletter")?.checked||false,
       published_at:$("#publishedAt").value?new Date($("#publishedAt").value).toISOString():($("#status").value==="published"?new Date().toISOString():null),
       reading_time_minutes:Number($("#readingTime").value||5),
       updated_at:new Date().toISOString()
@@ -98,14 +99,14 @@
     $("#media").value=x.media_url||""; $("#slug").value=x.slug||""; $("#status").value=x.status||"draft";
     $("#readingTime").value=x.reading_time_minutes||5; $("#eventDate").value=x.event_date?x.event_date.slice(0,16):"";
     $("#publishedAt").value=x.published_at?x.published_at.slice(0,16):""; $("#featured").checked=!!x.featured;
-    $("#sharing").checked=x.allow_sharing!==false; blocks=(br.data||[]).map(b=>({...b,client_id:uid()}));
+    $("#sharing").checked=x.allow_sharing!==false; if($("#sendNewsletter")) $("#sendNewsletter").checked=!!x.send_newsletter; blocks=(br.data||[]).map(b=>({...b,client_id:uid()}));
     $("#heading").textContent=`Editing: ${x.title}`; $("#deleteItem").hidden=false; renderBlocks(); renderItems(); setState("Loaded");
     scrollTo({top:0,behavior:"smooth"});
   }
 
   function reset(){
     $("#itemForm").reset(); currentId=null; $("#itemId").value=""; $("#author").value="Kraken Medical Training";
-    $("#category").value="Kraken news"; $("#readingTime").value=5; $("#sharing").checked=true; $("#status").value="draft";
+    $("#category").value="Kraken news"; $("#readingTime").value=5; $("#sharing").checked=true; if($("#sendNewsletter")) $("#sendNewsletter").checked=false; $("#status").value="draft";
     $("#heading").textContent="New item"; $("#deleteItem").hidden=true; blocks=[]; renderBlocks(); renderItems(); setState("Not saved");
   }
 

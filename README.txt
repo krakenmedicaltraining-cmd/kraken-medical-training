@@ -1,34 +1,24 @@
-KRAKEN MEDICAL TRAINING — V16.3 UNIFIED PUBLIC WEBSITE
+KRAKEN V16.4 - NEWS + NEWSLETTER
 
-PURPOSE
-Every main public page now uses the exact same navigation component, colour palette, typography and hero system.
+WHAT CHANGED
+- Public Journal is renamed News.
+- Homepage Continue Training section is replaced visually by Latest Kraken News.
+- Existing Continue Training markup remains hidden for compatibility with current home.js.
+- Homepage automatically loads the latest 3 published journal_items.
+- Existing title = headline, excerpt = subtitle/standfirst, cover_image_url = picture.
+- News Admin adds a Send as newsletter toggle.
+- My Mission remains the home for learner progress/continue training.
 
-REPLACE / UPLOAD
-- index.html
-- courses.html
-- course.html
-- in-person-training.html
-- in-person-course.html
-- instructor-tools.html
-- library.html
-- journal.html
-- games.html
-- dashboard.html
-- kraken-site-nav.css
-- kraken-site-nav.js
-- kraken-public.css
+DEPLOY WEBSITE
+1. Upload/replace the files in this package.
+2. Run supabase-v16-4-newsletter.sql in Supabase SQL Editor.
+3. Redeploy Cloudflare and hard refresh.
 
-ALSO INCLUDED
-- in-person-training.css
-- in-person-training.js
-- in-person-course.js (if available from the V16 package)
-
-IMPORTANT
-1. Keep your existing page-specific CSS/JS files unless this package explicitly includes a replacement.
-2. kraken-public.css loads AFTER page-specific CSS so it can enforce the same public shell.
-3. kraken-site-nav.js is the ONE navigation component used everywhere.
-4. Admin pages continue using admin-nav and are NOT changed by this package.
-5. No Supabase SQL changes are required.
-
-DEPLOY
-Upload/replace the files, redeploy Cloudflare, then hard refresh with Ctrl+Shift+R.
+EMAIL DELIVERY
+Website News works immediately without an email provider.
+For actual newsletter sending, deploy the included Supabase Edge Function named send-newsletter and set secrets:
+- RESEND_API_KEY
+- NEWSLETTER_FROM (example: Kraken Medical Training <news@yourdomain>)
+- SITE_URL (your public Kraken URL)
+The function uses the existing mailing_list table where is_active=true.
+If the Edge Function is not configured, publishing still saves the News story; only email delivery will fail.
