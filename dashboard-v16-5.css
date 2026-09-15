@@ -1,0 +1,49 @@
+/* =========================================================
+   KRAKEN V16.5 MY MISSION
+   Additional dashboard-specific layout protection
+   ========================================================= */
+
+body.kraken-mission-page{
+  min-width:0;
+  overflow-x:hidden;
+}
+
+.kraken-mission-page main,
+.kraken-mission-page .section,
+.kraken-mission-page .course-grid,
+.kraken-mission-page .dashboard-grid,
+.kraken-mission-page .panel{
+  box-sizing:border-box;
+  min-width:0;
+}
+
+/* Continue Learning is intentionally a compact single-column mission list */
+.kraken-mission-page #courses{
+  align-items:stretch;
+}
+
+.kraken-mission-page #courses > :only-child{
+  width:100%!important;
+}
+
+/* Protect against legacy absolute/fixed sizing inside generated cards */
+.kraken-mission-page #courses *{
+  box-sizing:border-box;
+}
+
+.kraken-mission-page #courses img{
+  max-width:100%;
+  height:auto;
+}
+
+.kraken-mission-page #courses .button,
+.kraken-mission-page #courses .small-button,
+.kraken-mission-page #courses a{
+  white-space:normal;
+}
+
+@media(min-width:900px){
+  .kraken-mission-page #courses > *{
+    min-height:150px;
+  }
+}
