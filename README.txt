@@ -1,21 +1,34 @@
-KRAKEN V16.2
-=============
-FIXES
-1. Fixes the broken/un-styled In-Person Training page.
-2. Introduces one reusable navigation bar matching the homepage navigation.
-3. Both CPD Courses and In-Person Training have dynamic mega menus.
-4. In-Person Training now uses the same dark Kraken visual language as the homepage.
-5. Category query strings now work on the in-person library.
+KRAKEN MEDICAL TRAINING — V16.3 UNIFIED PUBLIC WEBSITE
 
-UPLOAD / REPLACE
-- in-person-training.html (replace)
-- in-person-training.js (replace)
-- in-person-course.html (replace)
-- in-person-training.css (replace)
-- kraken-site-nav.css (new)
-- kraken-site-nav.js (new)
+PURPOSE
+Every main public page now uses the exact same navigation component, colour palette, typography and hero system.
 
-NO SQL REQUIRED.
+REPLACE / UPLOAD
+- index.html
+- courses.html
+- course.html
+- in-person-training.html
+- in-person-course.html
+- instructor-tools.html
+- library.html
+- journal.html
+- games.html
+- dashboard.html
+- kraken-site-nav.css
+- kraken-site-nav.js
+- kraken-public.css
 
-For every other PUBLIC page, follow GLOBAL-NAV-INSTALL.html.
-The next safest step is to convert the existing pages one at a time, because their current headers contain page-specific IDs/JS and blindly replacing every HTML file could break existing functions.
+ALSO INCLUDED
+- in-person-training.css
+- in-person-training.js
+- in-person-course.js (if available from the V16 package)
+
+IMPORTANT
+1. Keep your existing page-specific CSS/JS files unless this package explicitly includes a replacement.
+2. kraken-public.css loads AFTER page-specific CSS so it can enforce the same public shell.
+3. kraken-site-nav.js is the ONE navigation component used everywhere.
+4. Admin pages continue using admin-nav and are NOT changed by this package.
+5. No Supabase SQL changes are required.
+
+DEPLOY
+Upload/replace the files, redeploy Cloudflare, then hard refresh with Ctrl+Shift+R.

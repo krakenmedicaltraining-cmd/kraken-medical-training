@@ -19,9 +19,12 @@
   <link rel="stylesheet" href="admin-nav.css">
   <link rel="stylesheet" href="kraken-nav-v16.css">
   <link rel="stylesheet" href="v16-home-routes.css">
+  <link rel="stylesheet" href="kraken-site-nav.css">
+  <link rel="stylesheet" href="kraken-public.css">
 </head>
 
-<body class="stream-home">
+<body class="stream-home kraken-public-page kraken-home-page">
+  <div data-kraken-site-nav data-active="home"></div>
   <div class="drawer-backdrop" id="drawerBackdrop"></div>
 
   <aside class="drawer stream-drawer" id="drawer" aria-label="Main menu">
@@ -403,10 +406,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
+<script src="kraken-site-nav.js"></script>
   <script src="data.js"></script>
   <script src="common.js"></script>
   <script src="kraken-nav.js"></script>
-  <script src="v16-home-mega-menu.js"></script>
+  
   <script src="newsletter.js"></script>
   <script src="home.js"></script>
 </body>
