@@ -1,1 +1,73 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#071b24"><title>CPD Courses | Kraken Medical Training</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="kraken-v11.css"><link rel="stylesheet" href="courses.css"><link rel="stylesheet" href="kraken-site-nav.css"><link rel="stylesheet" href="kraken-public.css"></head><body class="k-v11 courses-body kraken-public-page"><div data-kraken-site-nav data-active="cpd"></div><main><section class="catalogue-hero"><div><p class="catalogue-kicker">ONLINE MEDICAL LEARNING</p><h1>CPD Courses</h1><p>Build your clinical knowledge with focused online medical learning, interactive scenarios and downloadable field resources.</p></div></section><section class="catalogue-tools" aria-label="CPD course filters"><label class="catalogue-search"><span>⌕</span><input id="courseSearch" type="search" placeholder="Search CPD courses" autocomplete="off"></label><select id="categoryFilter" aria-label="Filter by clinical area"><option value="">All clinical areas</option></select></section><section class="catalogue-content"><div class="catalogue-heading"><div><p class="catalogue-kicker">AVAILABLE NOW</p><h2 id="catalogueTitle">All CPD Courses</h2></div><span id="courseCount">Loading…</span></div><div id="courseGrid" class="course-grid" aria-live="polite"><div class="catalogue-loading">Loading CPD courses…</div></div></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="kraken-site-nav.js"></script><script src="data.js"></script><script src="common.js"></script><script src="courses.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#071b24">
+  <title>CPD Courses | Kraken Medical Training</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="kraken-v11.css">
+  <link rel="stylesheet" href="courses.css">
+
+  <!-- Shared public shell must load after page styles -->
+  <link rel="stylesheet" href="kraken-public.css">
+  <link rel="stylesheet" href="kraken-site-nav.css">
+</head>
+
+<body class="k-v11 courses-body kraken-public-page">
+
+  <div data-kraken-site-nav></div>
+
+  <main>
+    <section class="catalogue-hero">
+      <div>
+        <p class="catalogue-kicker">ONLINE MEDICAL LEARNING</p>
+        <h1>CPD Courses</h1>
+        <p>
+          Build your clinical knowledge with focused online medical learning,
+          interactive scenarios and downloadable field resources.
+        </p>
+      </div>
+    </section>
+
+    <section class="catalogue-tools" aria-label="CPD course filters">
+      <label class="catalogue-search">
+        <span>⌕</span>
+        <input id="courseSearch" type="search" placeholder="Search CPD courses" autocomplete="off">
+      </label>
+
+      <select id="categoryFilter" aria-label="Filter by clinical area">
+        <option value="">All clinical areas</option>
+      </select>
+    </section>
+
+    <section class="catalogue-content">
+      <div class="catalogue-heading">
+        <div>
+          <p class="catalogue-kicker">AVAILABLE NOW</p>
+          <h2 id="catalogueTitle">All CPD Courses</h2>
+        </div>
+        <span id="courseCount">Loading…</span>
+      </div>
+
+      <div id="courseGrid" class="course-grid" aria-live="polite">
+        <div class="catalogue-loading">Loading CPD courses…</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+
+  <script src="kraken-site-nav.js"></script>
+
+  <script src="data.js"></script>
+  <script src="common.js"></script>
+  <script src="courses.js"></script>
+</body>
+</html>

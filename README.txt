@@ -1,24 +1,23 @@
-KRAKEN V16.4 - NEWS + NEWSLETTER
+KRAKEN V16.4.1 - CPD NAVIGATION FIX
 
-WHAT CHANGED
-- Public Journal is renamed News.
-- Homepage Continue Training section is replaced visually by Latest Kraken News.
-- Existing Continue Training markup remains hidden for compatibility with current home.js.
-- Homepage automatically loads the latest 3 published journal_items.
-- Existing title = headline, excerpt = subtitle/standfirst, cover_image_url = picture.
-- News Admin adds a Send as newsletter toggle.
-- My Mission remains the home for learner progress/continue training.
+UPLOAD / REPLACE THESE THREE FILES IN THE REPOSITORY ROOT:
 
-DEPLOY WEBSITE
-1. Upload/replace the files in this package.
-2. Run supabase-v16-4-newsletter.sql in Supabase SQL Editor.
-3. Redeploy Cloudflare and hard refresh.
+1. courses.html
+2. kraken-site-nav.css
+3. kraken-site-nav.js
 
-EMAIL DELIVERY
-Website News works immediately without an email provider.
-For actual newsletter sending, deploy the included Supabase Edge Function named send-newsletter and set secrets:
-- RESEND_API_KEY
-- NEWSLETTER_FROM (example: Kraken Medical Training <news@yourdomain>)
-- SITE_URL (your public Kraken URL)
-The function uses the existing mailing_list table where is_active=true.
-If the Edge Function is not configured, publishing still saves the News story; only email delivery will fail.
+What this fixes:
+- CPD Courses now uses the same dark Kraken navigation as every other public page.
+- Generic course-page button styles can no longer turn the CPD and In-Person dropdown buttons white.
+- Shared nav stylesheet is loaded last on courses.html.
+- Existing CPD search/filter IDs and course scripts are preserved.
+- Dynamic CPD and In-Person category mega menus remain connected to Supabase.
+- Mobile navigation remains supported.
+
+No SQL is required.
+
+DEPLOY:
+1. Upload/replace all three files together.
+2. Commit to GitHub.
+3. Redeploy Cloudflare.
+4. Hard refresh with Ctrl + Shift + R.
