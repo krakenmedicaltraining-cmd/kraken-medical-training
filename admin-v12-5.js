@@ -29,11 +29,25 @@ function activateTab(name) {
 $$("[data-tab]").forEach(button => button.addEventListener("click", () => activateTab(button.dataset.tab)));
 
 function blankBlock(type="text") {
-  return {
+  const block = {
     client_id: uid(), type,
     title: type === "text" ? "Learning content" : "",
     content: "", url: "", caption: "", button_text: "Open resource"
   };
+
+  if (type === "simulation") {
+    Object.assign(block, {
+      title: "New simulation",
+      simulation_description: "",
+      simulation_thumbnail_url: "",
+      simulation_category: "Clinical",
+      simulation_difficulty: "Intermediate",
+      simulation_minutes: 10,
+      show_in_sim_library: true
+    });
+  }
+
+  return block;
 }
 function blankLesson() {
   return {
@@ -91,15 +105,59 @@ function blockEditor(block, lessonIndex, blockIndex) {
     text:"Text", video:"Video", image:"Image", download:"Download",
     podcast:"Podcast", simulation:"Simulation", reflection:"Reflection"
   };
+
   const type = block.type || "text";
   const commonTitle = `<input data-block-key="title" value="${esc(block.title)}" placeholder="${labels[type]} title">`;
   let body = "";
+
   if (type === "text" || type === "reflection") {
     body = `${commonTitle}<textarea data-block-key="content" placeholder="${type === "reflection" ? "Reflection prompt" : "Lesson text"}">${esc(block.content)}</textarea>`;
+  } else if (type === "simulation") {
+    body = `
+      <div class="kb-grid-2">
+        <label class="kb-field"><span>Simulation title</span>
+          <input data-block-key="title" value="${esc(block.title || "")}" placeholder="e.g. Shortness of Breath">
+        </label>
+        <label class="kb-field"><span>Category</span>
+          <input data-block-key="simulation_category" value="${esc(block.simulation_category || "Clinical")}" placeholder="e.g. Clinical assessment">
+        </label>
+      </div>
+
+      <label class="kb-field"><span>Simulation description</span>
+        <textarea rows="3" data-block-key="simulation_description" placeholder="Describe the game itself and what the learner must do.">${esc(block.simulation_description || block.caption || "")}</textarea>
+      </label>
+
+      <label class="kb-field"><span>Simulation / game URL</span>
+        <input type="url" data-block-key="url" value="${esc(block.url || "")}" placeholder="https://...">
+      </label>
+
+      <label class="kb-field"><span>Simulation thumbnail URL</span>
+        <input type="url" data-block-key="simulation_thumbnail_url" value="${esc(block.simulation_thumbnail_url || "")}" placeholder="https://.../simulation-cover.jpg">
+      </label>
+
+      <div class="kb-grid-2">
+        <label class="kb-field"><span>Difficulty</span>
+          <select data-block-key="simulation_difficulty">
+            ${["Beginner","Intermediate","Advanced","All levels"].map(option =>
+              `<option value="${option}" ${(block.simulation_difficulty || "Intermediate") === option ? "selected" : ""}>${option}</option>`
+            ).join("")}
+          </select>
+        </label>
+
+        <label class="kb-field"><span>Duration (minutes)</span>
+          <input type="number" min="1" step="1" data-block-key="simulation_minutes" value="${Number(block.simulation_minutes || 10)}">
+        </label>
+      </div>
+
+      <label style="display:flex;align-items:center;gap:10px;margin:8px 0 4px;font-weight:800">
+        <input type="checkbox" data-block-key="show_in_sim_library" ${block.show_in_sim_library !== false ? "checked" : ""}>
+        Show this simulation in Kraken Sim
+      </label>`;
   } else {
     body = `${commonTitle}<input type="url" data-block-key="url" value="${esc(block.url)}" placeholder="https://...">
       <input data-block-key="caption" value="${esc(block.caption)}" placeholder="Caption or description">`;
   }
+
   return `<div class="kb-block" data-block="${blockIndex}">
     <div class="kb-block-head">
       <span class="kb-block-type">${labels[type]}</span><strong>${esc(block.title || labels[type])}</strong>
@@ -167,9 +225,22 @@ function renderLessons() {
     $$("[data-add-block]", card).forEach(b => b.onclick = () => addBlock(li, b.dataset.addBlock));
     $$("[data-block]", card).forEach(blockEl => {
       const bi = +blockEl.dataset.block;
-      $$("[data-block-key]", blockEl).forEach(input => input.oninput = () => {
-        lessons[li].blocks[bi][input.dataset.blockKey] = input.value;
-        scheduleDraft();
+      $$("[data-block-key]", blockEl).forEach(input => {
+        const updateBlockValue = () => {
+          const key = input.dataset.blockKey;
+          lessons[li].blocks[bi][key] =
+            input.type === "checkbox" ? input.checked :
+            input.type === "number" ? Number(input.value || 0) :
+            input.value;
+
+          if (key === "title") {
+            const heading = blockEl.querySelector(".kb-block-head strong");
+            if (heading) heading.textContent = input.value || "Simulation";
+          }
+          scheduleDraft();
+        };
+        input.oninput = updateBlockValue;
+        input.onchange = updateBlockValue;
       });
       $("[data-block-up]", blockEl).onclick = () => moveBlock(li, bi, -1);
       $("[data-block-down]", blockEl).onclick = () => moveBlock(li, bi, 1);
