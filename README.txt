@@ -1,62 +1,50 @@
-KRAKEN MEDICAL TRAINING V16.6
-NEWS + AUTOMATIC NEWSLETTER
+KRAKEN V16.8 CERTIFICATE DISPLAY FIX
 
-WHAT THIS DOES
-- Homepage mailing-list signup stores/re-activates subscribers in Supabase.
-- News Builder has "Send as newsletter".
-- Saving a Published story with that box ticked calls a protected Supabase Edge Function.
-- The function verifies the caller is in admin_users.
-- It fetches active subscribers server-side.
-- Each subscriber gets an individual branded email.
-- Email includes cover picture, headline, subtitle and Read full story button.
-- Every email has an unsubscribe link plus List-Unsubscribe headers.
-- newsletter_sends logs sent / failed emails and prevents duplicate sends.
-- newsletter-admin.html lets admins view subscribers and recent delivery history.
+Your actual public.certificates table is:
+id uuid
+certificate_code text
+user_id uuid
+course_id text
+learner_name text
+course_title text
+final_score integer
+issued_at timestamptz
 
-FILES TO PUT IN WEBSITE ROOT
-- newsletter.js                  REPLACE
-- journal-admin.html             REPLACE
-- journal-admin.js               REPLACE
-- newsletter-admin.html          NEW
-- newsletter-admin.js            NEW
-- newsletter-admin.css           NEW
+This replacement is wired ONLY to that real table.
 
-DATABASE
-Run supabase-v16-6-newsletter.sql in Supabase SQL Editor.
+REPLACE:
+certificate.html
+certificate.js
+certificate.css
 
-EDGE FUNCTIONS
-Deploy:
-- supabase/functions/send-newsletter/index.ts
-- supabase/functions/unsubscribe-newsletter/index.ts
+IMPORTANT:
+The old/deployed certificate code that references:
+- course_certificate_settings
+- course_certificates
 
-SECRETS REQUIRED
-RESEND_API_KEY
-NEWSLETTER_FROM
-SITE_URL
+is not used by these replacement files.
 
-Example:
-RESEND_API_KEY=re_xxxxxxxxx
-NEWSLETTER_FROM=Kraken Medical Training <news@krakenmedicaltraining.com>
-SITE_URL=https://kraken-medical.krakenmedicaltraining.workers.dev
+The certificate page now:
+- requires the learner to be signed in
+- looks up certificates by user_id + TEXT course_id
+- displays learner name
+- displays stored course title
+- displays issue date
+- displays final score when present
+- displays certificate code
+- prints cleanly as A4 landscape
+- uses assets/kraken-medical-logo.png
 
-IMPORTANT
-Do not put the Resend API key in JavaScript, GitHub frontend files or supabase-config.js.
-It belongs only in Supabase Edge Function Secrets.
+DEPLOY:
+1. Replace all 3 files together.
+2. Commit.
+3. Redeploy Cloudflare.
+4. Hard refresh Ctrl + Shift + R.
+5. Open:
+   certificate.html?course=shortness-of-breath
 
-RESEND DOMAIN
-Verify a sending domain in Resend before using your own From address.
-A subdomain such as updates.krakenmedicaltraining.com or news.krakenmedicaltraining.com is a tidy option.
+If the page says 'Certificate not issued yet', the display page is now working
+but there is no row for that user/course in public.certificates. In that case,
+the next check is the certificate issuance/upsert, not the display page.
 
-DEPLOY ORDER
-1. Run the SQL.
-2. Create/verify your sending domain in Resend.
-3. Create a Resend API key.
-4. Add the three Edge Function secrets in Supabase.
-5. Deploy both Edge Functions.
-6. Upload the website files.
-7. Redeploy Cloudflare.
-8. Join the mailing list with your own email.
-9. Create a test News story, set Published, tick Send as newsletter, save.
-10. Check newsletter-admin.html and your inbox.
-
-No Resend API key is included in this ZIP.
+NO SQL REQUIRED.

@@ -3,20 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#071510">
+  <meta name="theme-color" content="#071b24">
   <title>Course Certificate | Kraken Medical Training</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="certificate.css">
 </head>
 <body>
   <header class="certificate-topbar">
-    <a href="dashboard.html">← Dashboard</a>
+    <a href="dashboard.html">← My Mission</a>
 
     <a class="certificate-topbar-brand" href="index.html">
-      <img
-        src="kraken-medical-logo.png"
-        alt="Kraken Medical Training"
-      >
-      <strong>Kraken Medical Training</strong>
+      <img src="assets/kraken-medical-logo.png" alt="Kraken Medical Training">
+      <span>
+        <strong>KRAKEN</strong>
+        <small>MEDICAL TRAINING</small>
+      </span>
     </a>
 
     <button id="printCertificate" type="button">
@@ -25,58 +30,46 @@
   </header>
 
   <main class="certificate-shell">
-    <section
-      id="certificateStatus"
-      class="certificate-status"
-    >
+    <section id="certificateStatus" class="certificate-status">
       Loading your certificate…
     </section>
 
-    <article
-      id="certificateCard"
-      class="certificate-card"
-      hidden
-    >
+    <article id="certificateCard" class="certificate-card" hidden>
       <div class="certificate-inner">
+        <div class="certificate-corner certificate-corner-a"></div>
+        <div class="certificate-corner certificate-corner-b"></div>
+
         <div class="certificate-logo">
-          <img
-            src="kraken-medical-logo.png"
-            alt="Kraken Medical Training logo"
-          >
+          <img src="assets/kraken-medical-logo.png" alt="Kraken Medical Training logo">
         </div>
 
-        <span class="certificate-eyebrow">
-          Kraken Medical Training
-        </span>
+        <span class="certificate-eyebrow">Kraken Medical Training</span>
 
-        <h1>Certificate of Completion</h1>
+        <h1>Certificate<br>of Completion</h1>
 
-        <p>This certifies that</p>
+        <p class="certificate-copy">This certifies that</p>
 
-        <div
-          id="learnerName"
-          class="certificate-name"
-        >
-          Learner Name
-        </div>
+        <div id="learnerName" class="certificate-name">Learner Name</div>
 
-        <p>has successfully completed</p>
+        <p class="certificate-copy">has successfully completed</p>
 
-        <h2 id="courseTitle">
-          Course title
-        </h2>
+        <h2 id="courseTitle">Course title</h2>
 
         <div class="certificate-meta">
           <span id="issuedDate"></span>
           <span id="finalScore"></span>
         </div>
 
-        <div class="certificate-signature">
-          <strong>Kraken Medical Training</strong>
-          <span>Medical Education Platform</span>
-        </div>
+        <div class="certificate-rule"></div>
 
-        <code id="certificateCode"></code>
+        <div class="certificate-footer">
+          <div class="certificate-signature">
+            <strong>Kraken Medical Training</strong>
+            <span>Medical Education Platform</span>
+          </div>
+
+          <code id="certificateCode"></code>
+        </div>
       </div>
     </article>
   </main>
