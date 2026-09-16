@@ -1,1 +1,96 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#071b24"><title>My Mission | Kraken Medical Training</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="achievement-system.css"><link rel="stylesheet" href="kraken-site-nav.css"><link rel="stylesheet" href="kraken-public.css"></head><body class="kraken-public-page kraken-mission-page"><div data-kraken-site-nav data-active="mission"></div><main><section class="page-hero"><span class="eyebrow">YOUR LEARNING RECORD</span><h1 id="welcome">My Mission</h1><p>Your courses, progress, activity, certificates and achievements in one place.</p></section><section class="section" id="announcementSection" hidden><div class="section-head"><h2>Announcements</h2></div><div id="dashboardAnnouncements" class="announcement-grid"></div></section><section class="section"><div class="dashboard-grid v10-stats"><article class="stat-card"><span class="eyebrow">XP</span><strong id="xp">0</strong><p id="level">Level 1</p></article><article class="stat-card"><span class="eyebrow">Completed</span><strong id="completed">0</strong><p>Courses</p></article><article class="stat-card"><span class="eyebrow">In progress</span><strong id="active">0</strong><p>Courses</p></article></div></section><section class="section"><div class="section-head"><h2>Continue learning</h2><a class="small-button" href="courses.html">Browse CPD courses</a></div><div class="course-grid" id="courses"></div></section><section class="section"><div class="section-head"><h2>Learning activity</h2></div><div class="panel"><div id="studyCalendar" class="study-calendar"></div><p id="streakText"></p></div></section><section class="section"><div class="section-head"><h2>Certificates</h2></div><div class="course-grid" id="certificateList"></div></section><section class="section" id="achievements"><div class="section-head"><div><span class="eyebrow">MILESTONES</span><h2>Achievements</h2><p>Earned badges are shown in colour. Locked badges show how to unlock them.</p></div></div><div class="achievement-cabinet" id="achievementCabinet"></div></section><button class="small-button" id="logout" style="margin:0 auto 60px;display:block">Sign out</button></main><div id="achievementPopupRoot"></div><div id="achievementDetailRoot"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="kraken-site-nav.js"></script><script src="data.js"></script><script src="common.js"></script><script src="achievement-system.js"></script><script src="dashboard.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#071b24">
+  <title>My Mission | Kraken Medical Training</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="achievement-system.css">
+  <link rel="stylesheet" href="kraken-site-nav.css">
+  <link rel="stylesheet" href="kraken-public.css">
+  <link rel="stylesheet" href="dashboard-v17.css">
+</head>
+
+<body class="kraken-public-page kraken-mission-page">
+  <div data-kraken-site-nav data-active="mission"></div>
+
+  <main>
+    <section class="page-hero">
+      <span class="eyebrow">YOUR LEARNING RECORD</span>
+      <h1 id="welcome">My Mission</h1>
+      <p>Your courses, progress, activity, certificates and achievements in one place.</p>
+    </section>
+
+    <section class="section" id="announcementSection" hidden>
+      <div class="section-head"><h2>Announcements</h2></div>
+      <div id="dashboardAnnouncements" class="announcement-grid"></div>
+    </section>
+
+    <section class="section">
+      <div class="dashboard-grid v10-stats">
+        <article class="stat-card"><span class="eyebrow">XP</span><strong id="xp">0</strong><p id="level">Level 1</p></article>
+        <article class="stat-card"><span class="eyebrow">Completed</span><strong id="completed">0</strong><p>Courses</p></article>
+        <article class="stat-card"><span class="eyebrow">In progress</span><strong id="active">0</strong><p>Courses</p></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Continue learning</h2>
+        <a class="small-button" href="courses.html">Browse CPD courses</a>
+      </div>
+      <div class="course-grid" id="courses"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Learning activity</h2></div>
+      <div class="panel">
+        <div id="studyCalendar" class="study-calendar"></div>
+        <p id="streakText"></p>
+      </div>
+    </section>
+
+    <section class="section mission-certificates-section">
+      <div class="section-head mission-certificate-section-head">
+        <div>
+          <span class="eyebrow">QUALIFICATIONS</span>
+          <h2>Certificates</h2>
+          <p>Your completed Kraken Medical Training certificates.</p>
+        </div>
+        <span class="mission-certificate-count"><b id="certificateCount">0</b> earned</span>
+      </div>
+      <div id="certificateList" class="mission-certificate-grid"></div>
+    </section>
+
+    <section class="section" id="achievements">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">MILESTONES</span>
+          <h2>Achievements</h2>
+          <p>Earned badges are shown in colour. Locked badges show how to unlock them.</p>
+        </div>
+      </div>
+      <div class="achievement-cabinet" id="achievementCabinet"></div>
+    </section>
+
+    <button class="small-button" id="logout" style="margin:0 auto 60px;display:block">Sign out</button>
+  </main>
+
+  <div id="achievementPopupRoot"></div>
+  <div id="achievementDetailRoot"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="kraken-site-nav.js"></script>
+  <script src="data.js"></script>
+  <script src="common.js"></script>
+  <script src="achievement-system.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
