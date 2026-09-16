@@ -450,8 +450,8 @@
         course_id: course.id,
         percent: 100,
         completed: true,
-        score,
-        final_score: score,
+        score: score ?? null,
+        final_score: score ?? null,
         completed_at: new Date().toISOString(),
         last_opened_at: new Date().toISOString()
       }, {
@@ -507,7 +507,7 @@
         course_id: course.id,
         learner_name: learnerName,
         course_title: course.title,
-        final_score: score,
+        final_score: score ?? null,
         issued_at: new Date().toISOString()
       });
 
@@ -587,6 +587,43 @@
     bindQuizButtons();
   }
 
+  async function ensureCertificateForEligibleCourse() {
+    const state = getPlayerState();
+    if (!state?.session || !state?.bundle?.course) return;
+
+    const lessonPercent = currentLessonPercent();
+    const quizRequired =
+      !!quizState.quiz &&
+      quizState.quiz.required_for_completion !== false;
+
+    const eligible =
+      lessonPercent === 100 &&
+      (!quizRequired || quizState.passed);
+
+    if (!eligible) return;
+
+    const existingResult = await supabaseClient
+      .from("certificates")
+      .select("id")
+      .eq("user_id", state.session.user.id)
+      .eq("course_id", state.bundle.course.id)
+      .maybeSingle();
+
+    if (existingResult.error) {
+      console.warn("Certificate lookup failed:", existingResult.error);
+      return;
+    }
+
+    if (existingResult.data) return;
+
+    const score =
+      quizRequired && quizState.bestScore !== null
+        ? Number(quizState.bestScore)
+        : null;
+
+    await completeCourseAndIssueCertificate(score);
+  }
+
   function applyCertificateGate() {
     const certificatePanel =
       document.querySelector("#certificatePanel");
@@ -595,8 +632,10 @@
       document.querySelector("#certificateAction");
 
     const lessonPercent = currentLessonPercent();
+
     const quizRequired =
-      quizState.quiz?.required_for_completion !== false;
+      !!quizState.quiz &&
+      quizState.quiz.required_for_completion !== false;
 
     const unlocked =
       lessonPercent === 100 &&
@@ -609,21 +648,24 @@
       );
     }
 
-    if (!certificateButton) return;
-
-    if (unlocked) {
-      certificateButton.textContent = "View certificate";
-      certificateButton.href =
-        `certificate.html?course=${encodeURIComponent(getCourseId())}`;
-      return;
+    if (certificateButton) {
+      if (unlocked) {
+        certificateButton.textContent = "View certificate";
+        certificateButton.href =
+          `certificate.html?course=${encodeURIComponent(getCourseId())}`;
+      } else {
+        certificateButton.href = "#";
+        certificateButton.textContent =
+          lessonPercent < 100
+            ? "Complete all lessons"
+            : "Pass the final quiz";
+      }
     }
 
-    certificateButton.href = "#";
-
-    if (lessonPercent < 100) {
-      certificateButton.textContent = "Complete all lessons";
-    } else {
-      certificateButton.textContent = "Pass the final quiz";
+    if (unlocked) {
+      ensureCertificateForEligibleCourse().catch(error =>
+        console.warn("Certificate self-heal failed:", error)
+      );
     }
   }
 
@@ -646,6 +688,7 @@
       if (!quizState.quiz) {
         window.krakenQuizLoaded = false;
         window.updateProgressDisplay?.();
+        applyCertificateGate();
         return;
       }
 
