@@ -1,0 +1,26 @@
+/* Kraken V16.9 certificate cards */
+.kmt-cert-toolbar{display:flex;justify-content:space-between;gap:16px;margin:0 0 22px;align-items:center}
+.kmt-cert-tabs{display:flex;padding:4px;border:1px solid #d6e3de;border-radius:15px;background:#fff}
+.kmt-cert-tab{border:0;border-radius:11px;padding:11px 15px;background:#118d78;color:#fff;font-weight:900}
+.kmt-cert-tools{display:flex;gap:10px;margin-left:auto}
+.kmt-cert-search,.kmt-cert-sort{min-height:44px;border:1px solid #d6e3de;border-radius:13px;background:#fff;color:#102b35;font-weight:700}
+.kmt-cert-search{width:min(280px,38vw);padding:0 14px}.kmt-cert-sort{padding:0 12px}
+#certificateList.kmt-certificate-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+.kmt-certificate-card{min-width:0;overflow:hidden;border:1px solid #d6e3de;border-radius:20px;background:#fff;box-shadow:0 14px 34px rgba(15,50,55,.07);transition:.18s}
+.kmt-certificate-card:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(15,50,55,.11)}
+.kmt-cert-preview{position:relative;aspect-ratio:1.55/1;margin:14px 14px 0;overflow:hidden;border:2px solid #0b2630;border-radius:12px;background:radial-gradient(circle at 50% 12%,rgba(72,214,189,.13),transparent 28%),#fbfefd}
+.kmt-cert-preview:before{content:"";position:absolute;inset:6px;border:1px solid rgba(24,168,142,.65)}
+.kmt-cert-complete{position:absolute;z-index:3;top:9px;left:9px;padding:7px 10px;border-radius:999px;background:#e3f7f0;color:#087b68;font-size:.72rem;font-weight:900}
+.kmt-cert-mini-brand{position:absolute;top:16px;left:50%;display:flex;align-items:center;gap:7px;transform:translateX(-50%);white-space:nowrap}
+.kmt-cert-mini-brand img{width:30px;height:30px;border-radius:7px;object-fit:contain;background:#000}
+.kmt-cert-mini-brand strong{display:block;color:#071b24;font-family:Oswald,sans-serif;font-size:.68rem;letter-spacing:.12em}.kmt-cert-mini-brand small{display:block;color:#617673;font-size:.38rem;font-weight:800;letter-spacing:.13em}
+.kmt-cert-preview-content{position:absolute;inset:58px 18px 42px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.kmt-cert-preview-content span{color:#617673;font-family:Georgia,serif;font-size:.52rem}.kmt-cert-preview-content h4{max-width:95%;margin:5px 0;color:#071b24;font-family:Georgia,serif;font-size:clamp(.9rem,1.4vw,1.18rem);line-height:1.05}.kmt-cert-preview-content b{color:#071b24;font-family:Georgia,serif;font-size:.72rem}
+.kmt-cert-preview-footer{position:absolute;left:18px;right:18px;bottom:13px;display:flex;align-items:end;justify-content:space-between;gap:8px;color:#617673;font-size:.42rem}
+.kmt-cert-seal{display:grid;place-items:center;width:34px;height:34px;border:4px double #a98638;border-radius:50%;background:#d9b85f;color:#5c461b;font-size:.5rem;font-weight:900}
+.kmt-cert-body{padding:16px}.kmt-cert-body h3{margin:0;color:#071b24;font-size:1.08rem;line-height:1.15}.kmt-cert-meta{display:flex;gap:14px;margin:13px 0;color:#526b70;font-size:.78rem;font-weight:700}
+.kmt-cert-code{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:40px;padding:9px 0;border-top:1px solid #e3ece8;border-bottom:1px solid #e3ece8;color:#294750;font-size:.76rem}.kmt-cert-code span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.kmt-copy-code{border:0;background:transparent;cursor:pointer}
+.kmt-cert-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;margin-top:14px}.kmt-cert-view,.kmt-cert-pdf{min-height:42px;display:flex;align-items:center;justify-content:center;gap:7px;border-radius:11px;text-decoration:none!important;font-size:.78rem;font-weight:900}.kmt-cert-view{background:#129b83;color:#fff!important}.kmt-cert-pdf{min-width:70px;border:1px solid #cbdad5;background:#fff;color:#102b35!important}
+.kmt-cert-empty{grid-column:1/-1;padding:34px;border:1px dashed #cbdad5;border-radius:18px;color:#617673;text-align:center}
+@media(max-width:1050px){#certificateList.kmt-certificate-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:720px){.kmt-cert-toolbar{align-items:stretch;flex-direction:column}.kmt-cert-tools{width:100%}.kmt-cert-search{width:100%;flex:1}#certificateList.kmt-certificate-grid{grid-template-columns:1fr!important}}
