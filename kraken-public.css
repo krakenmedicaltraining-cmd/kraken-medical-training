@@ -388,3 +388,56 @@ body.kraken-public-page{
     grid-column:1!important;
   }
 }
+
+
+/* =========================================================
+   V17.2 HOME CONTRAST POLISH
+   Bright copy on dark artwork, banners and package covers.
+   ========================================================= */
+
+.kraken-home-page .premium-course-grid [class*="art"] h2,
+.kraken-home-page .premium-course-grid [class*="art"] h3,
+.kraken-home-page .premium-course-grid [class*="art"] h4,
+.kraken-home-page .premium-course-grid [class*="art"] strong,
+.kraken-home-page .premium-course-grid [class*="cover"] h2,
+.kraken-home-page .premium-course-grid [class*="cover"] h3,
+.kraken-home-page .premium-course-grid [class*="cover"] strong,
+.kraken-home-page #homeInstructorPackages [class*="art"] h2,
+.kraken-home-page #homeInstructorPackages [class*="art"] h3,
+.kraken-home-page #homeInstructorPackages [class*="art"] strong,
+.kraken-home-page #homeInstructorPackages [class*="cover"] h2,
+.kraken-home-page #homeInstructorPackages [class*="cover"] h3,
+.kraken-home-page #homeInstructorPackages [class*="cover"] strong{
+  color:#f7fbf9!important;
+  text-shadow:0 2px 14px rgba(0,0,0,.48);
+}
+
+.kraken-home-page .premium-course-grid [class*="art"] small,
+.kraken-home-page .premium-course-grid [class*="cover"] small,
+.kraken-home-page #homeInstructorPackages [class*="art"] small,
+.kraken-home-page #homeInstructorPackages [class*="cover"] small{
+  color:#48d6bd!important;
+}
+
+.kraken-home-page .stream-command-banner{
+  color:#fff!important;
+}
+
+.kraken-home-page .stream-command-banner h1,
+.kraken-home-page .stream-command-banner h2,
+.kraken-home-page .stream-command-banner h3{
+  color:#f7fbf9!important;
+  text-shadow:0 2px 14px rgba(0,0,0,.22);
+}
+
+.kraken-home-page .stream-command-banner p{
+  color:#dcebe7!important;
+}
+
+.kraken-home-page .stream-command-banner .stream-eyebrow{
+  color:#48d6bd!important;
+}
+
+.kraken-home-page .stream-command-banner .stream-button.primary{
+  color:#fff!important;
+}
