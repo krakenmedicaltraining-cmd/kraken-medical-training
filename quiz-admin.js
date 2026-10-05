@@ -4,7 +4,7 @@ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const uid=()=>crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random()}`;
 let courses=[], quiz=null, questions=[], activeCourseId=new URLSearchParams(location.search).get("course")||"";
 
-function blankQuestion(type="multiple_choice"){return {client_id:uid(),type,question:"",scenario:"",options:["","","",""],correct_index:0,explanation:"",points:1};}
+function blankQuestion(type="multiple_choice"){return {client_id:uid(),type,question:"",scenario:"",options:["","","",""],correct_index:0,answer_data:{correct_values:["0"],accepted_answers:[],correct_order:[],pairs:[]},explanation:"",points:1};}
 function setState(text){$("#saveState").textContent=text;$("#mobileState").textContent=text}
 function currentCourse(){return courses.find(c=>c.id===activeCourseId)}
 function renderCourseSelect(){
@@ -27,14 +27,22 @@ function questionHtml(q,i){
       <div class="qa-grid-2">
         <label class="qa-field"><span>Question type</span><select data-key="type">
           <option value="multiple_choice" ${q.type==="multiple_choice"?"selected":""}>Multiple choice</option>
+          <option value="multi_select" ${q.type==="multi_select"?"selected":""}>Multi-select / checkboxes</option>
           <option value="true_false" ${q.type==="true_false"?"selected":""}>True / false</option>
+          <option value="fill_blank" ${q.type==="fill_blank"?"selected":""}>Fill in the blank</option>
+          <option value="matching" ${q.type==="matching"?"selected":""}>Matching pairs</option>
+          <option value="sequence" ${q.type==="sequence"?"selected":""}>Sequencing / reorder</option>
+          <option value="short_answer" ${q.type==="short_answer"?"selected":""}>Short answer</option>
           <option value="scenario" ${q.type==="scenario"?"selected":""}>Scenario question</option>
         </select></label>
         <label class="qa-field"><span>Points</span><input data-key="points" type="number" min="1" value="${Number(q.points||1)}"></label>
       </div>
       ${q.type==="scenario"?`<label class="qa-field"><span>Scenario</span><textarea data-key="scenario" placeholder="Describe the clinical situation">${esc(q.scenario)}</textarea></label>`:""}
       <label class="qa-field"><span>Question</span><textarea data-key="question" required placeholder="What should the learner decide?">${esc(q.question)}</textarea></label>
-      <div class="qa-option-grid">${options.map((o,oi)=>`<label class="qa-option"><input type="radio" name="correct-${i}" data-correct="${oi}" ${Number(q.correct_index)===oi?"checked":""}><input type="text" data-option="${oi}" value="${esc(o)}" ${tf?"readonly":""} placeholder="Answer ${oi+1}"></label>`).join("")}</div>
+      ${["multiple_choice","true_false","scenario","multi_select"].includes(q.type)?`<div class="qa-option-grid">${options.map((o,oi)=>`<label class="qa-option"><input type="${q.type==="multi_select"?"checkbox":"radio"}" name="correct-${i}" data-correct="${oi}" ${(q.type==="multi_select"?(q.answer_data?.correct_values||[]).map(String).includes(String(oi)):Number(q.correct_index)===oi)?"checked":""}><input type="text" data-option="${oi}" value="${esc(o)}" ${tf?"readonly":""} placeholder="Answer ${oi+1}"></label>`).join("")}</div>`:""}
+      ${["fill_blank","short_answer"].includes(q.type)?`<label class="qa-field"><span>Accepted answer(s), separate alternatives with |</span><input data-answer="accepted" value="${esc((q.answer_data?.accepted_answers||[]).join(" | "))}"></label>`:""}
+      ${q.type==="sequence"?`<label class="qa-field"><span>Items in the correct order, one per line</span><textarea data-answer="order">${esc((q.answer_data?.correct_order||q.options||[]).join("\n"))}</textarea></label>`:""}
+      ${q.type==="matching"?`<label class="qa-field"><span>Matching pairs, one per line as Left = Right</span><textarea data-answer="pairs">${esc((q.answer_data?.pairs||[]).map(p=>p.left+" = "+p.right).join("\n"))}</textarea></label>`:""}
       <label class="qa-field" style="margin-top:14px"><span>Explanation and teaching feedback</span><textarea data-key="explanation" placeholder="Explain why the answer is correct">${esc(q.explanation)}</textarea></label>
     </div>
   </article>`;
@@ -48,7 +56,8 @@ function renderQuestions(){
       questions[i][el.dataset.key]=el.type==="number"?Number(el.value):el.value;
       if(el.dataset.key==="type"){
         if(el.value==="true_false"){questions[i].options=["True","False"];questions[i].correct_index=0}
-        else if(questions[i].options.length<4)questions[i].options=["","","",""];
+        else if(["multiple_choice","multi_select","scenario"].includes(el.value) && questions[i].options.length<4)questions[i].options=["","","",""];
+        questions[i].answer_data ||= {correct_values:["0"],accepted_answers:[],correct_order:[],pairs:[]};
         renderQuestions();
       } else {
         card.querySelector(".qa-question-top strong").textContent=questions[i].question||"Untitled question";
@@ -56,7 +65,8 @@ function renderQuestions(){
       setState("Unsaved changes");
     });
     $$("[data-option]",card).forEach(el=>el.oninput=()=>{questions[i].options[+el.dataset.option]=el.value;setState("Unsaved changes")});
-    $$("[data-correct]",card).forEach(el=>el.onchange=()=>{if(el.checked)questions[i].correct_index=+el.dataset.correct;setState("Unsaved changes")});
+    $("[data-correct]",card).forEach(el=>el.onchange=()=>{questions[i].answer_data ||= {}; if(questions[i].type==="multi_select"){questions[i].answer_data.correct_values=[...card.querySelectorAll("[data-correct]:checked")].map(x=>String(x.dataset.correct))}else if(el.checked)questions[i].correct_index=+el.dataset.correct;setState("Unsaved changes")});
+    $("[data-answer]",card).forEach(el=>el.oninput=()=>{questions[i].answer_data ||= {}; const k=el.dataset.answer;if(k==="accepted")questions[i].answer_data.accepted_answers=el.value.split("|").map(x=>x.trim()).filter(Boolean);if(k==="order")questions[i].answer_data.correct_order=el.value.split("\n").map(x=>x.trim()).filter(Boolean);if(k==="pairs")questions[i].answer_data.pairs=el.value.split("\n").map(x=>x.split("=")).filter(x=>x.length>1).map(x=>({left:x[0].trim(),right:x.slice(1).join("=").trim()}));setState("Unsaved changes")});
   });
   $$("[data-up]").forEach(b=>b.onclick=()=>move(+b.dataset.up,-1));
   $$("[data-down]").forEach(b=>b.onclick=()=>move(+b.dataset.down,1));
@@ -80,7 +90,7 @@ async function loadQuiz(){
     $("#showFeedback").checked=quiz.show_feedback!==false;$("#requireQuiz").checked=quiz.required_for_completion!==false;
     const qres=await supabaseClient.from("quiz_questions").select("*").eq("quiz_id",quiz.id).order("position");
     if(qres.error)throw qres.error;
-    questions=(qres.data||[]).map(q=>({...q,client_id:uid(),options:Array.isArray(q.options)?q.options:[]}));
+    questions=(qres.data||[]).map(q=>({...q,client_id:uid(),options:Array.isArray(q.options)?q.options:[],answer_data:q.answer_data||{correct_values:[String(q.correct_index||0)],accepted_answers:[],correct_order:[],pairs:[]}}));
   }
   renderQuestions();setState(quiz?"Quiz loaded":"New quiz");
 }
@@ -95,7 +105,7 @@ async function saveQuiz(){
   else{const r=await supabaseClient.from("course_quizzes").insert(p).select().single();if(r.error)throw r.error;saved=r.data}
   quiz=saved;
   const del=await supabaseClient.from("quiz_questions").delete().eq("quiz_id",quiz.id);if(del.error)throw del.error;
-  const rows=questions.map((q,i)=>({quiz_id:quiz.id,position:i+1,type:q.type,scenario:q.scenario||null,question:q.question,options:q.type==="true_false"?["True","False"]:q.options,correct_index:Number(q.correct_index||0),explanation:q.explanation||null,points:Number(q.points||1)}));
+  const rows=questions.map((q,i)=>({quiz_id:quiz.id,position:i+1,type:q.type,scenario:q.scenario||null,question:q.question,options:q.type==="true_false"?["True","False"]:q.options,correct_index:Number(q.correct_index||0),explanation:q.explanation||null,points:Number(q.points||1),answer_data:q.answer_data||{}}));
   const ins=await supabaseClient.from("quiz_questions").insert(rows).select();if(ins.error)throw ins.error;
   questions=ins.data.map(q=>({...q,client_id:uid()}));
   await supabaseClient.from("courses").update({quiz_enabled:true,pass_mark:p.pass_mark,max_quiz_attempts:p.max_attempts,quiz_time_limit:p.time_limit_minutes}).eq("id",activeCourseId);
