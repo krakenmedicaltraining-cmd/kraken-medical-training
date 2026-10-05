@@ -346,8 +346,27 @@
     location.href="index.html";
   };
 
+  async function requireNewsAdmin(){
+    const sessionResult=await supabaseClient.auth.getSession();
+    if(sessionResult.error)throw sessionResult.error;
+    const session=sessionResult.data.session;
+    if(!session){
+      localStorage.setItem("kmtReturnTo","journal-admin.html");
+      location.href="login.html";
+      return null;
+    }
+    const adminResult=await supabaseClient
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id",session.user.id)
+      .maybeSingle();
+    if(adminResult.error)throw adminResult.error;
+    if(!adminResult.data)throw new Error("This account does not have administrator access.");
+    return session;
+  }
+
   (async()=>{
-    const session=await requireAdmin();
+    const session=await requireNewsAdmin();
     if(!session)return;
     reset();
     await loadItems();
