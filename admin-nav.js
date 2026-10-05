@@ -9,7 +9,9 @@
     { href: "resource-admin.html", label: "Uploads", icon: "⇧" },
     { href: "instructor.html", label: "Instructor hub", icon: "◎" },
     { href: "quiz-admin.html", label: "Quizzes", icon: "?" },
-    { href: "certificate-admin.html", label: "Certificates", icon: "⌁" },\n    { href: "face-to-face-certificates.html", label: "Issue certificates", icon: "✓" }
+    { href: "certificate-admin.html", label: "Certificates", icon: "⌁" },
+    { href: "face-to-face-certificates.html", label: "Issue certificates", icon: "✓" },
+    { href: "in-person-admin.html", label: "In-person courses", icon: "▦" }
   ];
 
   const currentFile = (
