@@ -22,22 +22,22 @@
 <label>Duration<input id="duration" placeholder="4 hours"></label>
 <label>Instructor<input id="instructorName" placeholder="Connall Brown"></label>
 <label>Location<input id="location" placeholder="Glasgow"></label>
-<label>Expiry date<input id="expiresAt" type="date"></label>
+<label>Certificate expiry<select id="expiryPreset"><option value="">No expiry</option><option value="12">12 months</option><option value="24">24 months</option><option value="36">36 months</option><option value="60">5 years</option><option value="custom">Custom date</option></select></label><label id="customExpiryLabel" hidden>Custom expiry date<input id="expiresAt" type="date"></label>
 <label>Result / score<input id="finalScore" type="number" min="0" max="100" placeholder="Optional %"></label>
 </div>
-<label>Notes<textarea id="notes" rows="3" placeholder="Internal notes, practical assessment details, cohort reference…"></textarea></label>
-<div class="fc-actions"><button class="fc-button" type="submit">✓ Issue certificate</button><button class="fc-button secondary" id="clearForm" type="button">Clear</button></div>
+<fieldset class="fc-design"><legend>Certificate design</legend><div class="fc-grid"><label>Border colour<select id="borderPreset"><option value="#17493f">Kraken green</option><option value="#071b24">Navy</option><option value="#1f5f99">Blue</option><option value="#a23b32">Red</option><option value="#b58b2a">Gold</option><option value="#222222">Black</option><option value="custom">Custom colour</option></select></label><label id="customColourLabel" hidden>Custom colour<input id="borderColour" type="color" value="#17493f"></label><label>Logo<select id="logoChoice"><option value="assets/kraken-medical-logo.png">Kraken Medical</option><option value="">No logo</option><option value="custom">Custom logo URL</option></select></label><label id="customLogoLabel" hidden>Logo URL<input id="logoUrl" type="url" placeholder="https://…"></label></div></fieldset><label>Notes<textarea id="notes" rows="3" placeholder="Internal notes, practical assessment details, cohort reference…"></textarea></label>
+<div class="fc-actions"><button class="fc-button" type="submit" data-action="issue">✓ Issue certificate</button><button class="fc-button send" type="submit" data-action="send">✉ Issue &amp; Send</button><button class="fc-button secondary" id="clearForm" type="button">Clear</button></div><p class="fc-help">Issue &amp; Send opens your email app with a ready-to-send message and the learner verification link. No email password is stored on the website.</p>
 <p id="formMessage" class="fc-message"></p>
 </form>
 
 <aside class="fc-panel fc-preview">
-<small>LIVE PREVIEW</small><div class="fc-cert"><img src="assets/kraken-medical-logo.png" alt=""><span>KRAKEN MEDICAL TRAINING</span><h2>Certificate<br>of Completion</h2><p>This certifies that</p><strong id="previewName">Learner Name</strong><p>has successfully completed</p><h3 id="previewCourse">Course title</h3><div><span id="previewDate">Training date</span><span id="previewInstructor">Instructor</span></div></div>
+<small>LIVE PREVIEW</small><div id="certificatePreview" class="fc-cert"><img id="previewLogo" src="assets/kraken-medical-logo.png" alt=""><span>KRAKEN MEDICAL TRAINING</span><h2>Certificate<br>of Completion</h2><p>This certifies that</p><strong id="previewName">Learner Name</strong><p>has successfully completed</p><h3 id="previewCourse">Course title</h3><div><span id="previewDate">Training date</span><span id="previewInstructor">Instructor</span><span id="previewExpiry">No expiry</span></div></div>
 </aside>
 </section>
 
 <section class="fc-panel fc-register">
 <div class="fc-head"><div><small>AUDIT TRAIL</small><h2>Certificate register</h2></div><input id="certificateSearch" type="search" placeholder="Search learner, course or code…"></div>
-<div class="fc-table-wrap"><table><thead><tr><th>Learner</th><th>Course</th><th>Training date</th><th>Code</th><th>Status</th><th>Actions</th></tr></thead><tbody id="certificateRows"><tr><td colspan="6">Loading certificates…</td></tr></tbody></table></div>
+<div class="fc-table-wrap"><table><thead><tr><th>Learner</th><th>Course</th><th>Training date</th><th>Code</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead><tbody id="certificateRows"><tr><td colspan="7">Loading certificates…</td></tr></tbody></table></div>
 </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="common.js"></script><script src="face-to-face-certificates.js"></script><script src="admin-nav.js"></script>

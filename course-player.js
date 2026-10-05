@@ -342,6 +342,39 @@ function renderSimulationBlock(block) {
   `;
 }
 
+function renderKnowledgeCheck(block) {
+  const id = safe(block.client_id || block.id || Math.random().toString(36).slice(2));
+  const type = block.question_type || "multiple_choice";
+  const options = type === "true_false" ? ["True","False"] : (Array.isArray(block.options) ? block.options : []);
+  let control = "";
+  if (["multiple_choice","true_false"].includes(type)) control = options.map((o,i)=>`<label class="lesson-check-option"><input type="radio" name="check-${id}" value="${i}"><span>${safe(o)}</span></label>`).join("");
+  else if (type === "multi_select") control = options.map((o,i)=>`<label class="lesson-check-option"><input type="checkbox" name="check-${id}" value="${i}"><span>${safe(o)}</span></label>`).join("");
+  else if (type === "sequence") control = `<p class="panel-copy">Enter the correct order, separated by commas.</p><input class="lesson-check-text" data-check-text placeholder="${safe(options.join(", "))}">`;
+  else control = `<input class="lesson-check-text" data-check-text placeholder="Type your answer">`;
+  return `<section class="lesson-block lesson-block-question" data-knowledge-check data-check-type="${safe(type)}" data-correct="${safe(JSON.stringify(block.correct_values||[]))}" data-accepted="${safe(JSON.stringify(block.accepted_answers||[]))}" data-order="${safe(JSON.stringify(block.correct_order||options))}">
+    <span class="lesson-block-label">Knowledge check</span><h3>${safe(block.title||"Quick question")}</h3><p><strong>${safe(block.question||"Question")}</strong></p>
+    <div class="lesson-check-options">${control}</div>
+    <button type="button" class="player-button secondary" data-check-answer>Check answer</button>
+    <div class="lesson-check-feedback" data-check-feedback hidden></div>
+    <template data-explanation>${safe(block.explanation||"")}</template>
+  </section>`;
+}
+
+function bindKnowledgeChecks(){
+  document.querySelectorAll("[data-knowledge-check]").forEach(card=>{
+    card.querySelector("[data-check-answer]")?.addEventListener("click",()=>{
+      const type=card.dataset.checkType; let ok=false;
+      const correct=JSON.parse(card.dataset.correct||"[]").map(String);
+      const accepted=JSON.parse(card.dataset.accepted||"[]").map(x=>String(x).trim().toLowerCase());
+      const order=JSON.parse(card.dataset.order||"[]").map(x=>String(x).trim().toLowerCase());
+      if(["multiple_choice","true_false"].includes(type)){const v=card.querySelector('input[type="radio"]:checked')?.value;ok=v!=null&&correct.includes(String(v))}
+      else if(type==="multi_select"){const got=[...card.querySelectorAll('input[type="checkbox"]:checked')].map(x=>x.value).sort();ok=got.length===correct.length&&got.every((v,i)=>v===correct.slice().sort()[i])}
+      else {const raw=(card.querySelector("[data-check-text]")?.value||"").trim().toLowerCase();if(type==="sequence"){const got=raw.split(",").map(x=>x.trim()).filter(Boolean);ok=got.length===order.length&&got.every((v,i)=>v===order[i])}else ok=accepted.some(a=>a===raw)}
+      const box=card.querySelector("[data-check-feedback]");const explanation=card.querySelector("[data-explanation]")?.content.textContent.trim();box.hidden=false;box.className="lesson-check-feedback "+(ok?"correct":"incorrect");box.textContent=(ok?"✓ Correct":"✕ Try again")+(explanation?" · "+explanation:"");
+    });
+  });
+}
+
 function renderUnknownBlock(block) {
   const title = normaliseUrl(block.title);
   const content =
@@ -374,6 +407,10 @@ function renderLessonBlock(block) {
 
     case "reflection":
       return renderReflectionBlock(block);
+
+    case "question":
+    case "knowledge_check":
+      return renderKnowledgeCheck(block);
 
     case "image":
       return renderImageBlock(block);
@@ -821,6 +858,7 @@ function selectLesson(index) {
   `;
 
   restoreReflectionAnswers();
+  bindKnowledgeChecks();
 
   document
     .querySelector("#previousLesson")

@@ -97,3 +97,6 @@ button{cursor:pointer}
 
 /* V12.5 assessment links */
 .kb-course-actions a[data-quiz-link]{background:var(--kb-soft);color:var(--kb-green-dark);border-color:#b9ddd5}
+
+/* V17.4 collapsible lesson editor */
+.kb-lesson-body[hidden]{display:none!important}.kb-lesson-head{cursor:default}.kb-block-type{white-space:nowrap}
