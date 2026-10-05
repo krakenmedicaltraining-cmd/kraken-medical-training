@@ -12,6 +12,8 @@ alter table public.certificates add column if not exists issued_by uuid;
 alter table public.certificates add column if not exists revoked boolean not null default false;
 alter table public.certificates add column if not exists revoked_reason text;
 alter table public.certificates add column if not exists revoked_at timestamptz;
+alter table public.certificates add column if not exists border_colour text default '#17493f';
+alter table public.certificates add column if not exists logo_url text;
 create unique index if not exists certificates_certificate_code_unique on public.certificates(certificate_code);
 alter table public.certificates enable row level security;
 drop policy if exists "Admins manage certificates" on public.certificates;
