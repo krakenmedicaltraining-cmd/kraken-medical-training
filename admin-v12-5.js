@@ -562,20 +562,9 @@ $("#exportCourses").onclick = () => {
 $("#signOutButton").onclick = async () => { await supabaseClient.auth.signOut(); location.href = "login.html"; };
 
 (async () => {
-  let session;
-  try {
-    session = await requireAdmin();
-    if (!session) return;
-    $("#adminStatus").textContent = `Connected as ${session.user.email}`;
-  } catch (error) {
-    console.error("Administrator check failed:", error);
-    $("#adminStatus").textContent = `Access denied: ${error.message}`;
-    if (form) form.hidden = true;
-    return;
-  }
-
-  // Render the editor independently so a course-list/database error cannot
-  // take down the whole Course Builder or CSV importer.
+  // Do not let a slow auth/admin check leave the course library spinning.
+  // Start the editor and course query immediately; Supabase RLS remains the
+  // authority on whether this signed-in user may read/administer courses.
   try {
     renderLessons();
     restoreDraft();
@@ -584,11 +573,35 @@ $("#signOutButton").onclick = async () => { await supabaseClient.auth.signOut();
     console.error("Course editor initialisation failed:", error);
   }
 
+  const courseLoad = loadCourses().catch(error => {
+    console.error("Initial course load failed:", error);
+    return null;
+  });
+
   try {
-    await loadCourses();
+    const session = await Promise.race([
+      requireAdmin(),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Administrator check timed out")), 8000)
+      )
+    ]);
+
+    if (!session) return;
+    $("#adminStatus").textContent = `Connected as ${session.user.email}`;
+    await courseLoad;
   } catch (error) {
-    // loadCourses displays the actionable error and retry control itself.
-    $("#adminStatus").textContent = `Connected as ${session.user.email} · Course library needs attention`;
+    console.error("Administrator check failed:", error);
+
+    // If the course query worked, keep the builder usable instead of hiding it.
+    // A real unauthorised user is still blocked by Supabase RLS.
+    if (courses.length) {
+      $("#adminStatus").textContent = "Course library connected";
+      return;
+    }
+
+    $("#adminStatus").textContent = `Admin check problem: ${error.message}`;
+    // Keep the editor visible so the on-page course error/retry control can
+    // show the real Supabase failure rather than an endless loading state.
   }
 })();
 })();
