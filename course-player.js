@@ -362,9 +362,13 @@ function renderKnowledgeCheck(block) {
 
 function bindKnowledgeChecks(){
   document.querySelectorAll("[data-knowledge-check]").forEach(card=>{
-    card.querySelector("[data-check-answer]")?.addEventListener("click",()=>{
+    const button=card.querySelector("[data-check-answer]");
+    if(!button || button.dataset.bound==="true") return;
+    button.dataset.bound="true";
+    button.addEventListener("click",()=>{
       const type=card.dataset.checkType; let ok=false;
-      const correct=JSON.parse(card.dataset.correct||"[]").map(String);
+      let correct=[];
+      try{correct=JSON.parse(card.dataset.correct||"[]").map(String)}catch(e){console.warn("Invalid knowledge-check correct values",e)}
       const accepted=JSON.parse(card.dataset.accepted||"[]").map(x=>String(x).trim().toLowerCase());
       const order=JSON.parse(card.dataset.order||"[]").map(x=>String(x).trim().toLowerCase());
       if(["multiple_choice","true_false"].includes(type)){const v=card.querySelector('input[type="radio"]:checked')?.value;ok=v!=null&&correct.includes(String(v))}
