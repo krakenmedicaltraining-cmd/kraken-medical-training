@@ -306,3 +306,6 @@ body.k-v11.course-player-body {
   }
 
 }
+
+/* V17.4 lesson knowledge checks */
+.lesson-block-question{border-color:rgba(14,146,127,.3);background:#f0f9f6}.lesson-check-options{display:grid;gap:9px;margin:16px 0}.lesson-check-option{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #cbdad6;border-radius:13px;background:#fff;cursor:pointer}.lesson-check-text{width:100%;min-height:48px;margin:12px 0 16px;padding:11px 13px;border:1px solid #cbdad6;border-radius:13px;font:inherit}.lesson-check-feedback{margin-top:12px;padding:12px 14px;border-radius:13px;font-weight:800}.lesson-check-feedback.correct{background:#dff6ec;color:#087061}.lesson-check-feedback.incorrect{background:#fff0ec;color:#a4472b}
