@@ -348,145 +348,25 @@
       );
   }
 
-  function renderQuestions() {
-    if (attemptLimitReached()) {
-      refreshQuizBody();
-      return;
+  function questionControl(question) {
+    const type=question.type||"multiple_choice";
+    const data=question.answer_data||{};
+    if(["multiple_choice","true_false","scenario","multi_select"].includes(type)){
+      let options=(question.options||[]).map((text,originalIndex)=>({text,originalIndex}));
+      if(quizState.quiz.shuffle_answers && type!=="true_false") options=shuffled(options);
+      return '<div class="quiz-options">'+options.map(option=>'<label><input type="'+(type==="multi_select"?"checkbox":"radio")+'" name="q-'+safe(question.id)+'" value="'+option.originalIndex+'" required><span>'+safe(option.text)+'</span></label>').join("")+'</div>';
     }
+    if(type==="sequence") return '<div class="quiz-options">'+(data.correct_order||question.options||[]).map((item,i)=>'<label><span>'+(i+1)+'.</span><input type="text" name="q-'+safe(question.id)+'-seq-'+i+'" placeholder="Item '+(i+1)+'"></label>').join("")+'</div>';
+    if(type==="matching") return '<div class="quiz-options">'+(data.pairs||[]).map((pair,i)=>'<label><span>'+safe(pair.left)+'</span><input type="text" name="q-'+safe(question.id)+'-match-'+i+'" placeholder="Match"></label>').join("")+'</div>';
+    return '<div class="quiz-options"><label><input type="text" name="q-'+safe(question.id)+'-text" placeholder="Type your answer" required></label></div>';
+  }
 
-    const body =
-      document.querySelector("#quizBody");
-
-    if (!body) return;
-
-    quizState.startedAt = Date.now();
-
-    body.innerHTML = `
-      <form
-        id="learnerQuizForm"
-        class="learner-quiz"
-      >
-
-        <div
-          class="quiz-timer"
-          id="quizTimer"
-        ></div>
-
-        ${
-          quizState.questions
-            .map((question, index) => {
-
-              let options =
-                (question.options || [])
-                  .map(
-                    (
-                      text,
-                      originalIndex
-                    ) => ({
-                      text,
-                      originalIndex
-                    })
-                  );
-
-              if (
-                quizState.quiz
-                  .shuffle_answers
-              ) {
-                options =
-                  shuffled(options);
-              }
-
-              return `
-                <fieldset
-                  class="quiz-question"
-                >
-
-                  <legend>
-
-                    <span>
-                      ${index + 1}
-                    </span>
-
-                    ${
-                      question.scenario
-                        ? `
-                          <small>
-                            ${safe(
-                              question.scenario
-                            )}
-                          </small>
-                        `
-                        : ""
-                    }
-
-                    ${safe(
-                      question.question
-                    )}
-
-                  </legend>
-
-                  <div
-                    class="quiz-options"
-                  >
-
-                    ${
-                      options
-                        .map(
-                          option => `
-                            <label>
-
-                              <input
-                                type="radio"
-                                name="q-${safe(
-                                  question.id
-                                )}"
-                                value="${
-                                  option.originalIndex
-                                }"
-                                required
-                              >
-
-                              <span>
-                                ${safe(
-                                  option.text
-                                )}
-                              </span>
-
-                            </label>
-                          `
-                        )
-                        .join("")
-                    }
-
-                  </div>
-                </fieldset>
-              `;
-            })
-            .join("")
-        }
-
-        <button
-          class="player-button"
-          type="submit"
-        >
-          Submit answers
-        </button>
-
-      </form>
-    `;
-
-    document
-      .querySelector(
-        "#learnerQuizForm"
-      )
-      ?.addEventListener(
-        "submit",
-        event => {
-          event.preventDefault();
-          submitAttempt(false);
-        }
-      );
-
+  function renderQuestions() {
+    if (attemptLimitReached()) { refreshQuizBody(); return; }
+    const body=document.querySelector("#quizBody"); if(!body)return;
+    quizState.startedAt=Date.now();
+    body.innerHTML='<form id="learnerQuizForm" class="learner-quiz"><div class="quiz-timer" id="quizTimer"></div>'+quizState.questions.map((question,index)=>'<fieldset class="quiz-question"><legend><span>'+(index+1)+'</span>'+(question.scenario?'<small>'+safe(question.scenario)+'</small>':'')+safe(question.question)+'</legend>'+questionControl(question)+'</fieldset>').join("")+'<button class="player-button" type="submit">Submit answers</button></form>';
+    document.querySelector("#learnerQuizForm")?.addEventListener("submit",event=>{event.preventDefault();submitAttempt(false)});
     startTimer();
   }
 
@@ -604,45 +484,26 @@
 
     const answers = {};
 
-    for (
-      const question
-      of quizState.questions
-    ) {
-      const points =
-        Number(
-          question.points || 1
-        );
-
-      totalPoints += points;
-
-      const selector =
-        `input[name="q-${CSS.escape(
-          String(question.id)
-        )}"]:checked`;
-
-      const selected =
-        form.querySelector(
-          selector
-        );
-
-      const answer =
-        selected
-          ? Number(
-              selected.value
-            )
-          : null;
-
-      answers[question.id] =
-        answer;
-
-      if (
-        answer ===
-        Number(
-          question.correct_index
-        )
-      ) {
-        earnedPoints += points;
+    for (const question of quizState.questions) {
+      const points=Number(question.points||1); totalPoints+=points;
+      const type=question.type||"multiple_choice"; const data=question.answer_data||{}; let answer=null; let correct=false;
+      if(["multiple_choice","true_false","scenario"].includes(type)){
+        const selected=form.querySelector('input[name="q-'+CSS.escape(String(question.id))+'"]:checked');
+        answer=selected?Number(selected.value):null; correct=answer===Number(question.correct_index);
+      } else if(type==="multi_select"){
+        answer=[...form.querySelectorAll('input[name="q-'+CSS.escape(String(question.id))+'"]:checked')].map(x=>String(x.value)).sort();
+        const key=(data.correct_values||[]).map(String).sort(); correct=answer.length===key.length&&answer.every((v,i)=>v===key[i]);
+      } else if(["fill_blank","short_answer"].includes(type)){
+        answer=(form.querySelector('input[name="q-'+CSS.escape(String(question.id))+'-text"]')?.value||"").trim();
+        const key=(data.accepted_answers||[]).map(x=>String(x).trim().toLowerCase()); correct=key.includes(answer.toLowerCase());
+      } else if(type==="sequence"){
+        answer=(data.correct_order||question.options||[]).map((_,i)=>(form.querySelector('input[name="q-'+CSS.escape(String(question.id))+'-seq-'+i+'"]')?.value||"").trim());
+        const key=(data.correct_order||question.options||[]).map(x=>String(x).trim().toLowerCase()); correct=answer.length===key.length&&answer.every((v,i)=>v.toLowerCase()===key[i]);
+      } else if(type==="matching"){
+        const pairs=data.pairs||[]; answer=pairs.map((_,i)=>(form.querySelector('input[name="q-'+CSS.escape(String(question.id))+'-match-'+i+'"]')?.value||"").trim());
+        correct=answer.length===pairs.length&&answer.every((v,i)=>v.toLowerCase()===String(pairs[i].right||"").trim().toLowerCase());
       }
+      answers[question.id]=answer; if(correct)earnedPoints+=points;
     }
 
     const score =
