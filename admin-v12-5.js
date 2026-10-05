@@ -239,7 +239,7 @@ function lessonEditor(lesson, index) {
   </article>`;
 }
 
-function renderLessons() {
+window.krakenImportLessons = imported => { lessons = (imported || []).map(l => ({...l, client_id:l.client_id || uid(), blocks:(l.blocks||[]).map(b=>({...b,client_id:b.client_id||uid()}))})); renderLessons(); scheduleDraft(); };\n\nfunction renderLessons() {
   $("#lessonList").innerHTML = lessons.map(lessonEditor).join("");
   $("#emptyLessons").hidden = lessons.length > 0;
 
