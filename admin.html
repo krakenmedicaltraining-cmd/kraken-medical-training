@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="kraken-v12-pages.css">
   <link rel="stylesheet" href="admin-v12-5.css">
-  <link rel="stylesheet" href="admin-nav.css">
+  <link rel="stylesheet" href="admin-nav.css">\n  <link rel="stylesheet" href="csv-course-import.css">
 </head>
 <body>
 <header class="kb-topbar">
@@ -34,7 +34,7 @@
     <aside class="kb-panel kb-course-browser">
       <div class="kb-panel-head">
         <div><span class="kb-eyebrow">Course library</span><h2>Your courses</h2></div>
-        <button class="kb-ghost" id="newCourseButton" type="button">+ New</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="kb-ghost" id="importCsvButton" type="button">⇧ Import CSV</button><button class="kb-ghost" id="newCourseButton" type="button">+ New</button></div>
       </div>
       <label class="kb-field"><span>Search</span><input id="courseSearch" placeholder="Search courses"></label>
       <div class="kb-filter-row">
@@ -154,13 +154,14 @@
   <button class="kb-primary" id="mobileSaveButton" type="button">Save</button>
 </div>
 
+<dialog id="csvImportDialog" class="csv-dialog"><div class="csv-dialog-inner"><div class="csv-dialog-head"><div><span class="kb-eyebrow">Course importer</span><h2>Build a course from CSV</h2><p>Upload your spreadsheet, check the preview, then load it into Course Builder.</p></div><button class="kb-ghost" id="closeCsvImport" type="button">×</button></div><label class="kb-field"><span>CSV file</span><input id="csvCourseFile" type="file" accept=".csv,text/csv"></label><div id="csvImportPreview"></div><div class="csv-dialog-actions"><button class="kb-ghost" id="downloadCsvTemplate" type="button">Download CSV template</button><button class="kb-primary" id="confirmCsvImport" type="button" disabled>Import into builder</button></div></div></dialog>
 <div id="toast" class="toast" role="status"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="data.js"></script>
 <script src="common.js"></script>
-<script src="admin-v12-5.js"></script>
+<script src="admin-v12-5.js"></script>\n<script src="csv-course-import.js"></script>
   <script src="admin-nav.js"></script>
 </body>
 </html>
