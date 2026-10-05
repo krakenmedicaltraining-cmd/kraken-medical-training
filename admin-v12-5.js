@@ -8,6 +8,7 @@ const DRAFT_KEY = "kraken-v12-4-course-draft";
 let courses = [];
 let lessons = [];
 let autoSaveTimer = null;
+const collapsedLessons = new Set();
 
 const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({
   "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
@@ -34,6 +35,18 @@ function blankBlock(type="text") {
     title: type === "text" ? "Learning content" : "",
     content: "", url: "", caption: "", button_text: "Open resource"
   };
+
+  if (type === "question") {
+    Object.assign(block, {
+      title: "Knowledge check",
+      question_type: "multiple_choice",
+      question: "",
+      options: ["Answer 1","Answer 2","Answer 3","Answer 4"],
+      correct_values: ["0"],
+      accepted_answers: [],
+      explanation: ""
+    });
+  }
 
   if (type === "simulation") {
     Object.assign(block, {
@@ -103,14 +116,34 @@ function moveBlock(lessonIndex, blockIndex, direction) {
 function blockEditor(block, lessonIndex, blockIndex) {
   const labels = {
     text:"Text", video:"Video", image:"Image", download:"Download",
-    podcast:"Podcast", simulation:"Simulation", reflection:"Reflection"
+    podcast:"Podcast", simulation:"Simulation", reflection:"Reflection", question:"Knowledge check"
   };
 
   const type = block.type || "text";
   const commonTitle = `<input data-block-key="title" value="${esc(block.title)}" placeholder="${labels[type]} title">`;
   let body = "";
 
-  if (type === "text" || type === "reflection") {
+  if (type === "question") {
+    const qt = block.question_type || "multiple_choice";
+    const options = Array.isArray(block.options) ? block.options : ["","","",""];
+    body = `
+      <label class="kb-field"><span>Question type</span><select data-block-key="question_type">
+        <option value="multiple_choice" ${qt==="multiple_choice"?"selected":""}>Multiple choice</option>
+        <option value="multi_select" ${qt==="multi_select"?"selected":""}>Select all that apply</option>
+        <option value="true_false" ${qt==="true_false"?"selected":""}>True / false</option>
+        <option value="fill_blank" ${qt==="fill_blank"?"selected":""}>Fill in the blank</option>
+        <option value="short_answer" ${qt==="short_answer"?"selected":""}>Short answer</option>
+        <option value="sequence" ${qt==="sequence"?"selected":""}>Put in order</option>
+      </select></label>
+      <label class="kb-field"><span>Question</span><textarea data-block-key="question" rows="3">${esc(block.question||"")}</textarea></label>
+      ${["multiple_choice","multi_select","true_false","sequence"].includes(qt)?`
+        <label class="kb-field"><span>Options, one per line</span><textarea data-block-key="options_text" rows="5">${esc((qt==="true_false"?["True","False"]:options).join("\n"))}</textarea></label>
+        <label class="kb-field"><span>${qt==="multi_select"?"Correct option numbers, comma separated":"Correct option number / order"}</span><input data-block-key="correct_text" value="${esc(qt==="sequence"?(block.correct_order||options).join(" | "):(block.correct_values||["0"]).map(x=>Number(x)+1).join(", "))}"></label>
+      `:`
+        <label class="kb-field"><span>Accepted answer${qt==="short_answer"?"s":""}</span><input data-block-key="accepted_text" value="${esc((block.accepted_answers||[]).join(" | "))}" placeholder="Separate alternatives with |"></label>
+      `}
+      <label class="kb-field"><span>Feedback / explanation</span><textarea data-block-key="explanation" rows="3">${esc(block.explanation||"")}</textarea></label>`;
+  } else if (type === "text" || type === "reflection") {
     body = `${commonTitle}<textarea data-block-key="content" placeholder="${type === "reflection" ? "Reflection prompt" : "Lesson text"}">${esc(block.content)}</textarea>`;
   } else if (type === "simulation") {
     body = `
@@ -178,10 +211,11 @@ function lessonEditor(lesson, index) {
         <button type="button" data-up="${index}" title="Move up">↑</button>
         <button type="button" data-down="${index}" title="Move down">↓</button>
         <button type="button" data-copy="${index}" title="Duplicate">⧉</button>
+        <button type="button" data-toggle="${index}" title="Minimise lesson">${collapsedLessons.has(lesson.client_id)?"▾":"▴"}</button>
         <button type="button" data-remove="${index}" title="Delete">×</button>
       </div>
     </div>
-    <div class="kb-lesson-body">
+    <div class="kb-lesson-body" ${collapsedLessons.has(lesson.client_id)?'hidden':''}>
       <div class="kb-grid-2">
         <label class="kb-field"><span>Lesson title</span><input data-lesson-key="title" value="${esc(lesson.title)}"></label>
         <label class="kb-field"><span>Estimated minutes</span><input type="number" min="1" data-lesson-key="estimated_minutes" value="${Number(lesson.estimated_minutes || 5)}"></label>
@@ -198,6 +232,7 @@ function lessonEditor(lesson, index) {
         <button type="button" data-add-block="podcast">+ Podcast</button>
         <button type="button" data-add-block="simulation">+ Simulation</button>
         <button type="button" data-add-block="reflection">+ Reflection</button>
+        <button type="button" data-add-block="question">+ Question</button>
       </div>
       <div class="kb-block-list">${blocks.map((b, bi) => blockEditor(b, index, bi)).join("") || '<div class="kb-empty">No blocks in this lesson.</div>'}</div>
     </div>
@@ -211,7 +246,8 @@ function renderLessons() {
   $$("[data-up]").forEach(b => b.onclick = () => moveLesson(+b.dataset.up, -1));
   $$("[data-down]").forEach(b => b.onclick = () => moveLesson(+b.dataset.down, 1));
   $$("[data-copy]").forEach(b => b.onclick = () => duplicateLesson(+b.dataset.copy));
-  $$("[data-remove]").forEach(b => b.onclick = () => removeLesson(+b.dataset.remove));
+  $("[data-remove]").forEach(b => b.onclick = () => removeLesson(+b.dataset.remove));
+  $("[data-toggle]").forEach(b => b.onclick = () => { const l=lessons[+b.dataset.toggle]; if(collapsedLessons.has(l.client_id)) collapsedLessons.delete(l.client_id); else collapsedLessons.add(l.client_id); renderLessons(); });
 
   $$(".kb-lesson").forEach(card => {
     const li = +card.dataset.lesson;
@@ -228,10 +264,13 @@ function renderLessons() {
       $$("[data-block-key]", blockEl).forEach(input => {
         const updateBlockValue = () => {
           const key = input.dataset.blockKey;
-          lessons[li].blocks[bi][key] =
-            input.type === "checkbox" ? input.checked :
-            input.type === "number" ? Number(input.value || 0) :
-            input.value;
+          const block = lessons[li].blocks[bi];
+          if (key === "options_text") block.options = input.value.split("\n").map(x=>x.trim()).filter(Boolean);
+          else if (key === "correct_text") {
+            if (block.question_type === "sequence") block.correct_order = input.value.split("|").map(x=>x.trim()).filter(Boolean);
+            else block.correct_values = input.value.split(",").map(x=>String(Math.max(0,Number(x.trim())-1))).filter(x=>x!=="NaN");
+          } else if (key === "accepted_text") block.accepted_answers = input.value.split("|").map(x=>x.trim()).filter(Boolean);
+          else block[key] = input.type === "checkbox" ? input.checked : input.type === "number" ? Number(input.value || 0) : input.value;
 
           if (key === "title") {
             const heading = blockEl.querySelector(".kb-block-head strong");
