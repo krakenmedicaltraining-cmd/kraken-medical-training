@@ -442,10 +442,25 @@ function renderCourses() {
   $$("[data-delete]", list).forEach(b => b.onclick = () => removeCourse(b.dataset.delete));
 }
 async function loadCourses() {
-  courses = await getAllCoursesOnline();
-  $("#coursePrerequisite").innerHTML = '<option value="">None</option>' +
-    courses.map(c => `<option value="${esc(c.id)}">${esc(c.title)}</option>`).join("");
-  renderCourses();
+  if (list) list.innerHTML = '<div class="kb-empty">Loading courses…</div>';
+  try {
+    const loaded = await getAllCoursesOnline();
+    courses = Array.isArray(loaded) ? loaded : [];
+    const prerequisite = $("#coursePrerequisite");
+    if (prerequisite) {
+      prerequisite.innerHTML = '<option value="">None</option>' +
+        courses.map(c => `<option value="${esc(c.id)}">${esc(c.title)}</option>`).join("");
+    }
+    renderCourses();
+    return courses;
+  } catch (error) {
+    console.error("Course library failed to load:", error);
+    if (list) {
+      list.innerHTML = `<div class="kb-empty"><strong>Could not load courses.</strong><br>${esc(error?.message || "Unknown database error")}<br><button type="button" id="retryCourseLoad" class="kb-ghost" style="margin-top:12px">Retry</button></div>`;
+      $("#retryCourseLoad")?.addEventListener("click", loadCourses);
+    }
+    throw error;
+  }
 }
 async function removeCourse(id) {
   const c = courses.find(x => x.id === id);
@@ -547,13 +562,33 @@ $("#exportCourses").onclick = () => {
 $("#signOutButton").onclick = async () => { await supabaseClient.auth.signOut(); location.href = "login.html"; };
 
 (async () => {
+  let session;
   try {
-    const session = await requireAdmin(); if (!session) return;
+    session = await requireAdmin();
+    if (!session) return;
     $("#adminStatus").textContent = `Connected as ${session.user.email}`;
-    renderLessons(); await loadCourses(); restoreDraft(); renderPreview();
   } catch (error) {
+    console.error("Administrator check failed:", error);
     $("#adminStatus").textContent = `Access denied: ${error.message}`;
-    form.hidden = true;
+    if (form) form.hidden = true;
+    return;
+  }
+
+  // Render the editor independently so a course-list/database error cannot
+  // take down the whole Course Builder or CSV importer.
+  try {
+    renderLessons();
+    restoreDraft();
+    renderPreview();
+  } catch (error) {
+    console.error("Course editor initialisation failed:", error);
+  }
+
+  try {
+    await loadCourses();
+  } catch (error) {
+    // loadCourses displays the actionable error and retry control itself.
+    $("#adminStatus").textContent = `Connected as ${session.user.email} · Course library needs attention`;
   }
 })();
 })();
