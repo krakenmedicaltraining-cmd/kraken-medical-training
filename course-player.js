@@ -347,17 +347,20 @@ function renderKnowledgeCheck(block) {
   const type = block.question_type || "multiple_choice";
   const options = type === "true_false" ? ["True","False"] : (Array.isArray(block.options) ? block.options : []);
   let control = "";
-  if (["multiple_choice","true_false"].includes(type)) control = options.map((o,i)=>`<label class="lesson-check-option"><input type="radio" name="check-${id}" value="${i}"><span>${safe(o)}</span></label>`).join("");
-  else if (type === "multi_select") control = options.map((o,i)=>`<label class="lesson-check-option"><input type="checkbox" name="check-${id}" value="${i}"><span>${safe(o)}</span></label>`).join("");
+  if (["multiple_choice","true_false"].includes(type)) control = options.map((o,i)=>`<label class="lesson-check-option"><input type="radio" name="check-${id}" value="${i}" data-answer-text="${safe(o)}"><span>${safe(o)}</span></label>`).join("");
+  else if (type === "multi_select") control = options.map((o,i)=>`<label class="lesson-check-option"><input type="checkbox" name="check-${id}" value="${i}" data-answer-text="${safe(o)}"><span>${safe(o)}</span></label>`).join("");
   else if (type === "sequence") control = `<p class="panel-copy">Enter the correct order, separated by commas.</p><input class="lesson-check-text" data-check-text placeholder="${safe(options.join(", "))}">`;
   else control = `<input class="lesson-check-text" data-check-text placeholder="Type your answer">`;
-  return `<section class="lesson-block lesson-block-question" data-knowledge-check data-check-type="${safe(type)}" data-correct="${safe(JSON.stringify(block.correct_values||[]))}" data-accepted="${safe(JSON.stringify(block.accepted_answers||[]))}" data-order="${safe(JSON.stringify(block.correct_order||options))}">
+  return `<section class="lesson-block lesson-block-question" data-knowledge-check data-check-type="${safe(type)}">
     <span class="lesson-block-label">Knowledge check</span><h3>${safe(block.title||"Quick question")}</h3><p><strong>${safe(block.question||"Question")}</strong></p>
     <div class="lesson-check-options">${control}</div>
     <button type="button" class="player-button secondary" data-check-answer>Check answer</button>
     <div class="lesson-check-feedback" data-check-feedback hidden></div>
-    <template data-explanation>${safe(block.explanation||"")}</template>
   </section>`;
+}
+
+function normaliseCheckValue(value){
+  return String(value ?? "").trim().toLowerCase();
 }
 
 function bindKnowledgeChecks(){
@@ -366,19 +369,58 @@ function bindKnowledgeChecks(){
     if(!button || button.dataset.bound==="true") return;
     button.dataset.bound="true";
     button.addEventListener("click",()=>{
-      const type=card.dataset.checkType; let ok=false;
-      let correct=[];
-      try{correct=JSON.parse(card.dataset.correct||"[]").map(String)}catch(e){console.warn("Invalid knowledge-check correct values",e)}
-      const accepted=JSON.parse(card.dataset.accepted||"[]").map(x=>String(x).trim().toLowerCase());
-      const order=JSON.parse(card.dataset.order||"[]").map(x=>String(x).trim().toLowerCase());
-      if(["multiple_choice","true_false"].includes(type)){const v=card.querySelector('input[type="radio"]:checked')?.value;ok=v!=null&&correct.includes(String(v))}
-      else if(type==="multi_select"){const got=[...card.querySelectorAll('input[type="checkbox"]:checked')].map(x=>x.value).sort();ok=got.length===correct.length&&got.every((v,i)=>v===correct.slice().sort()[i])}
-      else {const raw=(card.querySelector("[data-check-text]")?.value||"").trim().toLowerCase();if(type==="sequence"){const got=raw.split(",").map(x=>x.trim()).filter(Boolean);ok=got.length===order.length&&got.every((v,i)=>v===order[i])}else ok=accepted.some(a=>a===raw)}
-      const box=card.querySelector("[data-check-feedback]");const explanation=card.querySelector("[data-explanation]")?.content.textContent.trim();box.hidden=false;box.className="lesson-check-feedback "+(ok?"correct":"incorrect");box.textContent=(ok?"✓ Correct":"✕ Try again")+(explanation?" · "+explanation:"");
+      const lesson=playerState.bundle?.lessons?.[playerState.activeIndex];
+      const blockId=card.querySelector('input')?.name?.replace(/^check-/,"");
+      const source=(lessonBlocks(lesson)||[]).find(b=>String(b.client_id||b.id||"")===String(blockId)) || {};
+      const type=source.question_type || card.dataset.checkType || "multiple_choice";
+      const correctRaw=Array.isArray(source.correct_values) ? source.correct_values : (Array.isArray(source.correct_answers) ? source.correct_answers : []);
+      const acceptedRaw=Array.isArray(source.accepted_answers) ? source.accepted_answers : [];
+      const options=type==="true_false" ? ["True","False"] : (Array.isArray(source.options)?source.options:[]);
+      const correct=correctRaw.map(normaliseCheckValue);
+      let ok=false;
+
+      if(["multiple_choice","true_false"].includes(type)){
+        const picked=card.querySelector('input[type="radio"]:checked');
+        if(!picked){showKnowledgeFeedback(card,false,"Choose an answer first.");return;}
+        const index=normaliseCheckValue(picked.value);
+        const text=normaliseCheckValue(picked.dataset.answerText);
+        ok=correct.includes(index) || correct.includes(text);
+        if(!ok && correct.length===1){
+          const n=Number(correct[0]);
+          if(Number.isInteger(n)) ok=(n===Number(index) || n-1===Number(index));
+        }
+      } else if(type==="multi_select"){
+        const picked=[...card.querySelectorAll('input[type="checkbox"]:checked')];
+        if(!picked.length){showKnowledgeFeedback(card,false,"Choose at least one answer first.");return;}
+        const gotIndexes=picked.map(x=>normaliseCheckValue(x.value)).sort();
+        const gotTexts=picked.map(x=>normaliseCheckValue(x.dataset.answerText)).sort();
+        const wanted=correct.slice().sort();
+        ok=(gotIndexes.length===wanted.length&&gotIndexes.every((v,i)=>v===wanted[i])) ||
+           (gotTexts.length===wanted.length&&gotTexts.every((v,i)=>v===wanted[i]));
+      } else {
+        const raw=normaliseCheckValue(card.querySelector("[data-check-text]")?.value);
+        if(!raw){showKnowledgeFeedback(card,false,"Enter an answer first.");return;}
+        if(type==="sequence"){
+          const wanted=(Array.isArray(source.correct_order)?source.correct_order:options).map(normaliseCheckValue);
+          const got=raw.split(",").map(normaliseCheckValue).filter(Boolean);
+          ok=got.length===wanted.length&&got.every((v,i)=>v===wanted[i]);
+        } else {
+          const accepted=[...acceptedRaw,...correctRaw].map(normaliseCheckValue);
+          ok=accepted.includes(raw);
+        }
+      }
+      showKnowledgeFeedback(card,ok,source.explanation||"");
     });
   });
 }
 
+function showKnowledgeFeedback(card,ok,message){
+  const box=card.querySelector("[data-check-feedback]");
+  if(!box)return;
+  box.hidden=false;
+  box.className="lesson-check-feedback "+(ok?"correct":"incorrect");
+  box.textContent=(ok?"✓ Correct":"✕ Try again")+(message?" · "+message:"");
+}
 function renderUnknownBlock(block) {
   const title = normaliseUrl(block.title);
   const content =
