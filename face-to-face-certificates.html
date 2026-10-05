@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Face-to-Face Certificates | Kraken Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kraken-global.css"><link rel="stylesheet" href="admin-nav.css"><link rel="stylesheet" href="face-to-face-certificates.css">
+</head>
+<body>
+<header class="fc-hero"><div><span class="fc-kicker">KRAKEN CREDENTIALS</span><h1>Face-to-Face Certificates</h1><p>Create, issue, verify and manage certificates for instructor-led training.</p></div></header>
+<main class="fc-shell">
+<section class="fc-layout">
+<form id="certificateForm" class="fc-panel">
+<div class="fc-head"><div><small>NEW CREDENTIAL</small><h2>Create certificate</h2></div><span id="adminState">Checking access…</span></div>
+<div class="fc-grid">
+<label>Learner name<input id="learnerName" required autocomplete="name" placeholder="John Smith"></label>
+<label>Learner email<input id="learnerEmail" type="email" autocomplete="email" placeholder="john@example.com"></label>
+<label>Course title<input id="courseTitle" required placeholder="Adult Basic Life Support"></label>
+<label>Course reference<input id="courseId" placeholder="adult-bls"></label>
+<label>Training date<input id="trainingDate" type="date" required></label>
+<label>Duration<input id="duration" placeholder="4 hours"></label>
+<label>Instructor<input id="instructorName" placeholder="Connall Brown"></label>
+<label>Location<input id="location" placeholder="Glasgow"></label>
+<label>Expiry date<input id="expiresAt" type="date"></label>
+<label>Result / score<input id="finalScore" type="number" min="0" max="100" placeholder="Optional %"></label>
+</div>
+<label>Notes<textarea id="notes" rows="3" placeholder="Internal notes, practical assessment details, cohort reference…"></textarea></label>
+<div class="fc-actions"><button class="fc-button" type="submit">✓ Issue certificate</button><button class="fc-button secondary" id="clearForm" type="button">Clear</button></div>
+<p id="formMessage" class="fc-message"></p>
+</form>
+
+<aside class="fc-panel fc-preview">
+<small>LIVE PREVIEW</small><div class="fc-cert"><img src="assets/kraken-medical-logo.png" alt=""><span>KRAKEN MEDICAL TRAINING</span><h2>Certificate<br>of Completion</h2><p>This certifies that</p><strong id="previewName">Learner Name</strong><p>has successfully completed</p><h3 id="previewCourse">Course title</h3><div><span id="previewDate">Training date</span><span id="previewInstructor">Instructor</span></div></div>
+</aside>
+</section>
+
+<section class="fc-panel fc-register">
+<div class="fc-head"><div><small>AUDIT TRAIL</small><h2>Certificate register</h2></div><input id="certificateSearch" type="search" placeholder="Search learner, course or code…"></div>
+<div class="fc-table-wrap"><table><thead><tr><th>Learner</th><th>Course</th><th>Training date</th><th>Code</th><th>Status</th><th>Actions</th></tr></thead><tbody id="certificateRows"><tr><td colspan="6">Loading certificates…</td></tr></tbody></table></div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="common.js"></script><script src="face-to-face-certificates.js"></script><script src="admin-nav.js"></script>
+</body></html>
