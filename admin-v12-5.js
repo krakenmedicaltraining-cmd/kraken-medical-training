@@ -246,8 +246,8 @@ function renderLessons() {
   $$("[data-up]").forEach(b => b.onclick = () => moveLesson(+b.dataset.up, -1));
   $$("[data-down]").forEach(b => b.onclick = () => moveLesson(+b.dataset.down, 1));
   $$("[data-copy]").forEach(b => b.onclick = () => duplicateLesson(+b.dataset.copy));
-  $("[data-remove]").forEach(b => b.onclick = () => removeLesson(+b.dataset.remove));
-  $("[data-toggle]").forEach(b => b.onclick = () => { const l=lessons[+b.dataset.toggle]; if(collapsedLessons.has(l.client_id)) collapsedLessons.delete(l.client_id); else collapsedLessons.add(l.client_id); renderLessons(); });
+  $$("[data-remove]").forEach(b => b.onclick = () => removeLesson(+b.dataset.remove));
+  $$("[data-toggle]").forEach(b => b.onclick = () => { const l=lessons[+b.dataset.toggle]; if(collapsedLessons.has(l.client_id)) collapsedLessons.delete(l.client_id); else collapsedLessons.add(l.client_id); renderLessons(); });
 
   $$(".kb-lesson").forEach(card => {
     const li = +card.dataset.lesson;
