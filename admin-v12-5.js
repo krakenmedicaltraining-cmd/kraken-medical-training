@@ -137,7 +137,8 @@ function blockEditor(block, lessonIndex, blockIndex) {
       </select></label>
       <label class="kb-field"><span>Question</span><textarea data-block-key="question" rows="3">${esc(block.question||"")}</textarea></label>
       ${["multiple_choice","multi_select","true_false","sequence"].includes(qt)?`
-        <label class="kb-field"><span>Options, one per line</span><textarea data-block-key="options_text" rows="5">${esc((qt==="true_false"?["True","False"]:options).join("\n"))}</textarea></label>
+        <label class="kb-field"><span>Options, one per line</span><textarea data-block-key="options_text" rows="5">${esc((qt==="true_false"?["True","False"]:options).join("
+"))}</textarea></label>
         <label class="kb-field"><span>${qt==="multi_select"?"Correct option numbers, comma separated":"Correct option number / order"}</span><input data-block-key="correct_text" value="${esc(qt==="sequence"?(block.correct_order||options).join(" | "):(block.correct_values||["0"]).map(x=>Number(x)+1).join(", "))}"></label>
       `:`
         <label class="kb-field"><span>Accepted answer${qt==="short_answer"?"s":""}</span><input data-block-key="accepted_text" value="${esc((block.accepted_answers||[]).join(" | "))}" placeholder="Separate alternatives with |"></label>
@@ -239,7 +240,9 @@ function lessonEditor(lesson, index) {
   </article>`;
 }
 
-window.krakenImportLessons = imported => { lessons = (imported || []).map(l => ({...l, client_id:l.client_id || uid(), blocks:(l.blocks||[]).map(b=>({...b,client_id:b.client_id||uid()}))})); renderLessons(); scheduleDraft(); };\n\nfunction renderLessons() {
+window.krakenImportLessons = imported => { lessons = (imported || []).map(l => ({...l, client_id:l.client_id || uid(), blocks:(l.blocks||[]).map(b=>({...b,client_id:b.client_id||uid()}))})); renderLessons(); scheduleDraft(); };
+
+function renderLessons() {
   $("#lessonList").innerHTML = lessons.map(lessonEditor).join("");
   $("#emptyLessons").hidden = lessons.length > 0;
 
@@ -265,7 +268,8 @@ window.krakenImportLessons = imported => { lessons = (imported || []).map(l => (
         const updateBlockValue = () => {
           const key = input.dataset.blockKey;
           const block = lessons[li].blocks[bi];
-          if (key === "options_text") block.options = input.value.split("\n").map(x=>x.trim()).filter(Boolean);
+          if (key === "options_text") block.options = input.value.split("
+").map(x=>x.trim()).filter(Boolean);
           else if (key === "correct_text") {
             if (block.question_type === "sequence") block.correct_order = input.value.split("|").map(x=>x.trim()).filter(Boolean);
             else block.correct_values = input.value.split(",").map(x=>String(Math.max(0,Number(x.trim())-1))).filter(x=>x!=="NaN");
@@ -292,7 +296,10 @@ window.krakenImportLessons = imported => { lessons = (imported || []).map(l => (
 function flattenLesson(lesson) {
   const blocks = lesson.blocks || [];
   const text = blocks.filter(b => ["text","reflection"].includes(b.type))
-    .map(b => [b.title, b.content].filter(Boolean).join("\n")).filter(Boolean).join("\n\n");
+    .map(b => [b.title, b.content].filter(Boolean).join("
+")).filter(Boolean).join("
+
+");
   const first = type => blocks.find(b => b.type === type && b.url)?.url || null;
   return {
     title: lesson.title,
