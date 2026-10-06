@@ -295,7 +295,14 @@ code{font-size:11px}
     margin:0;
   }
 
-  body{background:#fff}
+  html,body{
+    width:297mm;
+    height:210mm;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+    background:#fff!important;
+  }
 
   .certificate-topbar,
   .certificate-status{
@@ -303,21 +310,102 @@ code{font-size:11px}
   }
 
   .certificate-shell{
-    width:100%;
-    max-width:none;
-    padding:0;
+    width:297mm!important;
+    height:210mm!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
   }
 
   .certificate-card{
-    padding:0;
-    box-shadow:none;
+    width:297mm!important;
+    height:210mm!important;
+    margin:0!important;
+    padding:4mm!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    overflow:hidden!important;
   }
 
   .certificate-inner{
-    width:100vw;
-    min-height:100vh;
-    border-width:10px;
+    width:289mm!important;
+    height:202mm!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:11mm 18mm 9mm!important;
+    border-width:3mm!important;
+    outline-width:.8mm!important;
+    outline-offset:-6mm!important;
+    overflow:hidden!important;
     print-color-adjust:exact;
     -webkit-print-color-adjust:exact;
   }
+
+  .certificate-inner:before{
+    inset:6mm!important;
+  }
+
+  .certificate-logo{
+    width:24mm!important;
+    height:24mm!important;
+    margin-bottom:4mm!important;
+    border-width:.7mm!important;
+    border-radius:5mm!important;
+    box-shadow:none!important;
+  }
+
+  .certificate-logo img{border-radius:4mm!important}
+
+  .certificate-eyebrow{
+    font-size:8pt!important;
+    letter-spacing:.18em!important;
+  }
+
+  .certificate-inner h1{
+    margin:2.5mm 0 4mm!important;
+    font-size:36pt!important;
+    line-height:.88!important;
+  }
+
+  .certificate-copy{
+    margin:1mm 0!important;
+    font-size:11pt!important;
+  }
+
+  .certificate-name{
+    margin:3mm 0!important;
+    font-size:30pt!important;
+    line-height:1!important;
+  }
+
+  .certificate-inner h2{
+    max-width:230mm!important;
+    margin:2.5mm 0 3mm!important;
+    font-size:25pt!important;
+    line-height:1!important;
+  }
+
+  .certificate-meta{
+    gap:2mm!important;
+    margin-top:2mm!important;
+  }
+
+  .certificate-meta span{
+    padding:1.7mm 3mm!important;
+    font-size:7.5pt!important;
+  }
+
+  .certificate-rule{
+    width:32mm!important;
+    height:.7mm!important;
+    margin:5mm 0 3.5mm!important;
+  }
+
+  .certificate-footer{
+    gap:8mm!important;
+    flex-wrap:nowrap!important;
+    font-size:8pt!important;
+  }
+
+  code{font-size:6.5pt!important}
 }
