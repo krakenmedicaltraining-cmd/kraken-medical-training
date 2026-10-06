@@ -420,7 +420,39 @@ function showKnowledgeFeedback(card,ok,message){
   box.hidden=false;
   box.className="lesson-check-feedback "+(ok?"correct":"incorrect");
   box.textContent=(ok?"✓ Correct":"✕ Try again")+(message?" · "+message:"");
+  if(ok) card.dataset.knowledgePassed="true";
+  else card.dataset.knowledgePassed="false";
+  updateLessonGate();
 }
+function lessonKnowledgePassed(){
+  const checks=[...document.querySelectorAll("[data-knowledge-check]")];
+  return !checks.length || checks.every(card=>card.dataset.knowledgePassed==="true");
+}
+
+function updateLessonGate(){
+  const passed=lessonKnowledgePassed();
+  const complete=document.querySelector("#completeLesson");
+  const next=document.querySelector("#nextLesson");
+  if(complete){
+    complete.disabled=!passed;
+    complete.title=passed?"":"Answer all knowledge checks correctly before completing this lesson.";
+  }
+  if(next){
+    const last=playerState.activeIndex===(playerState.bundle?.lessons?.length||0)-1;
+    next.disabled=last || !passed;
+    next.title=passed?"":"Answer all knowledge checks correctly before continuing.";
+  }
+}
+
+function requireLessonKnowledge(){
+  if(lessonKnowledgePassed()) return true;
+  const first=[...document.querySelectorAll("[data-knowledge-check]")].find(card=>card.dataset.knowledgePassed!=="true");
+  first?.scrollIntoView({behavior:"smooth",block:"center"});
+  first?.classList.add("knowledge-check-required");
+  setTimeout(()=>first?.classList.remove("knowledge-check-required"),1200);
+  return false;
+}
+
 function renderUnknownBlock(block) {
   const title = normaliseUrl(block.title);
   const content =
@@ -905,6 +937,7 @@ function selectLesson(index) {
 
   restoreReflectionAnswers();
   bindKnowledgeChecks();
+  updateLessonGate();
 
   document
     .querySelector("#previousLesson")
@@ -917,7 +950,7 @@ function selectLesson(index) {
     .querySelector("#nextLesson")
     ?.addEventListener(
       "click",
-      () => selectLesson(playerState.activeIndex + 1)
+      () => { if (requireLessonKnowledge()) selectLesson(playerState.activeIndex + 1); }
     );
 
   document
@@ -931,6 +964,10 @@ function selectLesson(index) {
 }
 
 async function toggleCurrentLesson() {
+  const currentLesson=playerState.bundle?.lessons?.[playerState.activeIndex];
+  const currentId=String(currentLesson?.id||"");
+  if (!playerState.completed.has(currentId) && !requireLessonKnowledge()) return;
+
   if (!playerState.session) {
     localStorage.setItem(
       "kmtReturnTo",
