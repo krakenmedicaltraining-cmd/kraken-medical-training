@@ -593,11 +593,16 @@ function restoreReflectionAnswers() {
 }
 
 const KRAKEN_PAYMENTS_URL = "https://kraken-payments.krakenmedicaltraining.workers.dev";
-const PAID_BLS_ID = "adult-basic-life-support-aed";
+function formatCoursePrice(course) {
+  const pence = Number(course.price_pence);
+  if (!Number.isSafeInteger(pence) || pence < 50 || course.currency !== "gbp") return null;
+  return new Intl.NumberFormat("en-GB", {style:"currency", currency:"GBP"}).format(pence / 100);
+}
 
 function renderLockedCourse(course, access) {
   const isPaid = course.access_type === "paid";
-  const canBuy = isPaid && !access.needsLogin && access.needsPurchase && course.id === PAID_BLS_ID;
+  const price = formatCoursePrice(course);
+  const canBuy = isPaid && Boolean(price) && Boolean(course.stripe_price_id) && !access.needsLogin && access.needsPurchase;
   playerRoot.innerHTML = `
     <section class="course-hero">
       <div class="course-hero-copy">
@@ -605,10 +610,10 @@ function renderLockedCourse(course, access) {
         <h1>${safe(course.title || "Kraken course")}</h1>
         <p class="course-subtitle">${safe(course.subtitle || "")}</p>
         <p class="course-description">${safe(course.description || "")}</p>
-        ${isPaid ? '<h2 style="color:#f2faf7;font-size:2rem;margin:1rem 0">£14.99 <small style="font-size:.85rem">one-time purchase · Stripe test mode</small></h2>' : ""}
+        ${isPaid && price ? `<h2 style="color:#f2faf7;font-size:2rem;margin:1rem 0">${safe(price)} <small style="font-size:.85rem">one-time purchase · Stripe test mode</small></h2>` : ""}
         <p role="status" id="purchaseStatus">${safe(access.reason || "Course access required.")}</p>
         <div class="hero-actions">
-          ${canBuy ? '<button class="player-button" id="purchaseCourse" type="button">Buy for £14.99 (test)</button>' : ""}
+          ${canBuy ? `<button class="player-button" id="purchaseCourse" type="button">Buy for ${safe(price)} (test)</button>` : ""}
           ${access.needsLogin ? '<a class="player-button" href="student-login.html">Sign in to purchase</a>' : ""}
           <a class="player-button secondary" href="courses.html">Browse courses</a>
         </div>
@@ -624,7 +629,8 @@ function renderLockedCourse(course, access) {
       if (sessionError || !session?.access_token) throw new Error("Please sign in again.");
       const response = await fetch(KRAKEN_PAYMENTS_URL + "/api/create-checkout-session",{
         method:"POST",
-        headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token}
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token},
+        body:JSON.stringify({course_id:course.id})
       });
       const result = await response.json();
       if (!response.ok || !result.checkout_url) throw new Error(result.error || "Checkout unavailable");
