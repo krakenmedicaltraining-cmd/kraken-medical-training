@@ -3,7 +3,13 @@
 const $ = id => document.getElementById(id);
 const msg = (text, error=false) => { $("message").textContent=text; $("message").className="status"+(error?" error":""); };
 const escapeHTML = value => String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const client = typeof supabaseClient !== "undefined" ? supabaseClient : null;
+const client = (() => {
+  if (typeof supabaseClient !== "undefined") return supabaseClient;
+  if (!window.supabase?.createClient) return null;
+  const url = typeof SUPABASE_URL !== "undefined" ? SUPABASE_URL : "https://nipfbcnesknegakrzcfo.supabase.co";
+  const key = typeof SUPABASE_PUBLISHABLE_KEY !== "undefined" ? SUPABASE_PUBLISHABLE_KEY : "sb_publishable_VAqvmzhk2q3MjfMR31_VvQ_2Gc7ACLk";
+  return window.supabase.createClient(url, key, {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+})();
 let courses=[], collections=[], selected=new Set(), currentId=null, savedSlug=null;
 const slugify = text => text.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 function drawCourses(){
