@@ -46,6 +46,8 @@ async function saveCourseOnline(course) {
     require_all_blocks: course.require_all_blocks !== false,
     certificate_enabled: course.certificate_enabled !== false,
     access_type: course.access_type || "public",
+    price_pence: course.access_type === "paid" ? Number(course.price_pence || 0) : 0,
+    currency: "gbp",
     prerequisite_course_id: course.prerequisite_course_id || null,
     max_quiz_attempts: course.max_quiz_attempts || null,
     quiz_time_limit: course.quiz_time_limit || null,
