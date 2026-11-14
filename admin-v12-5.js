@@ -325,6 +325,8 @@ function coursePayload() {
     certificate_enabled: checked("#certificateEnabled"), require_all_blocks: checked("#requireAllBlocks"),
     simulation_url: value("#courseSimulationUrl"), pass_mark: Number(value("#coursePassMark") || 80),
     access_type: value("#courseAccess") || "public",
+    price_pence: value("#courseAccess") === "paid" ? Math.round(Number(value("#coursePrice")) * 100) : 0,
+    currency: "gbp",
     prerequisite_course_id: value("#coursePrerequisite") || null,
     max_quiz_attempts: value("#maxQuizAttempts") ? Number(value("#maxQuizAttempts")) : null,
     quiz_time_limit: value("#quizTimeLimit") ? Number(value("#quizTimeLimit")) : null,
@@ -372,7 +374,7 @@ async function editCourse(id) {
     "#downloadsEnabled":c.downloads_enabled !== false,"#reflectionEnabled":c.reflection_enabled,
     "#certificateEnabled":c.certificate_enabled !== false,"#requireAllBlocks":c.require_all_blocks !== false,
     "#courseSimulationUrl":c.simulation_url,"#coursePassMark":c.pass_mark || 80,
-    "#courseAccess":c.access_type || "public","#coursePrerequisite":c.prerequisite_course_id,
+    "#courseAccess":c.access_type || "public","#coursePrice":((c.price_pence || 0) / 100).toFixed(2),"#coursePrerequisite":c.prerequisite_course_id,
     "#maxQuizAttempts":c.max_quiz_attempts,"#quizTimeLimit":c.quiz_time_limit
   };
   Object.entries(map).forEach(([id, v]) => setField(id, v));
@@ -503,7 +505,7 @@ function restoreDraft() {
       "#podcastEnabled":c.podcast_enabled,"#downloadsEnabled":c.downloads_enabled,
       "#reflectionEnabled":c.reflection_enabled,"#certificateEnabled":c.certificate_enabled,
       "#requireAllBlocks":c.require_all_blocks,"#courseSimulationUrl":c.simulation_url,
-      "#coursePassMark":c.pass_mark,"#courseAccess":c.access_type,"#coursePrerequisite":c.prerequisite_course_id,
+      "#coursePassMark":c.pass_mark,"#courseAccess":c.access_type,"#coursePrice":((c.price_pence || 0) / 100).toFixed(2),"#coursePrerequisite":c.prerequisite_course_id,
       "#maxQuizAttempts":c.max_quiz_attempts,"#quizTimeLimit":c.quiz_time_limit
     };
     Object.entries(map).forEach(([id,v]) => setField(id,v));
@@ -600,3 +602,5 @@ $("#signOutButton").onclick = async () => { await supabaseClient.auth.signOut();
   }
 })();
 })();
+// Pricing fields appear only for paid courses.
+(function(){const access=document.querySelector("#courseAccess"), fields=document.querySelector("#coursePricingFields");if(!access||!fields)return;const sync=()=>{fields.hidden=access.value!=="paid";};access.addEventListener("change",sync);new MutationObserver(sync).observe(access,{attributes:true});document.addEventListener("click",()=>queueMicrotask(sync));sync();})();
