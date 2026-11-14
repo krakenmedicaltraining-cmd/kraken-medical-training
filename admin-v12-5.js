@@ -562,6 +562,8 @@ async function submitCourse() {
 }
 
 form.addEventListener("input", scheduleDraft);
+$("#coursePrice")?.addEventListener("input", syncCoursePricing);
+$("#courseAccess")?.addEventListener("change", syncCoursePricing);
 form.addEventListener("submit", e => { e.preventDefault(); submitCourse(); });
 $("#mobileSaveButton").onclick = submitCourse;
 $("#addLesson").onclick = addLesson;
@@ -625,6 +627,3 @@ $("#signOutButton").onclick = async () => { await supabaseClient.auth.signOut();
 })();
 // Pricing fields appear only for paid courses.
 (function(){const access=document.querySelector("#courseAccess"), fields=document.querySelector("#coursePricingFields");if(!access||!fields)return;const sync=()=>{fields.hidden=access.value!=="paid";};access.addEventListener("change",sync);new MutationObserver(sync).observe(access,{attributes:true});document.addEventListener("click",()=>queueMicrotask(syncCoursePricing));syncCoursePricing();})();
-
-document.querySelector("#coursePrice")?.addEventListener("input", syncCoursePricing);
-document.querySelector("#courseAccess")?.addEventListener("change", syncCoursePricing);
