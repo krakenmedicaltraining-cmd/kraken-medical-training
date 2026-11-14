@@ -561,6 +561,45 @@ async function submitCourse() {
   }
 }
 
+async function createStripePriceFromAdmin() {
+  const button = $("#createStripePrice");
+  const oldText = button.textContent;
+  button.disabled = true;
+  button.textContent = "Connecting Stripe…";
+  try {
+    const payload = coursePayload();
+    if (!payload.title || !payload.description) throw new Error("Add a title and description first.");
+    if (payload.access_type !== "paid") throw new Error("Choose Paid course first.");
+    if (!Number.isSafeInteger(payload.price_pence) || payload.price_pence < 50) throw new Error("Enter a valid price of at least £0.50.");
+    if (!confirm("Save this course as Draft and create its Stripe test price?")) return;
+    payload.status = "Draft";
+    const saved = await saveCourseOnline(payload);
+    editingId.value = saved.id;
+    setField("#courseStatus", "Draft");
+    const { data: sessionData, error: authError } = await supabaseClient.auth.getSession();
+    if (authError || !sessionData?.session?.access_token) throw new Error("Sign in again as an administrator.");
+    const response = await fetch("https://kraken-payments.krakenmedicaltraining.workers.dev/api/admin/create-course-price", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionData.session.access_token
+      },
+      body: JSON.stringify({course_id: saved.id})
+    });
+    const result = await response.json();
+    if (!response.ok || !result.success) throw new Error(result.error || "Stripe price creation failed");
+    await loadCourses();
+    await editCourse(saved.id);
+    showToast("Stripe test price connected. You can now publish this course.");
+  } catch (error) {
+    alert("Could not connect Stripe: " + error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = oldText;
+  }
+}
+$("#createStripePrice")?.addEventListener("click", createStripePriceFromAdmin);
+
 form.addEventListener("input", scheduleDraft);
 $("#coursePrice")?.addEventListener("input", syncCoursePricing);
 $("#courseAccess")?.addEventListener("change", syncCoursePricing);
