@@ -95,8 +95,9 @@
         <div class="kb-grid-3">
           <label class="kb-field"><span>Icon or initials</span><input id="courseIcon" maxlength="5" placeholder="MP"></label>
           <label class="kb-field"><span>Status</span><select id="courseStatus"><option>Draft</option><option>Published</option><option>Coming soon</option></select></label>
-          <label class="kb-field"><span>Access</span><select id="courseAccess"><option value="public">Public</option><option value="login">Login required</option><option value="invite">Invite only</option></select></label>
+          <label class="kb-field"><span>Access</span><select id="courseAccess"><option value="public">Public</option><option value="login">Login required</option><option value="invite">Invite only</option><option value="paid">Paid course</option></select></label>
         </div>
+        <div id="coursePricingFields" class="kb-grid-2" hidden style="margin-top:14px"><label class="kb-field"><span>Course price (£ GBP)</span><input id="coursePrice" type="number" min="0.50" max="99999" step="0.01" value="14.99"></label><p style="align-self:center">Paid courses require a Stripe price before checkout can be enabled.</p></div>
       </section>
 
       <section class="kb-tab" data-panel="lessons">
@@ -160,9 +161,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<script src="data.js"></script>
+<script src="data.js?v=20261114-pricing1"></script>
 <script src="common.js"></script>
-<script src="admin-v12-5.js?v=20261005-1800"></script>
+<script src="admin-v12-5.js?v=20261114-pricing1"></script>
 <script src="csv-course-import.js"></script>
   <script src="admin-nav.js"></script>
 </body>
