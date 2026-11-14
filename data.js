@@ -273,6 +273,27 @@ async function deleteAnnouncementOnline(id){const{error}=await supabaseClient.fr
 async function getInstructorSnapshot(){const [profiles,progress,certificates,courses]=await Promise.all([supabaseClient.from("profiles").select("*"),supabaseClient.from("course_progress").select("*,courses(title,category)"),supabaseClient.from("certificates").select("*"),supabaseClient.from("courses").select("id,title,status")]);for(const r of [profiles,progress,certificates,courses])if(r.error)throw r.error;return{profiles:profiles.data||[],progress:progress.data||[],certificates:certificates.data||[],courses:courses.data||[]}}
 async function setCertificateRevoked(id,revoked,reason=""){const{data,error}=await supabaseClient.from("certificates").update({revoked,revoked_at:revoked?new Date().toISOString():null,revoked_reason:revoked?reason:null}).eq("id",id).select().single();if(error)throw error;return data}
 async function resetLearnerCourse(userId,courseId){const{error}=await supabaseClient.from("course_progress").delete().eq("user_id",userId).eq("course_id",courseId);if(error)throw error}
-async function canAccessCourse(course){if(course.access_type==='public'||!course.access_type)return{ok:true};const s=await getCurrentSession();if(!s)return{ok:false,reason:'Sign in is required for this course.'};if(course.access_type==='invite'){const{data,error}=await supabaseClient.from('course_enrollments').select('course_id').eq('course_id',course.id).eq('user_id',s.user.id).maybeSingle();if(error)throw error;if(!data)return{ok:false,reason:'This course is invite only. Ask an instructor for access.'}}if(course.prerequisite_course_id){const{data,error}=await supabaseClient.from('course_progress').select('completed').eq('user_id',s.user.id).eq('course_id',course.prerequisite_course_id).maybeSingle();if(error)throw error;if(!data?.completed)return{ok:false,reason:'Complete the prerequisite course before starting this one.'}}return{ok:true}}
+async function canAccessCourse(course) {
+  if (course.access_type === "public" || !course.access_type) return {ok:true};
+  const session = await getCurrentSession();
+  if (!session) return {ok:false, reason:"Sign in to access this course.", needsLogin:true};
+  if (course.access_type === "paid" || course.access_type === "invite") {
+    const {data:admin,error:adminError} = await supabaseClient.from("admin_users").select("user_id").eq("user_id",session.user.id).maybeSingle();
+    if (adminError) throw adminError;
+    if (!admin) {
+      const {data,error} = await supabaseClient.from("course_enrollments").select("course_id").eq("course_id",course.id).eq("learner_id",session.user.id).eq("access_status","active").maybeSingle();
+      if (error) throw error;
+      if (!data) return {ok:false, reason:course.access_type==="paid"?"Purchase this course to unlock the lessons.":"This course is invite only.", needsPurchase:course.access_type==="paid"};
+    }
+  }
+  if (course.prerequisite_course_id) {
+    const {data,error} = await supabaseClient.from("course_progress").select("completed").eq("user_id",session.user.id).eq("course_id",course.prerequisite_course_id).maybeSingle();
+    if (error) throw error;
+    if (!data?.completed) return {ok:false,reason:"Complete the prerequisite course before starting this one."};
+  }
+  return {ok:true};
+}
 
-async function grantCourseAccess(userId,courseId){const s=await getCurrentSession();const{data,error}=await supabaseClient.from('course_enrollments').upsert({user_id:userId,course_id:courseId,enrolled_by:s?.user?.id}).select().single();if(error)throw error;return data}
+async function grantCourseAccess(userId,courseId) {
+  throw new Error("Enrolments must be granted by the trusted payment backend or an authorised admin process.");
+}
