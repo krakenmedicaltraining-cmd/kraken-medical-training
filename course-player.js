@@ -636,15 +636,53 @@ function renderLockedCourse(course, access) {
   });
 }
 
+const checkoutParams = new URLSearchParams(window.location.search);
+const checkoutReturned = checkoutParams.get("checkout") === "success";
+
+function clearCheckoutParams() {
+  const clean = new URL(window.location.href);
+  clean.searchParams.delete("checkout");
+  clean.searchParams.delete("session_id");
+  window.history.replaceState({}, "", clean.pathname + clean.search + clean.hash);
+}
+
+function showCheckoutConfirmation() {
+  if (!checkoutReturned) return;
+  const message = document.createElement("div");
+  message.setAttribute("role", "status");
+  message.style.cssText = "margin:16px auto;max-width:1280px;padding:18px 22px;border:1px solid #26b7a0;border-radius:12px;background:#092b28;color:#effff9;font-weight:700";
+  message.textContent = "Payment confirmed and course access activated. You can start learning now.";
+  playerRoot.prepend(message);
+  clearCheckoutParams();
+}
+
+async function waitForCheckoutEnrolment(course) {
+  // The Stripe redirect can arrive before its webhook has finished.
+  // Never unlock lessons based on a URL parameter alone.
+  for (let attempt = 0; attempt < 8; attempt++) {
+    const access = await canAccessCourse(course);
+    if (access.ok) return access;
+    if (!access.needsPurchase) return access;
+    await new Promise(resolve => setTimeout(resolve, 1500));
+  }
+  return canAccessCourse(course);
+}
+
 async function initialisePlayer() {
   if (!courseId) return showError("Course not found","No course ID was supplied.");
   try {
     playerState.session = await getCurrentSession();
     const course = await getCourseOnline(courseId);
     if (!course) return showError("Course not found","This course is unavailable.");
-    const access = await canAccessCourse(course);
+    const access = checkoutReturned && course.access_type === "paid"
+      ? await waitForCheckoutEnrolment(course)
+      : await canAccessCourse(course);
     if (!access.ok) {
       renderLockedCourse(course, access);
+      if (checkoutReturned && access.needsPurchase) {
+        const status = document.querySelector("#purchaseStatus");
+        if (status) status.textContent = "Your checkout has returned, but course access is not confirmed yet. Please refresh shortly or contact support if payment was taken.";
+      }
       return;
     }
     const bundle = await getCourseEngineBundle(courseId, course);
@@ -656,6 +694,7 @@ async function initialisePlayer() {
       .forEach(row => playerState.completed.add(String(row.lesson_id)));
     playerState.progress = await getCourseProgress(courseId);
     renderPlayer();
+    showCheckoutConfirmation();
     await renderProfile();
   } catch (error) {
     console.error(error);
