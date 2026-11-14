@@ -592,79 +592,74 @@ function restoreReflectionAnswers() {
     });
 }
 
+const KRAKEN_PAYMENTS_URL = "https://kraken-payments.krakenmedicaltraining.workers.dev";
+const PAID_BLS_ID = "adult-basic-life-support-aed";
+
+function renderLockedCourse(course, access) {
+  const isPaid = course.access_type === "paid";
+  const canBuy = isPaid && !access.needsLogin && access.needsPurchase && course.id === PAID_BLS_ID;
+  playerRoot.innerHTML = `
+    <section class="course-hero">
+      <div class="course-hero-copy">
+        <div class="hero-tags"><span class="hero-tag">${safe(course.category || "Medical training")}</span><span class="hero-tag">${isPaid ? "Paid course" : "Restricted course"}</span></div>
+        <h1>${safe(course.title || "Kraken course")}</h1>
+        <p class="course-subtitle">${safe(course.subtitle || "")}</p>
+        <p class="course-description">${safe(course.description || "")}</p>
+        ${isPaid ? '<h2 style="color:#f2faf7;font-size:2rem;margin:1rem 0">£14.99 <small style="font-size:.85rem">one-time purchase · Stripe test mode</small></h2>' : ""}
+        <p role="status" id="purchaseStatus">${safe(access.reason || "Course access required.")}</p>
+        <div class="hero-actions">
+          ${canBuy ? '<button class="player-button" id="purchaseCourse" type="button">Buy for £14.99 (test)</button>' : ""}
+          ${access.needsLogin ? '<a class="player-button" href="student-login.html">Sign in to purchase</a>' : ""}
+          <a class="player-button secondary" href="courses.html">Browse courses</a>
+        </div>
+      </div>
+    </section>`;
+  document.querySelector("#purchaseCourse")?.addEventListener("click", async event => {
+    const button = event.currentTarget;
+    const status = document.querySelector("#purchaseStatus");
+    button.disabled = true;
+    status.textContent = "Preparing secure test checkout…";
+    try {
+      const {data:{session},error:sessionError} = await supabaseClient.auth.getSession();
+      if (sessionError || !session?.access_token) throw new Error("Please sign in again.");
+      const response = await fetch(KRAKEN_PAYMENTS_URL + "/api/create-checkout-session",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token}
+      });
+      const result = await response.json();
+      if (!response.ok || !result.checkout_url) throw new Error(result.error || "Checkout unavailable");
+      window.location.assign(result.checkout_url);
+    } catch (error) {
+      status.textContent = error.message || "Checkout could not be opened.";
+      button.disabled = false;
+    }
+  });
+}
+
 async function initialisePlayer() {
-  if (!courseId) {
-    return showError(
-      "Course not found",
-      "No course ID was supplied."
-    );
-  }
-
+  if (!courseId) return showError("Course not found","No course ID was supplied.");
   try {
-    playerState.session =
-      await getCurrentSession();
-
-    const bundle =
-      await getCourseEngineBundle(courseId);
-
-    if (!bundle) {
-      return showError(
-        "Course not found",
-        "This course may have been removed or is not available."
-      );
-    }
-
-    const access =
-      typeof canAccessCourse === "function"
-        ? await canAccessCourse(bundle.course)
-        : { ok: true };
-
+    playerState.session = await getCurrentSession();
+    const course = await getCourseOnline(courseId);
+    if (!course) return showError("Course not found","This course is unavailable.");
+    const access = await canAccessCourse(course);
     if (!access.ok) {
-      return showError(
-        "Course locked",
-        access.reason ||
-          "You do not currently have access to this course.",
-        "student-login.html",
-        "Sign in"
-      );
+      renderLockedCourse(course, access);
+      return;
     }
-
+    const bundle = await getCourseEngineBundle(courseId, course);
+    if (!bundle) return showError("Course not found","This course is unavailable.");
     playerState.bundle = bundle;
-
-    const progressRows =
-      await getLessonProgressV12(courseId);
-
-    const currentLessonIds = new Set(
-      (bundle.lessons || []).map(lesson =>
-        String(lesson.id)
-      )
-    );
-
-    progressRows
-      .filter(
-        row =>
-          row.completed &&
-          currentLessonIds.has(String(row.lesson_id))
-      )
-      .forEach(row =>
-        playerState.completed.add(
-          String(row.lesson_id)
-        )
-      );
-
-    playerState.progress =
-      await getCourseProgress(courseId);
-
+    const progressRows = await getLessonProgressV12(courseId);
+    const ids = new Set((bundle.lessons || []).map(l => String(l.id)));
+    progressRows.filter(row => row.completed && ids.has(String(row.lesson_id)))
+      .forEach(row => playerState.completed.add(String(row.lesson_id)));
+    playerState.progress = await getCourseProgress(courseId);
     renderPlayer();
     await renderProfile();
   } catch (error) {
     console.error(error);
-
-    showError(
-      "Course unavailable",
-      error.message ||
-        "Kraken could not load this course."
-    );
+    showError("Course unavailable",error.message || "Kraken could not load this course.");
   }
 }
 
