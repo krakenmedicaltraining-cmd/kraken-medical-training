@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Collections | Kraken Admin</title>
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="kraken-v12-pages.css">
+<style>
+body{background:#f1f7f5;color:#102c34;font-family:system-ui,sans-serif;margin:0}
+header{background:#071f29;color:#fff;padding:18px 5%;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+header a{color:#fff;text-decoration:none}header strong{font-size:1.15rem}
+main{max-width:1180px;margin:35px auto;padding:0 18px}
+h1{font-size:2.2rem;margin-bottom:5px}p{line-height:1.5}
+.layout{display:grid;grid-template-columns:minmax(240px,350px) minmax(0,1fr);gap:22px;margin-top:24px}
+.panel{background:#fff;border:1px solid #d2e4de;border-radius:20px;padding:24px;box-shadow:0 10px 25px #062e2510}
+label{display:block;font-weight:700;margin:17px 0 6px}
+input,textarea,select{width:100%;box-sizing:border-box;border:1px solid #bfd4ce;border-radius:9px;padding:12px;font:inherit;background:white;color:#122d32}
+textarea{min-height:90px}
+button{border:0;border-radius:9px;padding:12px 18px;font-weight:750;cursor:pointer}
+.primary{background:#1ab997;color:#06211e}.secondary{background:#e7f4f0;color:#123e35}
+button:disabled{opacity:.55;cursor:wait}
+.item{display:block;width:100%;text-align:left;background:#f3f9f6;margin:9px 0;padding:15px;border:1px solid #d9e8e3}
+.item small{display:block;color:#53736b;margin-top:4px}
+.courses{max-height:340px;overflow:auto;border:1px solid #d8e8e3;border-radius:12px;padding:8px}
+.course{display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid #edf3f0}
+.course input{width:auto}.course label{margin:0;font-weight:500}
+.status{min-height:25px;color:#165f51}.error{color:#a32323}
+.note{padding:12px;background:#f0f7f4;border-radius:10px}
+@media(max-width:720px){.layout{grid-template-columns:1fr}}
+</style></head><body>
+<header><strong>Kraken Admin</strong><a href="admin.html">Course Builder</a><a href="collections-admin.html">Collections</a><a href="courses.html">View courses</a></header>
+<main><h1>Course collections</h1><p>Bundle multiple courses into one paid package. Collections are saved as drafts until Stripe checkout and bundle enrolment are connected.</p>
+<div id="message" class="status" role="status" aria-live="polite">Checking administrator access…</div>
+<div id="workspace" class="layout" hidden>
+<section class="panel"><h2>Saved collections</h2><button id="new" class="secondary" type="button">+ New collection</button><div id="collectionList"></div></section>
+<section class="panel"><h2 id="formHeading">New collection</h2>
+<form id="collectionForm">
+<label for="title">Collection title</label><input id="title" required maxlength="160" placeholder="Resuscitation Essentials">
+<label for="slug">URL slug</label><input id="slug" required pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="resuscitation-essentials">
+<label for="description">Description</label><textarea id="description" placeholder="What will learners gain?"></textarea>
+<label for="cover">Cover image URL (optional)</label><input id="cover" type="url" placeholder="https://...">
+<label for="price">Bundle price (£)</label><input id="price" type="number" min="0.50" max="99999" step="0.01" value="9.99" required>
+<p class="note">All prices are in GBP. This page does not yet create Stripe prices or accept bundle payments.</p>
+<h3>Included courses</h3><p>Select the courses this collection will unlock after purchase.</p>
+<input id="courseSearch" type="search" placeholder="Find a course…" aria-label="Search courses">
+<div id="coursePicker" class="courses"></div>
+<p id="selectedCount">0 courses selected</p>
+<button class="primary" id="save" type="submit">Save draft collection</button>
+</form></section></div></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="collections-admin.js?v=20261114-1"></script></body></html>
