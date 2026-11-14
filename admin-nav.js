@@ -4,6 +4,7 @@
   const ADMIN_PAGES = [
     { href: "admin-hub.html", label: "Admin hub", icon: "⌂" },
     { href: "admin.html", label: "Courses", icon: "▤" },
+    { href: "collections-admin.html", label: "Collections", icon: "▦" },
     { href: "instructor-package-builder.html", label: "Instructor packages", icon: "▣" },
     { href: "journal-admin.html", label: "Journal", icon: "☷" },
     { href: "resource-admin.html", label: "Uploads", icon: "⇧" },
