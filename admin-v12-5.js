@@ -309,6 +309,23 @@ function flattenLesson(lesson) {
   };
 }
 
+function currentStripePriceForPayload() {
+  const c = courses.find(x => x.id === editingId.value);
+  const p = Math.round(Number(value("#coursePrice")) * 100);
+  return c?.access_type === "paid" && value("#courseAccess") === "paid" && c.price_pence === p ? (c.stripe_price_id || null) : null;
+}
+function syncCoursePricing() {
+  const fields = $("#coursePricingFields");
+  if (!fields) return;
+  const paid = value("#courseAccess") === "paid";
+  fields.hidden = !paid;
+  const status = $("#courseStripeStatus");
+  if (!status) return;
+  const p = Number(value("#coursePrice"));
+  const existing = courses.find(x => x.id === editingId.value);
+  const linked = paid && existing?.access_type === "paid" && existing?.price_pence === Math.round(p*100) && Boolean(existing.stripe_price_id);
+  status.textContent = !paid ? "" : linked ? "✓ Existing Stripe price connected" : "Stripe price needs to be created before checkout";
+}
 function coursePayload() {
   const title = value("#courseTitle");
   return {
@@ -327,6 +344,7 @@ function coursePayload() {
     access_type: value("#courseAccess") || "public",
     price_pence: value("#courseAccess") === "paid" ? Math.round(Number(value("#coursePrice")) * 100) : 0,
     currency: "gbp",
+    stripe_price_id: currentStripePriceForPayload(),
     prerequisite_course_id: value("#coursePrerequisite") || null,
     max_quiz_attempts: value("#maxQuizAttempts") ? Number(value("#maxQuizAttempts")) : null,
     quiz_time_limit: value("#quizTimeLimit") ? Number(value("#quizTimeLimit")) : null,
@@ -383,6 +401,7 @@ async function editCourse(id) {
   $("#cancelEdit").hidden = false; $("#duplicateButton").hidden = false; $("#deleteEditingButton").hidden = false;
   await loadLessons(id);
   activateTab("details");
+  syncCoursePricing();
   updateMobileBar();
   scrollTo({top:0,behavior:"smooth"});
 }
@@ -394,7 +413,7 @@ function resetForm() {
   $("#formEyebrow").textContent = "New course"; $("#formTitle").textContent = "Course details";
   $("#cancelEdit").hidden = true; $("#duplicateButton").hidden = true; $("#deleteEditingButton").hidden = true;
   localStorage.removeItem(DRAFT_KEY);
-  renderLessons(); activateTab("details"); updateMobileBar();
+  renderLessons(); activateTab("details"); syncCoursePricing(); updateMobileBar();
 }
 
 function renderPreview() {
@@ -526,6 +545,8 @@ async function submitCourse() {
     const payload = coursePayload();
     if (!payload.title) throw new Error("Add a course title.");
     if (!payload.description) throw new Error("Add a course description.");
+    if (payload.access_type === "paid" && (!Number.isSafeInteger(payload.price_pence) || payload.price_pence < 50)) throw new Error("Paid courses require a valid price of at least £0.50.");
+    if (payload.access_type === "paid" && payload.status === "Published" && !payload.stripe_price_id) throw new Error("Connect a Stripe price before publishing. Stripe price creation is the next backend step; save this course as Draft for now.");
     if (!lessons.length && payload.status === "Published" && !confirm("Publish this course without any lessons?")) return;
     const saved = await saveCourseOnline(payload);
     await saveLessons(saved.id);
@@ -603,4 +624,7 @@ $("#signOutButton").onclick = async () => { await supabaseClient.auth.signOut();
 })();
 })();
 // Pricing fields appear only for paid courses.
-(function(){const access=document.querySelector("#courseAccess"), fields=document.querySelector("#coursePricingFields");if(!access||!fields)return;const sync=()=>{fields.hidden=access.value!=="paid";};access.addEventListener("change",sync);new MutationObserver(sync).observe(access,{attributes:true});document.addEventListener("click",()=>queueMicrotask(sync));sync();})();
+(function(){const access=document.querySelector("#courseAccess"), fields=document.querySelector("#coursePricingFields");if(!access||!fields)return;const sync=()=>{fields.hidden=access.value!=="paid";};access.addEventListener("change",sync);new MutationObserver(sync).observe(access,{attributes:true});document.addEventListener("click",()=>queueMicrotask(syncCoursePricing));syncCoursePricing();})();
+
+document.querySelector("#coursePrice")?.addEventListener("input", syncCoursePricing);
+document.querySelector("#courseAccess")?.addEventListener("change", syncCoursePricing);
