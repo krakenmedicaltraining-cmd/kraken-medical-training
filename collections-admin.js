@@ -3,7 +3,7 @@
 const $ = id => document.getElementById(id);
 const msg = (text, error=false) => { $("message").textContent=text; $("message").className="status"+(error?" error":""); };
 const escapeHTML = value => String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const client = window.supabaseClient;
+const client = typeof supabaseClient !== "undefined" ? supabaseClient : null;
 let courses=[], collections=[], selected=new Set(), currentId=null, savedSlug=null;
 const slugify = text => text.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 function drawCourses(){
