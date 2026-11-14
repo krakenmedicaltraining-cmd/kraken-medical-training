@@ -1,7 +1,7 @@
 "use strict";
 
-async function getCourseEngineBundle(courseId) {
-  const course = await getCourseOnline(courseId);
+async function getCourseEngineBundle(courseId, preloadedCourse = null) {
+  const course = preloadedCourse || await getCourseOnline(courseId);
   if (!course) return null;
 
   const [lessonsResult, downloadsResult, certificateResult] = await Promise.allSettled([
