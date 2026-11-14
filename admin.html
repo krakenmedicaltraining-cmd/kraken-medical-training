@@ -97,7 +97,7 @@
           <label class="kb-field"><span>Status</span><select id="courseStatus"><option>Draft</option><option>Published</option><option>Coming soon</option></select></label>
           <label class="kb-field"><span>Access</span><select id="courseAccess"><option value="public">Public</option><option value="login">Login required</option><option value="invite">Invite only</option><option value="paid">Paid course</option></select></label>
         </div>
-        <div id="coursePricingFields" class="kb-grid-2" hidden style="margin-top:14px"><label class="kb-field"><span>Course price (£ GBP)</span><input id="coursePrice" type="number" min="0.50" max="99999" step="0.01" value="14.99"></label><div style="align-self:center"><div id="courseStripeStatus" role="status" aria-live="polite">Stripe price not connected</div><small>Prices are created securely by Kraken Payments. Saving a different price requires a new Stripe Price ID.</small></div></div>
+        <div id="coursePricingFields" class="kb-grid-2" hidden style="margin-top:14px"><label class="kb-field"><span>Course price (£ GBP)</span><input id="coursePrice" type="number" min="0.50" max="99999" step="0.01" value="14.99"></label><div style="align-self:center"><div id="courseStripeStatus" role="status" aria-live="polite">Stripe price not connected</div><button type="button" class="kb-primary" id="createStripePrice" style="margin-top:10px">Save Draft &amp; Create Stripe Price</button><small>Prices are created securely by Kraken Payments. Saving a different price requires a new Stripe Price ID.</small></div></div>
       </section>
 
       <section class="kb-tab" data-panel="lessons">
@@ -163,7 +163,7 @@
 <script src="supabase-config.js"></script>
 <script src="data.js?v=20261114-pricing1"></script>
 <script src="common.js"></script>
-<script src="admin-v12-5.js?v=20261114-pricing1"></script>
+<script src="admin-v12-5.js?v=20261114-pricing2"></script>
 <script src="csv-course-import.js"></script>
   <script src="admin-nav.js"></script>
 </body>
