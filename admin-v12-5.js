@@ -325,6 +325,8 @@ function coursePayload() {
     certificate_enabled: checked("#certificateEnabled"), require_all_blocks: checked("#requireAllBlocks"),
     simulation_url: value("#courseSimulationUrl"), pass_mark: Number(value("#coursePassMark") || 80),
     access_type: value("#courseAccess") || "public",
+    price_pence: Math.round(Number(value("#coursePrice") || 0) * 100),
+    currency: "gbp",
     prerequisite_course_id: value("#coursePrerequisite") || null,
     max_quiz_attempts: value("#maxQuizAttempts") ? Number(value("#maxQuizAttempts")) : null,
     quiz_time_limit: value("#quizTimeLimit") ? Number(value("#quizTimeLimit")) : null,
@@ -372,7 +374,7 @@ async function editCourse(id) {
     "#downloadsEnabled":c.downloads_enabled !== false,"#reflectionEnabled":c.reflection_enabled,
     "#certificateEnabled":c.certificate_enabled !== false,"#requireAllBlocks":c.require_all_blocks !== false,
     "#courseSimulationUrl":c.simulation_url,"#coursePassMark":c.pass_mark || 80,
-    "#courseAccess":c.access_type || "public","#coursePrerequisite":c.prerequisite_course_id,
+    "#courseAccess":c.access_type || "public","#coursePrice":(Number(c.price_pence || 0)/100).toFixed(2),"#coursePrerequisite":c.prerequisite_course_id,
     "#maxQuizAttempts":c.max_quiz_attempts,"#quizTimeLimit":c.quiz_time_limit
   };
   Object.entries(map).forEach(([id, v]) => setField(id, v));
@@ -387,7 +389,7 @@ async function editCourse(id) {
 
 function resetForm() {
   form.reset(); editingId.value = ""; lessons = [];
-  setField("#courseXp", 200); setField("#coursePassMark", 80);
+  setField("#courseXp", 200); setField("#coursePassMark", 80); setField("#coursePrice", 0);
   setField("#downloadsEnabled", true); setField("#certificateEnabled", true); setField("#requireAllBlocks", true);
   $("#formEyebrow").textContent = "New course"; $("#formTitle").textContent = "Course details";
   $("#cancelEdit").hidden = true; $("#duplicateButton").hidden = true; $("#deleteEditingButton").hidden = true;
@@ -524,6 +526,8 @@ async function submitCourse() {
     const payload = coursePayload();
     if (!payload.title) throw new Error("Add a course title.");
     if (!payload.description) throw new Error("Add a course description.");
+    if (!Number.isSafeInteger(payload.price_pence) || payload.price_pence < 0) throw new Error("Enter a valid course price.");
+    if (payload.access_type === "paid" && payload.price_pence <= 0) throw new Error("Paid courses need a price greater than £0.");
     if (!lessons.length && payload.status === "Published" && !confirm("Publish this course without any lessons?")) return;
     const saved = await saveCourseOnline(payload);
     await saveLessons(saved.id);
