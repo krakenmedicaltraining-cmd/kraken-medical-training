@@ -95,8 +95,9 @@
         <div class="kb-grid-3">
           <label class="kb-field"><span>Icon or initials</span><input id="courseIcon" maxlength="5" placeholder="MP"></label>
           <label class="kb-field"><span>Status</span><select id="courseStatus"><option>Draft</option><option>Published</option><option>Coming soon</option></select></label>
-          <label class="kb-field"><span>Access</span><select id="courseAccess"><option value="public">Public</option><option value="login">Login required</option><option value="invite">Invite only</option></select></label>
+          <label class="kb-field"><span>Access</span><select id="courseAccess"><option value="public">Public</option><option value="login">Login required</option><option value="invite">Invite only</option><option value="paid">Paid course</option></select></label>
         </div>
+        <div class="kb-grid-2"><label class="kb-field"><span>Course price (£)</span><input id="coursePrice" type="number" min="0" step="0.01" value="0" placeholder="14.99"></label><div class="kb-field"><span>Stripe price</span><p class="help-text">Saving the course does not create a Stripe price. Paid courses need a valid Stripe price configured separately before customers can purchase.</p></div></div>
       </section>
 
       <section class="kb-tab" data-panel="lessons">
