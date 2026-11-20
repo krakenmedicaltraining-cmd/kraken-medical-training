@@ -28,7 +28,7 @@
       if (table === "in_person_courses") {
         query = query.eq("status", "Published");
       } else {
-        query = query.eq("is_published", true);
+        query = query.eq("status", "Published");
       }
 
       const { data, error } = await query;
