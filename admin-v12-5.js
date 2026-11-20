@@ -519,6 +519,26 @@ function updateMobileBar() {
   $("#mobileCourseName").textContent = value("#courseTitle") || "New course";
 }
 
+// The Worker owns Stripe secrets and validates administrator permissions.
+const KRAKEN_PAYMENTS_URL = "https://kraken-payments.krakenmedicaltraining.workers.dev";
+async function syncCoursePriceWithStripe(courseId) {
+  const session = await getCurrentSession();
+  if (!session?.access_token) throw new Error("Sign in again to configure Stripe pricing.");
+  const response = await fetch(KRAKEN_PAYMENTS_URL + "/api/admin/create-course-price", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + session.access_token
+    },
+    body: JSON.stringify({ course_id: courseId })
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || !data.success) {
+    throw new Error(data.error || "Stripe price synchronisation failed");
+  }
+  return data;
+}
+
 async function submitCourse() {
   const button = $("#saveButton"), mobile = $("#mobileSaveButton");
   button.disabled = mobile.disabled = true; button.textContent = "Saving…"; mobile.textContent = "Saving…";
@@ -529,8 +549,23 @@ async function submitCourse() {
     if (!Number.isSafeInteger(payload.price_pence) || payload.price_pence < 0) throw new Error("Enter a valid course price.");
     if (payload.access_type === "paid" && payload.price_pence <= 0) throw new Error("Paid courses need a price greater than £0.");
     if (!lessons.length && payload.status === "Published" && !confirm("Publish this course without any lessons?")) return;
+    const original = courses.find(c => c.id === payload.id);
+    if (payload.access_type === "paid" && payload.status !== "Draft" &&
+        (!original?.stripe_price_id || Number(original.price_pence) !== payload.price_pence)) {
+      throw new Error("Set this course to Draft, save to sync its Stripe price, then publish it.");
+    }
     const saved = await saveCourseOnline(payload);
     await saveLessons(saved.id);
+    if (payload.access_type === "paid" && payload.status === "Draft") {
+      try {
+        await syncCoursePriceWithStripe(saved.id);
+        showToast("Course saved and Stripe price synchronised");
+      } catch (syncError) {
+        await loadCourses();
+        throw new Error("Course saved, but Stripe pricing is NOT ready: " + syncError.message +
+          ". Leave it as Draft and try saving again.");
+      }
+    }
     localStorage.removeItem(DRAFT_KEY);
     showToast("Course and lessons saved");
     resetForm();
