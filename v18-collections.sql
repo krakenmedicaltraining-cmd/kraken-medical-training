@@ -15,7 +15,7 @@ create table if not exists public.course_collections (
 );
 create table if not exists public.course_collection_items (
  collection_id uuid not null references public.course_collections(id) on delete cascade,
- course_id uuid not null references public.courses(id) on delete restrict,
+ course_id text not null references public.courses(id) on delete restrict,
  position integer not null default 0,
  primary key (collection_id, course_id)
 );
