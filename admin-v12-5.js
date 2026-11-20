@@ -550,20 +550,35 @@ async function submitCourse() {
     if (payload.access_type === "paid" && payload.price_pence <= 0) throw new Error("Paid courses need a price greater than £0.");
     if (!lessons.length && payload.status === "Published" && !confirm("Publish this course without any lessons?")) return;
     const original = courses.find(c => c.id === payload.id);
-    if (payload.access_type === "paid" && payload.status !== "Draft" &&
-        (!original?.stripe_price_id || Number(original.price_pence) !== payload.price_pence)) {
-      throw new Error("Set this course to Draft, save to sync its Stripe price, then publish it.");
-    }
-    const saved = await saveCourseOnline(payload);
+    const paid = payload.access_type === "paid";
+    const needsSync = paid && (
+      !original?.stripe_price_id ||
+      Number(original.price_pence) !== payload.price_pence ||
+      original.access_type !== "paid"
+    );
+    const requestedStatus = payload.status;
+    // Never leave a newly repriced course published with an old Stripe price.
+    const saved = await saveCourseOnline(
+      needsSync ? { ...payload, status: "Draft" } : payload
+    );
     await saveLessons(saved.id);
-    if (payload.access_type === "paid" && payload.status === "Draft") {
+    if (needsSync) {
       try {
         await syncCoursePriceWithStripe(saved.id);
-        showToast("Course saved and Stripe price synchronised");
+        if (requestedStatus !== "Draft") {
+          const { error: publishError } = await supabaseClient
+            .from("courses")
+            .update({ status: requestedStatus })
+            .eq("id", saved.id);
+          if (publishError) throw publishError;
+        }
+        showToast("Course price synchronised with Stripe");
       } catch (syncError) {
         await loadCourses();
-        throw new Error("Course saved, but Stripe pricing is NOT ready: " + syncError.message +
-          ". Leave it as Draft and try saving again.");
+        throw new Error(
+          "Course saved as Draft because Stripe pricing could not be confirmed: " +
+          syncError.message + ". Check the Stripe connection and retry."
+        );
       }
     }
     localStorage.removeItem(DRAFT_KEY);
