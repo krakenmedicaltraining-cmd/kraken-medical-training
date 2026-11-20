@@ -613,11 +613,13 @@ async function initialisePlayer() {
 
     if (!access.ok) {
       const signedIn = Boolean(playerState.session?.user);
+      if (course.access_type === "paid" && signedIn) {
+        return showPaidCourseCheckout(course, access.reason);
+      }
       return showError(
         "Course locked",
-        access.reason ||
-          "You do not currently have access to this course.",
-        signedIn ? `courses.html` : "student-login.html",
+        access.reason || "You do not currently have access to this course.",
+        signedIn ? "courses.html" : "student-login.html",
         signedIn ? "Browse courses" : "Sign in"
       );
     }
@@ -1397,6 +1399,52 @@ async function renderProfile() {
   } catch (error) {
     console.warn(error);
   }
+}
+
+const KRAKEN_CHECKOUT_WORKER = "https://kraken-payments.krakenmedicaltraining.workers.dev";
+
+function showPaidCourseCheckout(course, reason) {
+  const amount = Number(course.price_pence);
+  const validPrice = Number.isSafeInteger(amount) && amount > 0;
+  const priceText = validPrice ? "£" + (amount / 100).toFixed(2) : "Price unavailable";
+  playerRoot.innerHTML = `
+    <section class="player-error">
+      <h1>Course locked</h1>
+      <p>${safe(reason || "An active purchase is required to access this course.")}</p>
+      <p><strong>${safe(priceText)}</strong></p>
+      <button class="player-button" id="repurchaseCourse" type="button"
+        ${validPrice ? "" : "disabled"}>Buy course</button>
+      <p id="repurchaseMessage" role="status" aria-live="polite"></p>
+      <p><a href="courses.html">Browse courses</a></p>
+    </section>
+  `;
+  const button = document.getElementById("repurchaseCourse");
+  button?.addEventListener("click", async () => {
+    button.disabled = true;
+    const message = document.getElementById("repurchaseMessage");
+    message.textContent = "Opening secure Stripe checkout…";
+    try {
+      const session = await getCurrentSession();
+      if (!session?.access_token) throw new Error("Please sign in again.");
+      const response = await fetch(KRAKEN_CHECKOUT_WORKER + "/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + session.access_token
+        },
+        body: JSON.stringify({ course_id: course.id })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.checkout_url ||
+          !/^https:\/\/checkout\.stripe\.com\//.test(result.checkout_url)) {
+        throw new Error(result.error || "Could not start checkout.");
+      }
+      window.location.assign(result.checkout_url);
+    } catch (error) {
+      message.textContent = error.message || "Checkout failed. Please try again.";
+      button.disabled = false;
+    }
+  });
 }
 
 function showError(
