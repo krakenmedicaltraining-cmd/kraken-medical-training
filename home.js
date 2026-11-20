@@ -472,12 +472,13 @@
         ? `style="background-image:linear-gradient(180deg,rgba(3,17,13,.05),rgba(3,17,13,.92)),url('${escapeHtml(coverImage)}')"`
         : "";
 
+      const isPaid = course.access_type === "paid" && Number(course.price_pence) > 0;
       const actionText =
         progress.completed
           ? "Review course"
           : progress.percent > 0
             ? "Continue course"
-            : "Start course";
+            : isPaid ? "View paid course" : "Start course";
 
       return `
         <article class="premium-course-card">
@@ -506,6 +507,8 @@
 
           <div class="premium-course-body">
             <p>${escapeHtml(description)}</p>
+
+            ${isPaid ? `<p class="premium-course-price"><strong>£${(Number(course.price_pence)/100).toFixed(2)}</strong></p>` : ""}
 
             <div class="premium-course-meta">
               <span>${escapeHtml(difficulty)}</span>
