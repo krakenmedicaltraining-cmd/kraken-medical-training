@@ -612,12 +612,13 @@ async function initialisePlayer() {
     const access = await canAccessCourse(course);
 
     if (!access.ok) {
+      const signedIn = Boolean(playerState.session?.user);
       return showError(
         "Course locked",
         access.reason ||
           "You do not currently have access to this course.",
-        "student-login.html",
-        "Sign in"
+        signedIn ? `courses.html` : "student-login.html",
+        signedIn ? "Browse courses" : "Sign in"
       );
     }
 
