@@ -604,20 +604,12 @@ async function initialisePlayer() {
     playerState.session =
       await getCurrentSession();
 
-    const bundle =
-      await getCourseEngineBundle(courseId);
-
-    if (!bundle) {
-      return showError(
-        "Course not found",
-        "This course may have been removed or is not available."
-      );
+    const course = await getCourseOnline(courseId);
+    if (!course) {
+      return showError("Course not found", "This course may have been removed or is not available.");
     }
 
-    const access =
-      typeof canAccessCourse === "function"
-        ? await canAccessCourse(bundle.course)
-        : { ok: true };
+    const access = await canAccessCourse(course);
 
     if (!access.ok) {
       return showError(
@@ -628,6 +620,9 @@ async function initialisePlayer() {
         "Sign in"
       );
     }
+
+    const bundle = await getCourseEngineBundle(courseId);
+    if (!bundle) return showError("Course unavailable", "Unable to load course lessons.");
 
     playerState.bundle = bundle;
 
