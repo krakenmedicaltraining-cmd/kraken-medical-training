@@ -1440,12 +1440,25 @@ function showPaidCourseCheckout(course, reason) {
       <h1>Course locked</h1>
       <p>${safe(reason || "An active purchase is required to access this course.")}</p>
       <p><strong>${safe(priceText)}</strong></p>
+      <button class="player-button" id="addCourseToBasket" type="button"
+        ${validPrice ? "" : "disabled"}>Add to basket</button>
       <button class="player-button" id="repurchaseCourse" type="button"
-        ${validPrice ? "" : "disabled"}>Buy course</button>
+        ${validPrice ? "" : "disabled"}>Buy now</button>
+      <p><a href="basket.html">View basket</a></p>
       <p id="repurchaseMessage" role="status" aria-live="polite"></p>
       <p><a href="courses.html">Browse courses</a></p>
     </section>
   `;
+  document.getElementById("addCourseToBasket")?.addEventListener("click", event => {
+    const button = event.currentTarget;
+    const message = document.getElementById("repurchaseMessage");
+    if (!window.KrakenBasket?.addCourse(course)) {
+      message.textContent = "Could not add this course to your basket.";
+      return;
+    }
+    button.textContent = "✓ Added to basket";
+    message.textContent = "Course added. You can keep browsing or view your basket.";
+  });
   const button = document.getElementById("repurchaseCourse");
   button?.addEventListener("click", async () => {
     button.disabled = true;
