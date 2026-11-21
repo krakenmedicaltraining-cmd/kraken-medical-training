@@ -298,9 +298,11 @@
 
     renderStudyCalendar(items);
     await renderPurchasedCourses(session.user.id, items);
+    if (typeof renderKrakenMembership === "function") {
+      renderKrakenMembership(session.user.id).catch(error => console.warn("Membership:", error));
+    }
     if (typeof renderKrakenPurchaseHistory === "function") {
-      renderKrakenMembership(session.user.id);
-    renderKrakenPurchaseHistory(session.user.id).catch(error => console.warn("Purchase history:", error));
+      renderKrakenPurchaseHistory(session.user.id).catch(error => console.warn("Purchase history:", error));
     }
 
     $("#welcome").textContent = `Welcome back, ${profile.display_name}`;
