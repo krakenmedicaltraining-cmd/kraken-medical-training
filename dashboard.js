@@ -214,17 +214,30 @@
     const mount = $("#purchasedCourses");
     if (!mount) return;
     try {
-      const [individual, grants] = await Promise.all([
+      // An enrolment or grant alone is not proof of a current paid entitlement.
+      const [individual, grants, collectionPurchases] = await Promise.all([
         supabaseClient.from("course_enrollments")
-          .select("course_id").eq("learner_id", userId),
+          .select("course_id,access_status,revoked_at")
+          .eq("learner_id", userId).eq("access_status", "active")
+          .is("revoked_at", null),
         supabaseClient.from("collection_enrollment_grants")
-          .select("course_id").eq("learner_id", userId)
+          .select("course_id,collection_purchase_id").eq("learner_id", userId),
+        supabaseClient.from("collection_purchases")
+          .select("id").eq("learner_id", userId).eq("status", "paid")
       ]);
       if (individual.error) throw individual.error;
       if (grants.error) throw grants.error;
+      if (collectionPurchases.error) throw collectionPurchases.error;
 
-      const ids = [...new Set([...(individual.data || []), ...(grants.data || [])]
-        .map(row => row.course_id).filter(Boolean))];
+      const paidCollectionIds = new Set(
+        (collectionPurchases.data || []).map(row => row.id)
+      );
+      const ids = [...new Set([
+        ...(individual.data || []).map(row => row.course_id),
+        ...(grants.data || [])
+          .filter(row => paidCollectionIds.has(row.collection_purchase_id))
+          .map(row => row.course_id)
+      ].filter(Boolean))];
       if (!ids.length) {
         mount.innerHTML = '<div class="empty-panel">No purchased courses yet. <a href="courses.html">Browse courses</a>.</div>';
         return;
