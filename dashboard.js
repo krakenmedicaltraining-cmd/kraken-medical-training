@@ -243,12 +243,14 @@
         const progress = progressById.get(course.id);
         const percent = progress?.completed ? 100 :
           Math.max(0, Math.min(100, Number(progress?.percent || 0)));
+        const status = progress?.completed ? "Completed" :
+          percent > 0 ? "Continue learning" : "Start course";
         return '<a class="card mission-course-card" href="course.html?id=' +
           encodeURIComponent(course.id) + '"><span class="card-icon">' +
           escape(course.icon || "K") + '</span><div class="mission-course-copy"><h3>' +
           escape(course.title) + '</h3><div class="progress-track"><span style="width:' +
           percent + '%"></span></div><strong>' + percent +
-          '% complete</strong></div></a>';
+          '% complete · ' + status + '</strong></div></a>';
       }).join("") || '<div class="empty-panel">No purchased courses available.</div>';
     } catch (error) {
       console.warn("Purchased courses:", error);
@@ -287,7 +289,16 @@
     $("#welcome").textContent = `Welcome back, ${profile.display_name}`;
     $("#xp").textContent = profile.xp || 0;
     $("#level").textContent = `Level ${Math.floor((profile.xp || 0) / 500) + 1}`;
-    const uniqueProgress = [...new Map([...items].reverse().map(item => [item.course_id, item])).values()];
+    const uniqueProgressMap = new Map();
+    for (const item of items) {
+      if (!item.course_id) continue;
+      const previous = uniqueProgressMap.get(item.course_id);
+      if (!previous || (item.completed && !previous.completed) ||
+          (!previous.completed && Number(item.percent || 0) > Number(previous.percent || 0))) {
+        uniqueProgressMap.set(item.course_id, item);
+      }
+    }
+    const uniqueProgress = [...uniqueProgressMap.values()];
     $("#completed").textContent = uniqueProgress.filter(item => item.completed).length;
     $("#active").textContent = uniqueProgress.filter(item => !item.completed).length;
 
