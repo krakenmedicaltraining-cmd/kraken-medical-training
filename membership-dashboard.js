@@ -24,6 +24,10 @@ async function renderKrakenMembership(userId) {
       '<p id="membershipBillingMessage" role="status" aria-live="polite"></p>';
     const button=document.getElementById("manageKrakenMembership");
     if(button)button.onclick=async()=>{
+      // Open synchronously from the click so browsers don't block the new tab
+      // while the authenticated billing portal request is in flight.
+      const portalTab=window.open("about:blank","_blank");
+      if(portalTab){portalTab.opener=null;portalTab.document.title="Opening Stripe billing…";}
       button.disabled=true;document.getElementById("membershipBillingMessage").textContent="Opening secure billing portal…";
       try{
         const {data:session,error:authError}=await supabaseClient.auth.getSession();
@@ -34,8 +38,9 @@ async function renderKrakenMembership(userId) {
         const payload=await response.json();
         if(!response.ok)throw Error(payload.error||"Billing portal unavailable");
         if(!/^https:\/\/billing\.stripe\.com\//.test(payload.url||""))throw Error("Unexpected billing URL");
-        window.location.assign(payload.url);
-      }catch(e){document.getElementById("membershipBillingMessage").textContent=e.message;button.disabled=false;}
+        if(portalTab && !portalTab.closed) portalTab.location.replace(payload.url);
+        else window.location.assign(payload.url);
+      }catch(e){if(portalTab && !portalTab.closed)portalTab.close();document.getElementById("membershipBillingMessage").textContent=e.message;button.disabled=false;}
     };
   }catch(e){mount.textContent="Membership details unavailable: "+e.message;}
 }
