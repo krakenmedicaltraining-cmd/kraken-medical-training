@@ -44,5 +44,16 @@ if(r.error)throw r.error;planId=r.data.id;
 current=planId;await refresh();status("Draft membership saved.");
 }catch(err){status("Could not save: "+err.message);}finally{$("mmSave").disabled=false;}
 };
+$("mmActivate").onclick=async()=>{
+if(!current){status("Save your membership draft first.");return;}
+if(!confirm("Create a monthly recurring Stripe TEST price and activate this membership?"))return;
+$("mmActivate").disabled=true;status("Connecting Stripe test price…");
+try{
+const auth=await supabaseClient.auth.getSession();
+const response=await fetch("https://kraken-payments.krakenmedicaltraining.workers.dev/api/admin/configure-membership",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+auth.data.session.access_token},body:"{}"});
+const body=await response.json();if(!response.ok)throw Error(body.error||"Unable to activate");
+await refresh();status("Stripe test membership activated.");
+}catch(e){status(e.message);}finally{$("mmActivate").disabled=false;}
+};
 await refresh();if(plans.length){$("mmList").querySelector("[data-id]")?.click();}else{reset();}status("All-access membership manager ready. Draft plans only.");
 })();
