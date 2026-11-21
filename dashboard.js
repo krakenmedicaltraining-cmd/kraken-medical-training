@@ -209,6 +209,41 @@
     await window.KrakenAchievements.showNextPopup();
   }
 
+  async function renderMyCollections(userId, progressItems) {
+    const mount = $("#myCollections");
+    if (!mount) return;
+    try {
+      const purchases = await supabaseClient.from("collection_purchases")
+        .select("collection_id,status")
+        .eq("learner_id", userId);
+      if (purchases.error) throw purchases.error;
+      const activeIds = [...new Set((purchases.data || [])
+        .filter(p => p.status === "paid").map(p => p.collection_id))];
+      if (!activeIds.length) {
+        mount.innerHTML = '<div class="empty-panel">No active purchased collections yet. <a href="collections.html">Explore collections</a>.</div>';
+        return;
+      }
+      const collections = await supabaseClient.from("course_collections")
+        .select("id,title,course_collection_items(course_id)")
+        .in("id", activeIds);
+      if (collections.error) throw collections.error;
+      mount.innerHTML = (collections.data || []).map(item => {
+        const ids = [...new Set((item.course_collection_items || []).map(x => x.course_id))];
+        const completed = ids.filter(id => progressItems.some(p => p.course_id === id && p.completed)).length;
+        const percent = ids.length ? Math.round(completed * 100 / ids.length) : 0;
+        return '<article class="mission-collection-card"><span class="eyebrow">PURCHASED COLLECTION</span><h3>' +
+          escape(item.title) + '</h3><p>' + completed + ' of ' + ids.length +
+          ' courses completed</p><div class="mission-collection-track"><span style="width:' +
+          percent + '%"></span></div><p>' + percent +
+          '% complete</p><a href="collection.html?id=' + encodeURIComponent(item.id) +
+          '">View collection →</a></article>';
+      }).join("") || '<div class="empty-panel">Your purchased collections are not available.</div>';
+    } catch (error) {
+      console.warn("My Collections:", error);
+      mount.textContent = "Unable to load purchased collections. Please refresh or check your account permissions.";
+    }
+  }
+
   async function load() {
     const session = await getCurrentSession();
 
@@ -235,6 +270,7 @@
     }
 
     renderStudyCalendar(items);
+    await renderMyCollections(session.user.id, items);
 
     $("#welcome").textContent = `Welcome back, ${profile.display_name}`;
     $("#xp").textContent = profile.xp || 0;
