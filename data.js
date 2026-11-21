@@ -287,6 +287,7 @@ async function canAccessCourse(course) {
       .eq("learner_id",session.user.id)
       .eq("course_id",course.id)
       .eq("access_status","active")
+      .is("revoked_at",null)
       .limit(1);
     if (error) throw error;
     if (!enrolments?.length) {
