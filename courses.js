@@ -6,12 +6,8 @@ const norm=v=>String(v??"").trim();
 async function loadCourses(){
   const grid=document.querySelector("#courseGrid");
   try{
-    let courses=[];
-    if(typeof getPublicCoursesOnline==="function") courses=await getPublicCoursesOnline();
-    else if(window.supabaseClient){
-      const {data,error}=await supabaseClient.from("courses").select("*").or("status.eq.published,published.eq.true").order("created_at",{ascending:false});
-      if(error) throw error; courses=data||[];
-    }
+    if(typeof getPublicCoursesOnline!=="function") throw new Error("Course catalogue service unavailable.");
+    const courses=await getPublicCoursesOnline();
     state.courses=Array.isArray(courses)?courses:[];
     buildCategories(); applyUrlFilter(); render(); renderAccount();
   }catch(error){console.error(error);grid.innerHTML=`<div class="catalogue-empty"><strong>Courses could not be loaded.</strong><br>${esc(error.message||"Please try again shortly.")}</div>`;}
