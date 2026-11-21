@@ -117,6 +117,52 @@ async function requireAdmin() {
   return session;
 }
 
+// Private course files: use these helpers for new protected resources.
+// Keep legacy public uploads unchanged until existing links have been migrated.
+const KMT_PRIVATE_COURSE_BUCKET = "protected-course-files";
+
+function kmtPrivateCoursePath(courseId, fileName) {
+  const id = String(courseId || "").trim();
+  if (!/^[a-zA-Z0-9_-]+$/.test(id)) throw new Error("Invalid course ID");
+  const name = String(fileName || "resource")
+    .toLowerCase().replace(/[^a-z0-9._-]+/g, "-").replace(/^-+|-+$/g, "");
+  return id + "/" + Date.now() + "-" + (name || "resource");
+}
+
+async function uploadProtectedCourseFile(file, courseId) {
+  if (!file) return null;
+  const session = await getCurrentSession();
+  if (!session) throw new Error("Sign in before uploading course files.");
+  const path = kmtPrivateCoursePath(courseId, file.name);
+  const { error } = await supabaseClient.storage
+    .from(KMT_PRIVATE_COURSE_BUCKET)
+    .upload(path, file, {
+      cacheControl: "60",
+      upsert: false,
+      contentType: file.type || undefined
+    });
+  if (error) throw error;
+  // Store this reference in course content, not a signed URL (which expires).
+  return { bucket: KMT_PRIVATE_COURSE_BUCKET, path };
+}
+
+async function getProtectedCourseFileUrl(courseId, path, expiresIn = 60) {
+  const session = await getCurrentSession();
+  if (!session) throw new Error("Sign in to access this course resource.");
+  const id = String(courseId || "");
+  if (!/^[a-zA-Z0-9_-]+$/.test(id) ||
+      !String(path || "").startsWith(id + "/") ||
+      String(path).split("/").some(part => part === "..")) {
+    throw new Error("Invalid protected course file path.");
+  }
+  // Supabase Storage RLS enforces entitlement when creating the signed URL.
+  const { data, error } = await supabaseClient.storage
+    .from(KMT_PRIVATE_COURSE_BUCKET)
+    .createSignedUrl(path, Math.max(1, Math.min(60, Number(expiresIn) || 60)));
+  if (error) throw error;
+  return data.signedUrl;
+}
+
 async function uploadCourseFile(file, courseId) {
   if (!file) return null;
 
