@@ -187,7 +187,8 @@ function blockEditor(block, lessonIndex, blockIndex) {
         Show this simulation in Kraken Sim
       </label>`;
   } else {
-    body = `${commonTitle}<input type="url" data-block-key="url" value="${esc(block.url)}" placeholder="https://...">
+    body = `${commonTitle}<input type="text" data-block-key="url" value="${esc(block.url)}" placeholder="https://... or kmt-private://course-id/file">
+      ${["image","download"].includes(type) ? '<label class="kb-field"><span>Upload protected file</span><input type="file" data-private-upload accept="'+(type==="image"?"image/*":".pdf,.doc,.docx,.ppt,.pptx,.zip,image/*") +'"></label><small>Private uploads require a saved course ID. Signed links are generated for authorised learners.</small>' : ""}
       <input data-block-key="caption" value="${esc(block.caption)}" placeholder="Caption or description">`;
   }
 
@@ -263,6 +264,29 @@ function renderLessons() {
     $$("[data-add-block]", card).forEach(b => b.onclick = () => addBlock(li, b.dataset.addBlock));
     $$("[data-block]", card).forEach(blockEl => {
       const bi = +blockEl.dataset.block;
+      const uploadInput = blockEl.querySelector("[data-private-upload]");
+      if (uploadInput) uploadInput.onchange = async () => {
+        const file = uploadInput.files?.[0];
+        if (!file) return;
+        const id = editingId.value;
+        if (!id) {
+          alert("Save this course first, then upload its protected files.");
+          uploadInput.value = "";
+          return;
+        }
+        uploadInput.disabled = true;
+        try {
+          const result = await uploadProtectedCourseFile(file, id);
+          lessons[li].blocks[bi].url = "kmt-private://" + result.path;
+          scheduleDraft();
+          renderLessons();
+          alert("Protected file uploaded. Save the course to retain its reference.");
+        } catch (error) {
+          alert("Private upload failed: " + error.message);
+          uploadInput.disabled = false;
+        }
+      };
+
       $$("[data-block-key]", blockEl).forEach(input => {
         const updateBlockValue = () => {
           const key = input.dataset.blockKey;
