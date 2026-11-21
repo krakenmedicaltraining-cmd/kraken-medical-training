@@ -209,38 +209,50 @@
     await window.KrakenAchievements.showNextPopup();
   }
 
-  async function renderMyCollections(userId, progressItems) {
-    const mount = $("#myCollections");
+  // Show each paid course once, even if multiple purchases or bundles grant access.
+  async function renderPurchasedCourses(userId, progressItems) {
+    const mount = $("#purchasedCourses");
     if (!mount) return;
     try {
-      const purchases = await supabaseClient.from("collection_purchases")
-        .select("collection_id,status")
-        .eq("learner_id", userId);
-      if (purchases.error) throw purchases.error;
-      const activeIds = [...new Set((purchases.data || [])
-        .filter(p => p.status === "paid").map(p => p.collection_id))];
-      if (!activeIds.length) {
-        mount.innerHTML = '<div class="empty-panel">No active purchased collections yet. <a href="collections.html">Explore collections</a>.</div>';
+      const [individual, grants] = await Promise.all([
+        supabaseClient.from("course_enrollments")
+          .select("course_id").eq("learner_id", userId),
+        supabaseClient.from("collection_enrollment_grants")
+          .select("course_id").eq("learner_id", userId)
+      ]);
+      if (individual.error) throw individual.error;
+      if (grants.error) throw grants.error;
+
+      const ids = [...new Set([...(individual.data || []), ...(grants.data || [])]
+        .map(row => row.course_id).filter(Boolean))];
+      if (!ids.length) {
+        mount.innerHTML = '<div class="empty-panel">No purchased courses yet. <a href="courses.html">Browse courses</a>.</div>';
         return;
       }
-      const collections = await supabaseClient.from("course_collections")
-        .select("id,title,course_collection_items(course_id)")
-        .in("id", activeIds);
-      if (collections.error) throw collections.error;
-      mount.innerHTML = (collections.data || []).map(item => {
-        const ids = [...new Set((item.course_collection_items || []).map(x => x.course_id))];
-        const completed = ids.filter(id => progressItems.some(p => p.course_id === id && p.completed)).length;
-        const percent = ids.length ? Math.round(completed * 100 / ids.length) : 0;
-        return '<article class="mission-collection-card"><span class="eyebrow">PURCHASED COLLECTION</span><h3>' +
-          escape(item.title) + '</h3><p>' + completed + ' of ' + ids.length +
-          ' courses completed</p><div class="mission-collection-track"><span style="width:' +
-          percent + '%"></span></div><p>' + percent +
-          '% complete</p><a href="collection.html?id=' + encodeURIComponent(item.id) +
-          '">View collection →</a></article>';
-      }).join("") || '<div class="empty-panel">Your purchased collections are not available.</div>';
+      const courses = await supabaseClient.from("courses")
+        .select("id,title,icon").in("id", ids);
+      if (courses.error) throw courses.error;
+      const progressById = new Map();
+      for (const item of progressItems) {
+        if (!progressById.has(item.course_id) ||
+            Number(item.percent || 0) > Number(progressById.get(item.course_id).percent || 0)) {
+          progressById.set(item.course_id, item);
+        }
+      }
+      mount.innerHTML = (courses.data || []).map(course => {
+        const progress = progressById.get(course.id);
+        const percent = progress?.completed ? 100 :
+          Math.max(0, Math.min(100, Number(progress?.percent || 0)));
+        return '<a class="card mission-course-card" href="course.html?id=' +
+          encodeURIComponent(course.id) + '"><span class="card-icon">' +
+          escape(course.icon || "K") + '</span><div class="mission-course-copy"><h3>' +
+          escape(course.title) + '</h3><div class="progress-track"><span style="width:' +
+          percent + '%"></span></div><strong>' + percent +
+          '% complete</strong></div></a>';
+      }).join("") || '<div class="empty-panel">No purchased courses available.</div>';
     } catch (error) {
-      console.warn("My Collections:", error);
-      mount.textContent = "Unable to load purchased collections. Please refresh or check your account permissions.";
+      console.warn("Purchased courses:", error);
+      mount.textContent = "Unable to verify purchased courses. Please check account permissions.";
     }
   }
 
@@ -270,16 +282,17 @@
     }
 
     renderStudyCalendar(items);
-    await renderMyCollections(session.user.id, items);
+    await renderPurchasedCourses(session.user.id, items);
 
     $("#welcome").textContent = `Welcome back, ${profile.display_name}`;
     $("#xp").textContent = profile.xp || 0;
     $("#level").textContent = `Level ${Math.floor((profile.xp || 0) / 500) + 1}`;
-    $("#completed").textContent = items.filter(item => item.completed).length;
-    $("#active").textContent = items.filter(item => !item.completed).length;
+    const uniqueProgress = [...new Map([...items].reverse().map(item => [item.course_id, item])).values()];
+    $("#completed").textContent = uniqueProgress.filter(item => item.completed).length;
+    $("#active").textContent = uniqueProgress.filter(item => !item.completed).length;
 
-    $("#courses").innerHTML = items.length
-      ? items.map(item => `
+    $("#courses").innerHTML = uniqueProgress.length
+      ? uniqueProgress.map(item => `
           <a class="card mission-course-card"
             href="course.html?id=${encodeURIComponent(item.course_id)}">
             <span class="card-icon">${escape(item.courses?.icon || "K")}</span>
