@@ -340,3 +340,85 @@
     align-items:flex-start !important;
   }
 }
+
+/* Purchased courses: compact, responsive cards rather than full-width rows */
+#purchasedCourses.course-grid{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:18px !important;
+  width:100% !important;
+  align-items:stretch;
+}
+#purchasedCourses .mission-course-card{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  gap:14px !important;
+  box-sizing:border-box;
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  min-height:220px;
+  padding:22px !important;
+  margin:0 !important;
+  border:1px solid #d7e5df !important;
+  border-radius:18px !important;
+  background:#fff !important;
+  box-shadow:0 10px 28px rgba(7,27,36,.06);
+  text-decoration:none !important;
+  overflow:hidden;
+}
+#purchasedCourses .mission-course-card:hover{
+  border-color:#20a994 !important;
+  box-shadow:0 15px 32px rgba(7,27,36,.1);
+  transform:translateY(-2px);
+}
+#purchasedCourses .card-icon{
+  display:grid !important;
+  place-items:center !important;
+  flex:none !important;
+  width:52px !important;
+  height:52px !important;
+  padding:0 !important;
+  margin:0 !important;
+  border-radius:14px !important;
+  background:#e7f6f1 !important;
+  color:#087d70 !important;
+  font-size:.9rem !important;
+  font-weight:900 !important;
+}
+#purchasedCourses .mission-course-copy{
+  display:flex;
+  flex:1;
+  flex-direction:column;
+  justify-content:space-between;
+  gap:12px;
+  width:100%;
+  min-width:0;
+}
+#purchasedCourses .mission-course-copy h3{
+  margin:0 !important;
+  color:#102b35 !important;
+  font-size:1.04rem !important;
+  line-height:1.4 !important;
+  overflow-wrap:anywhere;
+}
+#purchasedCourses .progress-track{
+  width:100% !important;
+  max-width:100% !important;
+  height:9px !important;
+  border-radius:99px;
+  overflow:hidden;
+}
+#purchasedCourses .mission-course-copy strong{
+  color:#315b57 !important;
+  font-size:.8rem;
+}
+@media(max-width:1050px){
+  #purchasedCourses.course-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
+}
+@media(max-width:700px){
+  #purchasedCourses.course-grid{grid-template-columns:1fr !important;}
+  #purchasedCourses .mission-course-card{min-height:190px;}
+  #purchasedCoursesSection .section-head{align-items:flex-start;gap:14px;flex-wrap:wrap;}
+}
