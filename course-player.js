@@ -592,6 +592,27 @@ function restoreReflectionAnswers() {
     });
 }
 
+// Resolve private references only after the course entitlement check.
+async function resolvePrivateCourseMedia(bundle) {
+  const cache = new Map();
+  const resolve = async value => {
+    if (typeof value !== "string" || !value.startsWith("kmt-private://")) return value;
+    const path = value.slice("kmt-private://".length);
+    if (!cache.has(path)) cache.set(path, getProtectedCourseFileUrl(courseId, path, 60));
+    return cache.get(path);
+  };
+  const keys = ["url","file_url","image_url","video_url","audio_url","podcast_url"];
+  for (const lesson of bundle.lessons || []) {
+    for (const block of lesson.blocks || []) {
+      for (const key of keys) if (block[key]) block[key] = await resolve(block[key]);
+    }
+  }
+  for (const resource of bundle.resources || []) {
+    for (const key of keys) if (resource[key]) resource[key] = await resolve(resource[key]);
+  }
+  return bundle;
+}
+
 async function initialisePlayer() {
   if (!courseId) {
     return showError(
@@ -634,7 +655,7 @@ async function initialisePlayer() {
     const bundle = await getCourseEngineBundle(courseId);
     if (!bundle) return showError("Course unavailable", "Unable to load course lessons.");
 
-    playerState.bundle = bundle;
+    playerState.bundle = await resolvePrivateCourseMedia(bundle);
 
     const progressRows =
       await getLessonProgressV12(courseId);
