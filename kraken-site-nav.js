@@ -122,6 +122,7 @@
             <a class="ksn-link ${isActive("index.html") ? "active" : ""}" href="index.html">Home</a>
 
             ${buildMegaMenu("CPD Courses", "courses.html", cpdCategories, false)}
+            <a class="ksn-link ${isActive("collections.html", "collection.html") ? "active" : ""}" href="collections.html">Collections</a>
             ${buildMegaMenu("In-Person Training", "in-person-training.html", physicalCategories, true)}
 
             <a class="ksn-link ${isActive("instructor-tools.html") ? "active" : ""}" href="instructor-tools.html">Instructor tools</a>
