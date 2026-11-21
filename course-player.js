@@ -604,7 +604,14 @@ async function initialisePlayer() {
     playerState.session =
       await getCurrentSession();
 
-    const course = await getCourseOnline(courseId);
+    // Read only public metadata until access has been checked.
+    // Never download paid lessons/content_blocks merely to render a locked page.
+    const { data: course, error: catalogueError } = await supabaseClient
+      .from("public_course_catalogue")
+      .select("*")
+      .eq("id", courseId)
+      .maybeSingle();
+    if (catalogueError) throw catalogueError;
     if (!course) {
       return showError("Course not found", "This course may have been removed or is not available.");
     }
