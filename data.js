@@ -335,6 +335,10 @@ async function canAccessCourse(course) {
       .is("revoked_at",null)
       .limit(1);
     if (error) throw error;
+    if (!enrolments?.length && course.access_type === "paid") {
+      const member = await supabaseClient.rpc("kraken_has_all_access");
+      if (!member.error && member.data === true) return {ok:true};
+    }
     if (!enrolments?.length) {
       return {ok:false,reason:course.access_type === "paid"
         ? "This paid course requires an active purchase. If you were refunded, access has ended."
