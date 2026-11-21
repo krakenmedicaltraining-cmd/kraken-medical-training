@@ -292,25 +292,6 @@
           ? "Continue course"
           : "Start course";
 
-    $("#heroFeaturedIcon").textContent =
-      safeText(course.icon, title.slice(0, 1))
-        .slice(0, 3)
-        .toUpperCase();
-
-    $("#heroFeaturedCategory").textContent = category;
-    $("#heroFeaturedTitle").textContent = title;
-    $("#heroFeaturedDescription").textContent = description;
-    $("#heroFeaturedTime").textContent = estimatedTime;
-    $("#heroProgress").style.width = `${progress.percent}%`;
-
-    $("#heroProgressText").textContent =
-      progress.lessonCount
-        ? `${progress.completedCount} of ${progress.lessonCount} lessons`
-        : `${progress.percent}% complete`;
-
-    $("#heroFeaturedButton").href = url;
-    $("#heroMissionButton").href = url;
-
     const coverImage =
       safeText(
         course.cover_image_url ||
