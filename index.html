@@ -38,6 +38,7 @@
   <link rel="stylesheet" href="kraken-public.css">
   <link rel="stylesheet" href="collections-public.css">
   <link rel="stylesheet" href="v16-4-news.css">
+  <link rel="stylesheet" href="home-membership.css">
 </head>
 
 <body class="stream-home kraken-public-page kraken-home-page">
@@ -129,27 +130,21 @@
           </div>
         </div>
 
-        <aside class="stream-mission-card">
+        <aside class="stream-mission-card stream-membership-card" aria-label="Kraken monthly membership">
           <div class="stream-mission-top">
             <span class="stream-status-dot"></span>
-            <span>ACTIVE MISSION</span>
+            <span>ALL ACCESS MEMBERSHIP</span>
           </div>
-
-          <div class="stream-mission-symbol" id="heroFeaturedIcon">K</div>
+          <div class="stream-mission-symbol" aria-hidden="true">K</div>
           <div>
-            <span class="stream-card-label" id="heroFeaturedCategory">Featured course</span>
-            <h2 id="heroFeaturedTitle">Kraken training</h2>
-            <p id="heroFeaturedDescription">Choose a featured course from the Course Builder.</p>
+            <span class="stream-card-label">UNLIMITED ONLINE LEARNING</span>
+            <h2 id="homeMembershipName">Kraken All Access</h2>
+            <p>One monthly subscription unlocks all published online courses, quizzes and eligible digital resources.</p>
           </div>
-
-          <div class="stream-progress"><span id="heroProgress"></span></div>
-
-          <div class="stream-progress-meta">
-            <span id="heroProgressText">0% complete</span>
-            <span id="heroFeaturedTime">Self-paced</span>
-          </div>
-
-          <a class="stream-button primary full" id="heroMissionButton" href="courses.html">Open course</a>
+          <div class="home-membership-price" id="homeMembershipPrice" aria-live="polite">Loading monthly price…</div>
+          <p class="home-membership-note">Cancel anytime. In-person training bookings are separate.</p>
+          <a class="stream-button primary full" href="membership.html" id="homeMembershipButton">View membership &amp; subscribe</a>
+          <a class="home-membership-alternative" href="courses.html">Prefer a one-off course purchase?</a>
         </aside>
       </section>
 
@@ -447,6 +442,7 @@
   <script src="newsletter.js"></script>
   <script src="home-news.js"></script>
   <script src="home.js"></script>
+  <script src="home-membership.js"></script>
   <script src="collections-public.js"></script>
 </body>
 </html>
