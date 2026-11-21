@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="v16-home-routes.css">
   <link rel="stylesheet" href="kraken-site-nav.css">
   <link rel="stylesheet" href="kraken-public.css">
+  <link rel="stylesheet" href="collections-public.css">
   <link rel="stylesheet" href="v16-4-news.css">
 </head>
 
@@ -56,6 +57,7 @@
       <a class="active" href="index.html">⌂ <span>Home</span></a>
       <a href="#continue">▶ <span>Continue training</span></a>
       <a href="courses.html">▤ <span>CPD Courses</span></a>
+      <a href="collections.html">▦ <span>Collections</span></a>
       <a href="library.html">▧ <span>Field library</span></a>
       <a href="journal.html">☷ <span>Kraken News</span></a>
       <a href="games.html">◆ <span>Simulations</span></a>
@@ -340,7 +342,12 @@
       </section>
 
 
-      <section class="stream-content stream-dark-panel">
+      <section class="stream-content kc-section" id="collections">
+  <div class="kc-section-head"><div><span class="stream-eyebrow">SAVE WITH TRAINING BUNDLES</span><h2>Course Collections</h2><p>Explore curated groups of medical training courses.</p></div><a href="collections.html">View all collections →</a></div>
+  <div id="homeCollectionGrid" class="kc-grid" aria-live="polite"><p class="kc-empty">Loading collections…</p></div>
+</section>
+
+<section class="stream-content stream-dark-panel">
         <div class="stream-section-heading">
           <div>
             <span class="stream-eyebrow">SIMULATIONS</span>
@@ -440,5 +447,6 @@
   <script src="newsletter.js"></script>
   <script src="home-news.js"></script>
   <script src="home.js"></script>
+  <script src="collections-public.js"></script>
 </body>
 </html>
