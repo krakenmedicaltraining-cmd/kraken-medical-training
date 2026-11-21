@@ -1,10 +1,9 @@
 async function getPublicCoursesOnline() {
+  // Public listings must never request lessons or content_blocks.
   const { data, error } = await supabaseClient
-    .from("courses")
+    .from("public_course_catalogue")
     .select("*")
-    .eq("status", "Published")
     .order("updated_at", { ascending: false });
-
   if (error) throw error;
   return data || [];
 }
