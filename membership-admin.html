@@ -9,5 +9,5 @@
 <label>Monthly price (£)<input id="mmPrice" type="number" min="0.50" max="100000" step="0.01" required value="9.99"></label>
 <label>Description<textarea id="mmDescription" rows="3" placeholder="What's included?"></textarea></label>
 <h3>Membership benefits</h3><p>All published online courses are included automatically. No course-by-course selection needed.</p>
-<p>Active plans can be renamed here. Changing the monthly price requires a new Stripe recurring price; existing subscribers keep their current rate.</p><button type="submit" id="mmSave">Save membership</button> <button type="button" id="mmActivate">Connect Stripe & activate</button></form></section></div></main>
+<p>Active plans can be renamed and repriced here. A new Stripe recurring price applies to new subscribers only; existing subscribers keep their current rate.</p><button type="submit" id="mmSave">Save membership</button> <button type="button" id="mmActivate">Connect Stripe & activate</button></form></section></div></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="membership-admin.js"></script></body></html>
