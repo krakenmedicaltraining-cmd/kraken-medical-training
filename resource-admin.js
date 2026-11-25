@@ -51,7 +51,7 @@ async function removeResource(id) {
   const r = resources.find(item => item.id === id);
   if (!r || !confirm(`Delete "${r.title}" from the Kraken Library?`)) return;
   try {
-    await deleteResourceOnline(id);
+    if(r.storage_path || r.access_type !== "free"){throw Error("Protected resources must be unpublished rather than deleted.");} await deleteResourceOnline(id);
     showToast("Resource deleted");
     await loadResources();
   } catch (error) {
@@ -78,7 +78,7 @@ function renderResources() {
         <span class="tag">${escapeHtml(r.resource_type)} · ${escapeHtml(r.provider)}</span>
         <h3>${escapeHtml(r.title)}</h3>
         <p>${escapeHtml(r.description)}</p>
-        <small>${escapeHtml(r.category)}${r.is_public ? " · Public" : " · Private"}</small>
+        <small>${escapeHtml(r.category)}${(r.publication_status || "draft") + " · " + (r.access_type || "free") + (r.access_type === "paid" ? " · £" + ((r.price_pence || 0)/100).toFixed(2) : "")}</small>
       </div>
       <div class="admin-actions">
         <a class="small-button" href="${escapeHtml(resourcePreviewUrl(r))}" target="_blank" rel="noopener">Preview</a>
@@ -101,7 +101,7 @@ form.addEventListener("submit", async event => {
   $("#saveResource").disabled = true;
   $("#saveResource").textContent = "Saving…";
   try {
-    await saveResourceOnline(formResource());
+    await saveCommerceResource(formResource());
     showToast($("#resourceId").value ? "Resource updated" : "Resource added");
     resetResourceForm();
     await loadResources();
@@ -127,3 +127,35 @@ $("#resourceSearch").addEventListener("input", renderResources);
     form.hidden = true;
   }
 })();
+
+/* V23.3: resource commerce preparation. Paid files remain drafts until checkout is enabled. */
+const commerceFields = document.createElement("div");
+commerceFields.innerHTML = `<div class="field"><label for="resourceAccess">Access type</label><select id="resourceAccess"><option value="free">Free</option><option value="paid">Paid</option><option value="members_only">Members only</option></select></div>
+<div class="field"><label for="resourcePrice">Price (£)</label><input id="resourcePrice" type="number" min="0" step="0.01" value="0"></div>
+<div class="field"><label for="resourcePublication">Publication status</label><select id="resourcePublication"><option value="draft">Draft</option><option value="published">Published</option></select></div>
+<div class="field"><label for="resourceUpload">Private file (up to 50 MB)</label><input id="resourceUpload" type="file"><span id="resourceStored"></span><p>Protected uploads and paid resources must remain drafts until learner access is enabled.</p></div>`;
+$("#resourcePublic").closest("label").before(commerceFields);
+$("#resourcePublic").closest("label").hidden=true;
+$("#resourceUrl").required=false;
+const originalEditResource=editResource;
+editResource=function(id){originalEditResource(id);const r=resources.find(x=>x.id===id);if(!r)return;$("#resourceAccess").value=r.access_type||"free";$("#resourcePrice").value=(r.price_pence||0)/100;$("#resourcePublication").value=r.publication_status||"draft";$("#resourceUpload").value="";$("#resourceStored").textContent=r.storage_path?"Private file already stored":"";};
+const originalResetResourceForm=resetResourceForm;
+resetResourceForm=function(){originalResetResourceForm();$("#resourceStored").textContent="";};
+async function saveCommerceResource(resource){
+ const old=resources.find(r=>r.id===resource.id);
+ const access=$("#resourceAccess").value;
+ const price=Math.round(Number($("#resourcePrice").value)*100);
+ const status=$("#resourcePublication").value;
+ const file=$("#resourceUpload").files[0];
+ let path=old?.storage_path||null;
+ if(!Number.isSafeInteger(price)||price<0||(access==="paid"&&price<1))throw Error("Enter a valid price.");
+ if(status==="published"&&(access!=="free"||file||path))throw Error("Protected resource publishing is not enabled yet. Save as draft.");
+ if(access!=="free"&&!file&&!path)throw Error("Paid and members-only resources require a private file.");
+ if(!file&&!path&&!resource.source_url)throw Error("Add a share link or upload a file.");
+ if(file&&file.size>52428800)throw Error("File exceeds 50 MB.");
+ const id=resource.id||crypto.randomUUID();
+ if(file){const name=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");path=id+"/"+crypto.randomUUID()+"-"+name;const {error}=await supabaseClient.storage.from("protected-library-files").upload(path,file,{upsert:false});if(error)throw error;}
+ const payload={...resource,id,access_type:access,price_pence:access==="paid"?price:0,publication_status:status,storage_path:path,is_public:status==="published"&&access==="free"&&!path,source_url:path?"":resource.source_url,provider:path?"Kraken Storage":resource.provider,file_name:file?file.name:resource.file_name,updated_at:new Date().toISOString()};
+ const {error}=await supabaseClient.from("resources").upsert(payload);
+ if(error){if(file)await supabaseClient.storage.from("protected-library-files").remove([path]);throw error;}
+}
