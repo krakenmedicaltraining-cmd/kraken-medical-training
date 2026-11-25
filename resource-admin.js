@@ -182,3 +182,50 @@ $("#testDriveConnection").onclick=async()=>{
  }catch(error){result.textContent="Test failed: "+error.message;}
  finally{button.disabled=false;}
 };
+
+
+/* V24.1: register and test private Drive drafts, without exposing source URLs. */
+const privatePanel=document.createElement("div");
+privatePanel.className="field";
+privatePanel.innerHTML='<label><input type="checkbox" id="privateDriveDraft"> Register as private Google Drive draft</label><p>Creates a new draft only. Paste a restricted Drive link above; no Supabase file upload is needed.</p><button type="button" class="button secondary" id="downloadDriveDraft">Test download of saved draft</button>';
+driveTestPanel.after(privatePanel);
+const priorSaveCommerce=saveCommerceResource;
+async function driveAdminRequest(route,body){
+ const {data,error}=await supabaseClient.auth.getSession();
+ if(error||!data.session)throw Error("Sign in first.");
+ return fetch("https://kraken-payments.krakenmedicaltraining.workers.dev"+route,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+data.session.access_token},body:JSON.stringify(body)});
+}
+saveCommerceResource=async function(resource){
+ if(!$("#privateDriveDraft").checked){
+ if(resources.find(r=>r.id===resource.id)?.provider==="Private Google Drive")throw Error("Private Drive drafts cannot be edited with the legacy form yet.");
+ return priorSaveCommerce(resource);
+ }
+ if(resource.id)throw Error("Create a new draft for this test.");
+ if(resource.provider!=="Google Drive"||!resource.source_url||$("#resourceUpload").files.length)throw Error("Choose Google Drive and paste a file link without uploading a file.");
+ if($("#resourcePublication").value!=="draft")throw Error("Save as draft for this test.");
+ const access=$("#resourceAccess").value,price=Math.round(Number($("#resourcePrice").value)*100);
+ if(!Number.isSafeInteger(price)||price<0||(access==="paid"&&price<1))throw Error("Enter a valid price.");
+ const id=crypto.randomUUID(),url=resource.source_url;
+ const payload={...resource,id,provider:"Private Google Drive",source_url:"",thumbnail_url:"",storage_path:null,is_public:false,publication_status:"draft",access_type:access,price_pence:access==="paid"?price:0,updated_at:new Date().toISOString()};
+ const {error}=await supabaseClient.from("resources").insert(payload);
+ if(error)throw error;
+ try{
+ const response=await driveAdminRequest("/api/admin/register-drive-resource",{resource_id:id,url});
+ const result=await response.json();
+ if(!response.ok||!result.success)throw Error(result.error||"Registration failed.");
+ }catch(error){throw Error(error.message+" A private draft may remain; check the library before retrying.");}
+};
+$("#downloadDriveDraft").onclick=async()=>{
+ const id=$("#resourceId").value;
+ if(!id){alert("Save a private draft, then click Edit on its library card first.");return;}
+ const button=$("#downloadDriveDraft");button.disabled=true;
+ try{
+ const response=await driveAdminRequest("/api/resource/download",{resource_id:id});
+ if(!response.ok){const result=await response.json();throw Error(result.error||"Download failed.");}
+ const blob=await response.blob(),url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download=response.headers.get("Content-Disposition")?.match(/filename="([^"]+)"/)?.[1]||"resource-download";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+ }catch(error){alert(error.message);}finally{button.disabled=false;}
+};
+const priorResetDrive=resetResourceForm;
+resetResourceForm=function(){priorResetDrive();$("#privateDriveDraft").checked=false;$("#driveTestResult").textContent="";};
+$("#cancelResource").onclick=resetResourceForm;
