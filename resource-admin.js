@@ -159,3 +159,26 @@ async function saveCommerceResource(resource){
  const {error}=await supabaseClient.from("resources").upsert(payload);
  if(error){if(file)await supabaseClient.storage.from("protected-library-files").remove([path]);throw error;}
 }
+
+
+/* V23.4: administrator-only Google Drive metadata test. */
+const driveTestPanel=document.createElement("div");
+driveTestPanel.className="field";
+driveTestPanel.innerHTML='<p>For private Drive files, share with the Kraken service account only. Do not enable public link sharing.</p><button type="button" class="button secondary" id="testDriveConnection">Test Google Drive connection</button><p id="driveTestResult" role="status" aria-live="polite" style="white-space:pre-wrap;overflow-wrap:anywhere"></p>';
+$("#resourceUrl").closest(".field").after(driveTestPanel);
+const oldDriveHelp=$("#resourceUrl").closest(".field").querySelector(".help-text");
+if(oldDriveHelp)oldDriveHelp.textContent="Public links are only for free resources. Private Drive files can be tested below; protected publishing is not enabled yet.";
+$("#testDriveConnection").onclick=async()=>{
+ const button=$("#testDriveConnection"),result=$("#driveTestResult"),url=$("#resourceUrl").value.trim();
+ if(!url){result.textContent="Paste a Google Drive file link first.";return;}
+ button.disabled=true;result.textContent="Testing private file access…";
+ try{
+ const {data,error}=await supabaseClient.auth.getSession();
+ if(error||!data.session)throw Error("Sign in as an administrator first.");
+ const response=await fetch("https://kraken-payments.krakenmedicaltraining.workers.dev/api/admin/test-drive-file",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+data.session.access_token},body:JSON.stringify({url})});
+ const payload=await response.json();
+ if(!response.ok)throw Error(payload.error||"Connection failed");
+ result.textContent="Google Drive connection successful.\n"+JSON.stringify(payload,null,2);
+ }catch(error){result.textContent="Test failed: "+error.message;}
+ finally{button.disabled=false;}
+};
