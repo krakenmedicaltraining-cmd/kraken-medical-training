@@ -229,3 +229,35 @@ $("#downloadDriveDraft").onclick=async()=>{
 const priorResetDrive=resetResourceForm;
 resetResourceForm=function(){priorResetDrive();$("#privateDriveDraft").checked=false;$("#driveTestResult").textContent="";};
 $("#cancelResource").onclick=resetResourceForm;
+
+/* V24.2: manage registered private Drive resources. */
+const driveEdit=editResource;
+editResource=function(id){
+ driveEdit(id);
+ const r=resources.find(x=>x.id===id);
+ $("#privateDriveDraft").checked=r?.provider==="Private Google Drive";
+ if($("#privateDriveDraft").checked){$("#resourceProvider").value="Google Drive";$("#resourceUrl").value="";}
+};
+const driveSave=saveCommerceResource;
+async function publishDrive(id,status){
+ const response=await driveAdminRequest("/api/admin/publish-drive-resource",{resource_id:id,status});
+ const result=await response.json();
+ if(!response.ok||!result.success)throw Error(result.error||"Publication failed.");
+}
+saveCommerceResource=async function(resource){
+ const old=resources.find(r=>r.id===resource.id);
+ if(old?.provider!=="Private Google Drive")return driveSave(resource);
+ const status=$("#resourcePublication").value,access=$("#resourceAccess").value,price=Math.round(Number($("#resourcePrice").value)*100);
+ if(!Number.isSafeInteger(price)||price<0||(access==="paid"&&price<1))throw Error("Enter a valid price.");
+ if($("#resourceUpload").files.length)throw Error("Use Google Drive for this resource.");
+ if(resource.source_url && old.publication_status==="published")throw Error("Unpublish before replacing the file.");
+ const {error}=await supabaseClient.from("resources").update({title:resource.title,description:resource.description,category:resource.category,resource_type:resource.resource_type,tags:resource.tags,access_type:access,price_pence:access==="paid"?price:0,updated_at:new Date().toISOString()}).eq("id",resource.id);
+ if(error)throw error;
+ if(resource.source_url){
+ const response=await driveAdminRequest("/api/admin/register-drive-resource",{resource_id:resource.id,url:resource.source_url});
+ const result=await response.json();if(!response.ok||!result.success)throw Error(result.error||"Registration failed.");
+ }
+ await publishDrive(resource.id,status);
+};
+privatePanel.querySelector("p").textContent="Create a private draft first, then edit it to publish. Unpublish before replacing its Drive file.";
+if(oldDriveHelp)oldDriveHelp.textContent="Public links are for free resources. Private Drive files can be registered as drafts and published after verification.";
