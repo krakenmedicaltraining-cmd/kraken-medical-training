@@ -6,6 +6,23 @@ async function load(){if(!id)throw Error("Course not specified.");const {data:c,
 <section class="k16-section"><div class="k16-wrap k16-two"><div><span class="k16-eyebrow">Course overview</span><h2 class="k16-title" style="font-size:38px">About this course</h2><p style="line-height:1.75">${esc(c.overview||c.short_description||"")}</p>${c.audience?`<h3>Who is it for?</h3><p>${esc(c.audience)}</p>`:""}${c.outcomes?.length?`<h3>What you'll learn</h3><ul class="k16-list">${list(c.outcomes)}</ul>`:""}</div><div class="k16-form" id="enquire"><h2>Request training</h2><p>Tell us what you need and we'll have the details ready for follow-up.</p><form id="enquiryForm"><input name="name" required placeholder="Your name"><input type="email" name="email" required placeholder="Email"><input name="phone" placeholder="Phone (optional)"><input name="organisation" placeholder="Organisation"><input type="number" min="1" name="delegates" placeholder="Number of learners"><textarea name="message" rows="5" placeholder="Location, preferred dates or questions"></textarea><button class="k16-btn" type="submit">Send training enquiry</button></form><p id="formState"></p></div></div></section>
 ${c.client_provides?.length||c.provider_provides?.length?`<section class="k16-section alt"><div class="k16-wrap k16-two"><div><h2>What you provide</h2><ul class="k16-list">${list(c.client_provides)}</ul></div><div><h2>What Kraken brings</h2><ul class="k16-list">${list(c.provider_provides)}</ul></div></div></section>`:""}
 ${c.faqs?.length?`<section class="k16-section"><div class="k16-wrap"><h2 class="k16-title" style="font-size:38px">Frequently asked questions</h2><div class="k16-faq">${c.faqs.map(f=>`<details><summary>${esc(f.question)}</summary><div>${esc(f.answer)}</div></details>`).join("")}</div></div></section>`:""}`;
-$("#enquiryForm").onsubmit=submit}
+$("#enquiryForm").onsubmit=submit;const section=document.createElement("section");section.className="k16-section";section.innerHTML='<div class="k16-wrap"><h2>Upcoming training dates</h2><p>Test bookings only. No real payments.</p><div id="trainingDates">Loading dates…</div></div>';$("#coursePage").children[0].after(section);await loadDates();}
+
+async function loadDates(){
+ const panel=$("#trainingDates");
+ try{
+ const {data,error}=await supabaseClient.rpc("kraken_training_availability",{p_course:id});if(error)throw error;
+ panel.replaceChildren();
+ if(!data?.length){panel.textContent="No scheduled dates yet. Please enquire below.";return;}
+ const auth=await supabaseClient.auth.getSession();
+ for(const s of data){
+ const card=document.createElement("article");card.className="k16-form";
+ for(const value of [new Date(s.starts_at).toLocaleString("en-GB",{timeZone:"Europe/London"})+" – "+new Date(s.ends_at).toLocaleString("en-GB",{timeZone:"Europe/London"})+" (UK time)",s.location_name,"Instructor: "+(s.instructor_name||"To be confirmed"),"£"+(s.price_pence/100).toFixed(2)+" per learner",s.available_spaces+" of "+s.capacity+" spaces available"]){const p=document.createElement("p");p.textContent=value;card.append(p);}
+ const b=document.createElement("button");b.className="k16-btn";b.type="button";b.textContent=s.available_spaces<=0?"Fully booked":auth.data.session?"Book now (test)":"Sign in to book";b.disabled=s.available_spaces<=0||new Date(s.starts_at).getTime()<=Date.now()+35*60000;
+ const status=document.createElement("p");card.append(b,status);panel.append(card);
+ b.onclick=async()=>{b.disabled=true;try{const {data:a}=await supabaseClient.auth.getSession();if(!a.session){location.href="student-login.html?training="+encodeURIComponent(id);return;}const res=await fetch("https://kraken-payments.krakenmedicaltraining.workers.dev/api/create-training-checkout-session",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+a.session.access_token},body:JSON.stringify({session_id:s.session_id})});const out=await res.json();if(!res.ok)throw Error(out.error||"Checkout unavailable");if(!/^https:\/\/checkout\.stripe\.com\//.test(out.checkout_url||""))throw Error("Invalid checkout URL");location.href=out.checkout_url;}catch(e){status.textContent=e.message;b.disabled=false;}};
+ }
+ }catch(e){panel.textContent="Unable to load training dates. Please refresh.";}
+}
 async function submit(e){e.preventDefault();const f=new FormData(e.currentTarget),row=Object.fromEntries(f.entries());row.course_id=id;row.delegates=row.delegates?Number(row.delegates):null;$("#formState").textContent="Sending…";const {error}=await supabaseClient.from("training_enquiries").insert(row);if(error){$("#formState").textContent=error.message;return}e.currentTarget.reset();$("#formState").textContent="Thanks. Your training enquiry has been received."}
 load().catch(e=>$("#coursePage").innerHTML=`<div class="k16-wrap k16-section"><div class="k16-empty">${esc(e.message)}</div></div>`);})();
