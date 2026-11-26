@@ -178,3 +178,20 @@
 
   buildNavigation();
 })();
+
+;(() => {
+ if(!document.querySelector("[data-kraken-site-nav],[data-kraken-nav]") || /admin|command-centre/i.test(location.pathname))return;
+ const start=async()=>{
+ if(!window.KrakenBasket)await new Promise((resolve,reject)=>{const s=document.createElement("script");s.src="/basket.js?v=20261126-drawer";s.onload=resolve;s.onerror=reject;document.head.append(s)});
+ const root=document.createElement("aside");root.setAttribute("aria-label","Shopping basket");root.style.cssText="position:fixed;right:16px;bottom:16px;z-index:9999;width:min(360px,calc(100vw - 32px));font:15px Inter,Arial,sans-serif;color:white;background:#102e2c;border:1px solid #42645f;border-radius:16px;box-shadow:0 12px 36px #0004;overflow:hidden";
+ root.innerHTML='<button type="button" aria-expanded="false" style="width:100%;padding:15px;background:#087f71;color:white;border:0;font:inherit;font-weight:700;cursor:pointer">Basket (0) ▴</button><div hidden style="padding:16px"><div data-items style="max-height:45vh;overflow:auto"></div><p data-total style="color:white"></p><a href="/basket.html" style="display:block;text-align:center;background:#087f71;color:white;padding:12px;border-radius:8px;text-decoration:none;font-weight:700">View basket / checkout</a></div>';
+ document.body.append(root);const toggle=root.firstElementChild,panel=toggle.nextElementSibling,items=root.querySelector("[data-items]"),total=root.querySelector("[data-total]");
+ let expanded=false,seq=0;const money=n=>"£"+(n/100).toFixed(2);
+ const open=v=>{expanded=v;panel.hidden=!v;toggle.setAttribute("aria-expanded",String(v));toggle.textContent="Basket ("+KrakenBasket.read().length+") "+(v?"▾":"▴");};
+ toggle.onclick=()=>open(!expanded);
+ async function render(){const n=++seq,entries=KrakenBasket.read();open(expanded);items.textContent=entries.length?"Loading items…":"Your basket is empty.";total.textContent="";
+ if(!entries.length)return;
+ try{const rows=await Promise.all(["course","resource"].map(async type=>{const ids=entries.filter(e=>e.type===type).map(e=>e.id);if(!ids.length)return [];const q=await supabaseClient.from(type==="course"?"public_course_catalogue":"kraken_library_catalogue").select("id,title,price_pence,access_type").in("id",ids);if(q.error)throw q.error;return (q.data||[]).map(x=>({...x,type}));}));if(n!==seq)return;items.replaceChildren();let sum=0;for(const e of entries){const x=rows.flat().find(x=>x.id===e.id&&x.type===e.type&&x.access_type==="paid");const line=document.createElement("div");line.style.cssText="padding:12px 0;border-bottom:1px solid #42645f;display:flex;gap:10px;align-items:center";const label=document.createElement("span");label.style.cssText="flex:1;color:white";label.textContent=x?x.title+" · "+money(Number(x.price_pence)):"Unavailable item";if(x)sum+=Number(x.price_pence);const b=document.createElement("button");b.type="button";b.textContent="Remove";b.style.cssText="background:transparent;color:white;border:1px solid #77968f;border-radius:6px;padding:6px;cursor:pointer";b.onclick=()=>KrakenBasket.remove(e.id,e.type);line.append(label,b);items.append(line);}total.textContent="Estimated subtotal: "+money(sum);}catch(e){if(n===seq)items.textContent="Open basket to verify items.";}}
+ window.addEventListener("kraken:basket",render);window.addEventListener("kraken:basket-added",()=>{open(true);render()});window.addEventListener("storage",render);render();
+ };if(document.readyState==="complete")start().catch(console.error);else window.addEventListener("load",()=>start().catch(console.error),{once:true});
+})();
