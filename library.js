@@ -1,4 +1,5 @@
 let publicResources = [];
+let ownedResources = new Set();
 
 function renderLibrary() {
   const search = $("#librarySearch").value.trim().toLowerCase();
@@ -22,7 +23,7 @@ function renderLibrary() {
       <h3>${escapeHtml(r.title)}</h3>
       <p>${escapeHtml(r.description)}</p>
       <div class="resource-card-actions">
-        ${r.private_drive ? `<span class="tag">${r.access_type==="free"?"Free · sign in":r.access_type==="paid"?"£"+(Number(r.price_pence)/100).toFixed(2)+" · included with membership":"Members only"}</span><button class="button" data-drive-download="${escapeHtml(r.id)}">Secure download</button>` : `<a class="small-button" href="${escapeHtml(resourcePreviewUrl(r))}" target="_blank" rel="noopener">Preview</a><a class="button" href="${escapeHtml(resourceDownloadUrl(r))}" target="_blank" rel="noopener">Open / download</a>`}
+        ${r.private_drive ? `<span class="tag">${r.access_type==="free"?"Free · sign in":r.access_type==="paid"?"£"+(Number(r.price_pence)/100).toFixed(2)+" · included with membership":"Members only"}</span>${r.access_type==="paid"&&!ownedResources.has(r.id)?`<button class="button" data-add-resource="${escapeHtml(r.id)}">+ Add to basket</button>`:""}<button class="button" data-drive-download="${escapeHtml(r.id)}">Secure download</button>` : `<a class="small-button" href="${escapeHtml(resourcePreviewUrl(r))}" target="_blank" rel="noopener">Preview</a><a class="button" href="${escapeHtml(resourceDownloadUrl(r))}" target="_blank" rel="noopener">Open / download</a>`}
       </div>
     </article>`).join("");
 }
@@ -30,6 +31,8 @@ function renderLibrary() {
 (async function () {
   try {
     const {data,error}=await supabaseClient.from("kraken_library_catalogue").select("*");if(error)throw error;publicResources=data||[];
+    const auth=await supabaseClient.auth.getSession();
+    if(auth.data?.session){const orders=await supabaseClient.from("kraken_orders").select("kraken_order_items(item_type,item_reference)").in("status",["paid","partially_refunded"]); if(!orders.error)ownedResources=new Set((orders.data||[]).flatMap(o=>o.kraken_order_items||[]).filter(i=>i.item_type==="resource").map(i=>i.item_reference));}
     const categories = [...new Set(publicResources.map(r => r.category).filter(Boolean))].sort();
     const types = [...new Set(publicResources.map(r => r.resource_type).filter(Boolean))].sort();
     $("#libraryCategory").innerHTML += categories.map(c => `<option>${escapeHtml(c)}</option>`).join("");
@@ -44,6 +47,7 @@ $("#libraryCategory").addEventListener("change", renderLibrary);
 $("#libraryType").addEventListener("change", renderLibrary);
 
 $("#libraryGrid").addEventListener("click",async event=>{
+ const add=event.target.closest("[data-add-resource]");if(add){const r=publicResources.find(r=>r.id===add.dataset.addResource);if(KrakenBasket.addResource(r)){add.textContent="Added to basket";add.disabled=true;}else{add.textContent="Could not add";}return;}
  const b=event.target.closest("[data-drive-download]");if(!b)return;
  b.disabled=true;
  try{
