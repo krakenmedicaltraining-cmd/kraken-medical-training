@@ -1,5 +1,7 @@
 let publicResources = [];
 let ownedResources = new Set();
+let memberAccess=false, adminAccess=false;
+const canDownload=r=>adminAccess||r.access_type==="free"||memberAccess||(r.access_type==="paid"&&ownedResources.has(r.id));
 
 function renderLibrary() {
   const search = $("#librarySearch").value.trim().toLowerCase();
@@ -23,7 +25,7 @@ function renderLibrary() {
       <h3>${escapeHtml(r.title)}</h3>
       <p>${escapeHtml(r.description)}</p>
       <div class="resource-card-actions">
-        ${r.private_drive ? `<span class="tag">${r.access_type==="free"?"Free · sign in":r.access_type==="paid"?"£"+(Number(r.price_pence)/100).toFixed(2)+" · included with membership":"Members only"}</span>${r.access_type==="paid"&&!ownedResources.has(r.id)?`<button class="button" data-add-resource="${escapeHtml(r.id)}">+ Add to basket</button>`:""}<button class="button" data-drive-download="${escapeHtml(r.id)}">Secure download</button>` : `<a class="small-button" href="${escapeHtml(resourcePreviewUrl(r))}" target="_blank" rel="noopener">Preview</a><a class="button" href="${escapeHtml(resourceDownloadUrl(r))}" target="_blank" rel="noopener">Open / download</a>`}
+        ${r.private_drive ? `<span class="tag">${r.access_type==="free"?"Free · sign in":r.access_type==="paid"?"£"+(Number(r.price_pence)/100).toFixed(2)+" · included with membership":"Members only"}</span>${r.access_type==="paid"&&!canDownload(r)?`<button class="button" data-add-resource="${escapeHtml(r.id)}">+ Add to basket</button>`:""}${canDownload(r)?`<button class="button" data-drive-download="${escapeHtml(r.id)}">Secure download</button>`:r.access_type==="members_only"?`<a class="button" href="membership.html">Join membership</a>`:""}` : `<a class="small-button" href="${escapeHtml(resourcePreviewUrl(r))}" target="_blank" rel="noopener">Preview</a><a class="button" href="${escapeHtml(resourceDownloadUrl(r))}" target="_blank" rel="noopener">Open / download</a>`}
       </div>
     </article>`).join("");
 }
@@ -32,7 +34,7 @@ function renderLibrary() {
   try {
     const {data,error}=await supabaseClient.from("kraken_library_catalogue").select("*");if(error)throw error;publicResources=data||[];
     const auth=await supabaseClient.auth.getSession();
-    if(auth.data?.session){const orders=await supabaseClient.from("kraken_orders").select("kraken_order_items(item_type,item_reference)").in("status",["paid","partially_refunded"]); if(!orders.error)ownedResources=new Set((orders.data||[]).flatMap(o=>o.kraken_order_items||[]).filter(i=>i.item_type==="resource").map(i=>i.item_reference));}
+    if(auth.data?.session){const uid=auth.data.session.user.id;const [m,a]=await Promise.all([supabaseClient.from("membership_subscriptions").select("id,membership_plans!inner(status)").eq("learner_id",uid).in("status",["active","trialing"]).gt("current_period_end",new Date().toISOString()).not("stripe_subscription_id","is",null).eq("membership_plans.status","active").limit(1),supabaseClient.from("admin_users").select("user_id").eq("user_id",uid).limit(1)]);memberAccess=!!m.data?.length;adminAccess=!!a.data?.length;const orders=await supabaseClient.from("kraken_orders").select("kraken_order_items(item_type,item_reference)").eq("learner_id",uid).in("status",["paid","partially_refunded"]); if(!orders.error)ownedResources=new Set((orders.data||[]).flatMap(o=>o.kraken_order_items||[]).filter(i=>i.item_type==="resource").map(i=>i.item_reference));}
     const categories = [...new Set(publicResources.map(r => r.category).filter(Boolean))].sort();
     const types = [...new Set(publicResources.map(r => r.resource_type).filter(Boolean))].sort();
     $("#libraryCategory").innerHTML += categories.map(c => `<option>${escapeHtml(c)}</option>`).join("");
